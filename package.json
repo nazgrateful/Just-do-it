@@ -1,0 +1,12 @@
+{
+  "name": "just-do-it",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Design your life, track habits and learn 100 skills in 365 days.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "node --test tests/*.test.js"
+  },
+  "license": "MIT"
+}
