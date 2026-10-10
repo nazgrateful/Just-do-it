@@ -92,3 +92,136 @@ h4.cat { letter-spacing: 0.14em; }
 .alarm-card .btn { color: var(--ink); background: var(--surface); }
 .alarm-card .btn.primary { background: var(--on-accent); color: var(--accent); }
 .toast, .update-bar { background: var(--ink); color: var(--bg); border-radius: var(--btn-radius); }
+
+/* =====================================================================
+   FAMILY DECORATIONS — make each look feel like its aesthetic.
+   app.js sets <html data-family="…"> from the look's style family.
+   ===================================================================== */
+
+/* every look: a soft wash of its second accent behind the pattern */
+body {
+  background-image: var(--pattern), radial-gradient(70% 45% at 85% -5%, color-mix(in srgb, var(--accent2) 22%, transparent), transparent 70%), radial-gradient(60% 40% at 0% 100%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%);
+  background-size: var(--pattern-size), auto, auto;
+  background-attachment: var(--pattern-attach), fixed, fixed;
+}
+h2 { position: relative; }
+
+/* ---- neon: cyber, synthwave, 80s, rave, disco, scene ---- */
+:root:is([data-family='cyber'], [data-family='synth'], [data-family='r80'], [data-family='rave'], [data-family='disco'], [data-family='scene']) h1,
+:root:is([data-family='cyber'], [data-family='synth'], [data-family='r80'], [data-family='rave'], [data-family='disco'], [data-family='scene']) .brand span {
+  text-shadow: 0 0 6px color-mix(in srgb, var(--accent) 70%, transparent), 0 0 18px color-mix(in srgb, var(--accent2) 55%, transparent);
+  letter-spacing: 0.04em;
+}
+:root:is([data-family='cyber'], [data-family='synth'], [data-family='r80'], [data-family='rave']) :is(h1, h2, h4.cat, .btn, .chip) { text-transform: uppercase; }
+:root:is([data-family='cyber'], [data-family='synth'], [data-family='r80'], [data-family='rave'], [data-family='disco'], [data-family='scene']) :is(.btn, .chip) {
+  background: transparent; color: var(--accent-text); border-color: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 40%, transparent), inset 0 0 8px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+:root:is([data-family='cyber'], [data-family='synth'], [data-family='r80'], [data-family='rave'], [data-family='disco'], [data-family='scene']) :is(.btn.primary, .chip.on) { background: var(--accent); color: var(--on-accent); }
+:root:is([data-family='cyber'], [data-family='synth'], [data-family='r80'], [data-family='rave']) :is(.card, .q, details.group) {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent), 0 0 22px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+:root[data-family='cyber'] :is(.card:not(.stat), .q)::before { content: '▚ SYS'; display: block; font-family: var(--head-font); font-size: 0.62rem; letter-spacing: 0.2em; color: var(--accent-text); opacity: 0.8; margin-bottom: 6px; }
+
+/* ---- old windows: vaporwave, web, memes, weird, pixel ---- */
+:root:is([data-family='vapor'], [data-family='web'], [data-family='meme'], [data-family='weird'], [data-family='pixel']) :is(.card:not(.stat), .q) { padding-top: 0; overflow: hidden; }
+:root:is([data-family='vapor'], [data-family='web'], [data-family='meme'], [data-family='weird'], [data-family='pixel']) :is(.card:not(.stat), .q)::before {
+  content: '▫ ▫ ✕'; display: block; text-align: right; margin: 0 -18px 10px; padding: 3px 10px;
+  font: 700 0.7rem/1.4 var(--head-font); letter-spacing: 0.2em; color: var(--on-accent);
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+:root:is([data-family='vapor'], [data-family='web'], [data-family='meme'], [data-family='weird'], [data-family='pixel']) :is(.btn, .chip) { border-style: outset; border-width: 3px; border-radius: 2px; }
+:root:is([data-family='vapor'], [data-family='web'], [data-family='meme'], [data-family='weird'], [data-family='pixel']) :is(.btn, .chip):active { border-style: inset; }
+:root:is([data-family='vapor'], [data-family='web'], [data-family='pixel']) h1 { text-shadow: 3px 3px 0 var(--accent2); }
+:root[data-family='pixel'] :is(.card, .q, .btn, .chip, .tabbar) { image-rendering: pixelated; box-shadow: 4px 4px 0 var(--ink); }
+
+/* ---- glossy: Y2K, Aero, glass, clay ---- */
+:root:is([data-family='y2k'], [data-family='aero'], [data-family='glass']) :is(.btn, .chip) {
+  background: linear-gradient(180deg, color-mix(in srgb, #fff 80%, transparent) 0%, color-mix(in srgb, #fff 30%, transparent) 48%, transparent 52%), var(--glass-strong);
+}
+:root:is([data-family='y2k'], [data-family='aero'], [data-family='glass']) :is(.btn.primary, .chip.on) {
+  background: linear-gradient(180deg, color-mix(in srgb, #fff 55%, transparent) 0%, color-mix(in srgb, #fff 12%, transparent) 46%, transparent 50%), linear-gradient(180deg, color-mix(in srgb, var(--accent) 80%, #fff), var(--accent));
+}
+:root[data-family='y2k'] h1 { background: linear-gradient(180deg, var(--ink) 0 45%, var(--accent) 55% 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+:root[data-family='y2k'] h1::after { content: ' ✧'; -webkit-text-fill-color: var(--accent2); }
+:root[data-family='clay'] :is(.card, .q, .btn, .chip) { box-shadow: 6px 6px 14px color-mix(in srgb, var(--ink) 14%, transparent), -4px -4px 10px rgba(255,255,255,.7), inset 2px 2px 4px rgba(255,255,255,.6); border-color: transparent; }
+
+/* ---- cute: kawaii, kei, gyaru, whimsical, lolita ---- */
+:root:is([data-family='cute'], [data-family='kei'], [data-family='gyaru'], [data-family='whim']) h1 { text-shadow: 2px 2px 0 color-mix(in srgb, var(--accent2) 70%, transparent); }
+:root:is([data-family='cute'], [data-family='kei'], [data-family='lol']) h1::after { content: ' ♡'; color: var(--accent); }
+:root:is([data-family='gyaru'], [data-family='whim']) h1::after { content: ' ✧'; color: var(--accent); }
+:root:is([data-family='cute'], [data-family='kei'], [data-family='gyaru']) :is(.btn, .chip) { border-width: 2px; box-shadow: 0 3px 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+:root:is([data-family='cute'], [data-family='kei'], [data-family='gyaru']) .chip:not(.on) { border-style: dashed; }
+:root[data-family='lol'] :is(.card, .q) { outline: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: -7px; }
+:root[data-family='lol'] h2::after, :root:is([data-family='acad'], [data-family='hist'], [data-family='asia'], [data-family='nouv']) h2::after {
+  content: ''; display: block; width: 64px; height: 6px; margin-top: 6px;
+  background: radial-gradient(circle, var(--accent) 2.2px, transparent 2.6px) center / 10px 6px repeat-x;
+}
+
+/* ---- ornate: academia, history, art nouveau, fantasy, mystic ---- */
+:root:is([data-family='acad'], [data-family='hist'], [data-family='asia'], [data-family='nouv'], [data-family='fant'], [data-family='myst']) :is(.card, .q) {
+  outline: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: -6px;
+}
+:root:is([data-family='acad'], [data-family='hist'], [data-family='asia']) :is(.btn, .chip, h4.cat) { font-variant: small-caps; letter-spacing: 0.06em; }
+:root:is([data-family='acad'], [data-family='hist'], [data-family='asia']) h1::before { content: '❦ '; color: var(--accent); font-size: 0.7em; }
+:root:is([data-family='fant'], [data-family='myst'], [data-family='space']) h1 { text-shadow: 0 0 14px color-mix(in srgb, var(--accent2) 60%, transparent); }
+:root:is([data-family='fant'], [data-family='myst']) h1::after { content: ' ✦'; color: var(--accent2); font-size: 0.6em; }
+
+/* ---- dark: goth, metal, horror, spooky ---- */
+:root:is([data-family='goth'], [data-family='metal'], [data-family='horr'], [data-family='spook']) body {
+  background-image: var(--pattern), radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%), radial-gradient(140% 100% at 50% 120%, rgba(0,0,0,.55), transparent 60%);
+}
+:root:is([data-family='goth'], [data-family='metal']) :is(.card, .q, details.group) { border: 3px double color-mix(in srgb, var(--accent) 60%, var(--ink)); }
+:root:is([data-family='goth'], [data-family='metal'], [data-family='horr']) :is(.btn, .chip) { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.82rem; border-radius: 2px; }
+:root[data-family='goth'] h1::before { content: '✠ '; color: var(--accent); font-size: 0.6em; vertical-align: middle; }
+:root[data-family='horr'] h1 { text-shadow: 2px 0 color-mix(in srgb, var(--accent) 70%, transparent), -2px 0 color-mix(in srgb, var(--accent2) 50%, transparent); }
+:root[data-family='spook'] h1::after { content: ' 🕸'; font-size: 0.6em; }
+
+/* ---- loud & graphic: punk, brutal, pop, street, art ---- */
+:root:is([data-family='punk'], [data-family='brut'], [data-family='pop'], [data-family='street'], [data-family='art'], [data-family='rap']) :is(h1, h2, .btn, .chip, h4.cat) { text-transform: uppercase; }
+:root:is([data-family='punk'], [data-family='brut'], [data-family='pop'], [data-family='street']) h1 { font-weight: 800; letter-spacing: -0.01em; }
+:root[data-family='punk'] h1 { display: inline-block; transform: rotate(-2deg); background: linear-gradient(transparent 55%, color-mix(in srgb, var(--accent2) 70%, transparent) 55% 92%, transparent 92%); padding: 0 4px; }
+:root[data-family='punk'] :is(.card, .q):nth-of-type(odd) { transform: rotate(-0.4deg); }
+:root[data-family='pop'] h1 { text-shadow: 3px 3px 0 var(--accent2), 6px 6px 0 var(--ink); }
+:root:is([data-family='brut'], [data-family='street']) :is(.btn, .chip) { font-weight: 800; }
+
+/* ---- retro: 50s–90s, kitsch, noir ---- */
+:root:is([data-family='r50'], [data-family='r60'], [data-family='r70'], [data-family='r90'], [data-family='kitsch']) h1 { text-shadow: 3px 3px 0 color-mix(in srgb, var(--accent2) 80%, transparent); }
+:root:is([data-family='r50'], [data-family='r60'], [data-family='r90'], [data-family='kitsch']) :is(.btn, .chip) { box-shadow: 3px 3px 0 var(--ink); }
+:root:is([data-family='r50'], [data-family='r60'], [data-family='r90'], [data-family='kitsch']) :is(.btn, .chip):active { box-shadow: none; transform: translate(3px, 3px); }
+:root[data-family='r70'] :is(.card, .q) { border-top: 6px solid var(--accent); }
+:root[data-family='r70'] :is(.card:not(.stat), .q)::before { content: ''; display: block; height: 4px; margin: -4px 0 10px; background: linear-gradient(90deg, var(--accent) 0 33%, var(--accent2) 33% 66%, color-mix(in srgb, var(--accent) 50%, var(--accent2)) 66%); border-radius: 4px; }
+:root[data-family='noir'] :is(h1, h2) { text-transform: uppercase; letter-spacing: 0.16em; font-weight: 400; }
+:root[data-family='noir'] body { filter: saturate(0.85); }
+
+/* ---- handmade: indie, grunge, folk, whimsical, cozy ---- */
+:root:is([data-family='indie'], [data-family='grunge'], [data-family='whim'], [data-family='folk']) :is(.card, .q) { position: relative; }
+:root:is([data-family='indie'], [data-family='grunge'], [data-family='whim'], [data-family='folk']) :is(.card, .q)::before {
+  content: ''; position: absolute; top: -9px; left: 50%; width: 74px; height: 18px; transform: translateX(-50%) rotate(-3deg);
+  background: color-mix(in srgb, var(--accent2) 55%, transparent); opacity: 0.8; border-radius: 2px;
+}
+:root:is([data-family='indie'], [data-family='grunge']) h1 { transform: rotate(-1deg); display: inline-block; }
+:root[data-family='grunge'] h1 { text-shadow: 1px 1px 0 var(--accent2), -1px 0 rgba(0,0,0,.25); }
+:root[data-family='cozy'] h2::before, :root[data-family='nat'] h2::before, :root[data-family='folk'] h2::before { content: '❀ '; color: var(--accent); font-size: 0.8em; }
+
+/* ---- calm & outdoors & seasons ---- */
+:root:is([data-family='coast'], [data-family='trop']) h2::after { content: ''; display: block; width: 70px; height: 8px; margin-top: 4px; background: radial-gradient(circle at 5px -2px, transparent 5px, var(--accent) 5.5px 6.5px, transparent 7px) 0 0 / 14px 8px repeat-x; }
+:root:is([data-family='wint'], [data-family='holi']) h1::after { content: ' ❄'; color: var(--accent2); font-size: 0.6em; }
+:root[data-family='autm'] h1::after { content: ' 🍂'; font-size: 0.6em; }
+:root[data-family='west'] :is(.card, .q) { border-style: dashed; }
+:root[data-family='west'] h1 { letter-spacing: 0.06em; text-transform: uppercase; }
+:root:is([data-family='sport'], [data-family='outd']) :is(h1, h2) { font-style: italic; text-transform: uppercase; letter-spacing: 0.01em; }
+:root[data-family='sport'] .btn.primary { box-shadow: inset 6px 0 0 var(--accent2); }
+:root[data-family='indus'] :is(h1, h2, h4.cat, .btn, .chip) { text-transform: uppercase; letter-spacing: 0.1em; }
+:root[data-family='indus'] .btn.primary { border-image: repeating-linear-gradient(45deg, var(--accent) 0 8px, var(--ink) 8px 16px) 3; border-width: 3px; border-style: solid; }
+
+/* ---- luxe, glam, prep, minimal ---- */
+:root:is([data-family='luxe'], [data-family='glam']) :is(h1, h2) { text-transform: uppercase; letter-spacing: 0.18em; font-weight: 400; }
+:root:is([data-family='luxe'], [data-family='glam']) :is(.btn, .chip) { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.78rem; background: transparent; border: 1px solid var(--accent); }
+:root:is([data-family='luxe'], [data-family='glam']) :is(.btn.primary, .chip.on) { background: var(--accent); }
+:root:is([data-family='luxe'], [data-family='glam']) :is(.card, .q) { border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: none; }
+:root[data-family='glam'] h1::after { content: ' ✦'; color: var(--accent); font-size: 0.5em; }
+:root[data-family='prep'] :is(.btn, .chip) { border-style: double; border-width: 3px; }
+:root[data-family='min'] :is(h1, h2) { font-weight: 300; letter-spacing: -0.01em; }
+:root:is([data-family='dream'], [data-family='soft']) :is(.card, .q) { box-shadow: 0 10px 34px color-mix(in srgb, var(--accent2) 22%, transparent); }

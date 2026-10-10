@@ -18,6 +18,10 @@ function heatmap(state, h, today) {
   return `<div class="heat" aria-hidden="true">${cells}</div>`;
 }
 
+// Habits page: life areas folded; the ones you open stay open.
+const openHabitAreas = new Set();
+let prevSub = null;
+
 export function render({ state }) {
   const today = ymd();
   const byArea = {};
@@ -31,11 +35,13 @@ export function render({ state }) {
         state.habits.length
           ? ordered
               .map(([area, list]) => `
-          <h4 class="cat">${domainEmoji(area)} ${esc(area)}</h4>
-          <ul class="list">${list
+          <details class="group habit-area" data-harea="${esc(area)}"${openHabitAreas.has(area) ? ' open' : ''}>
+          <summary><span>${domainEmoji(area)} <b>${esc(area)}</b></span><small class="muted">${list.length} habit${list.length === 1 ? '' : 's'}</small></summary>
+          <ul class="list">${(prevSub = null, list)
             .map((h) => {
               const done = isDone(state, h.id, today);
-              return `
+              const head = h.sub !== prevSub ? `<li class="sub-h">${esc((prevSub = h.sub) || 'Other')}</li>` : '';
+              return `${head}
             <li class="item habit-card" data-edit="${h.id}">
               <div class="hc-top">
                 <span class="h-emoji">${esc(h.emoji)}</span>
@@ -46,7 +52,7 @@ export function render({ state }) {
               ${heatmap(state, h, today)}
             </li>`;
             })
-            .join('')}</ul>`)
+            .join('')}</ul></details>`)
               .join('')
           : `<p class="empty">No habits yet. <a href="#quiz">Answer the questions</a> and we will build them for you, or add your own.</p>`
       }
@@ -85,6 +91,10 @@ function edit(app, h) {
 }
 
 export function mount(root, app) {
+  root.addEventListener('toggle', (e) => {
+    const a = e.target.dataset?.harea;
+    if (a) e.target.open ? openHabitAreas.add(a) : openHabitAreas.delete(a);
+  }, true);
   root.addEventListener('click', (e) => {
     const t = e.target.closest('[data-toggle]');
     if (t) {
