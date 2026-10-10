@@ -1,8 +1,15 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.2.0';
+export const APP_VERSION = '1.3.0';
 
 export const RELEASES = [
+  {
+    version: '1.3.0',
+    date: '2026-10-10',
+    notes: [
+      'Frutiger Aero lettering: a Frutiger-style humanist font (bundled, works offline) and glossy glass-gradient titles, wordmark and big numbers',
+    ],
+  },
   {
     version: '1.2.0',
     date: '2026-10-10',

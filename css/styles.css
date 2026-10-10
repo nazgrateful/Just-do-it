@@ -1,3 +1,14 @@
+/* Frutiger-style lettering. Frutiger itself is a paid font, so the app bundles Source Sans 3
+   (free, SIL Open Font License; see fonts/), the closest open humanist sans, and still
+   prefers real Frutiger or Segoe UI (Vista/7's Frutiger-inspired font) when installed. */
+@font-face {
+  font-family: 'Aero Sans';
+  src: url('../fonts/SourceSans3-latin.woff2') format('woff2');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Colors come from your chosen aesthetic (set in js/app.js). These are fallbacks. */
 :root {
   --accent: #b5643c;
@@ -366,7 +377,7 @@ dialog::backdrop { background: #0007; }
   --drop: 0 8px 28px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(120, 200, 255, 0.08);
 }
 :root[data-font='aero'] {
-  --font: 'Frutiger', 'Frutiger LT Std', 'Segoe UI', 'Myriad Pro', 'Helvetica Neue', system-ui, sans-serif;
+  --font: 'Frutiger', 'Frutiger LT Std', 'Frutiger Next', 'Segoe UI', 'Aero Sans', 'Myriad Pro', system-ui, sans-serif;
 }
 
 /* ---------- sky backdrop ---------- */
@@ -605,3 +616,42 @@ details.suggest[open] > summary::after { content: ' ▴'; }
 .count-line { text-shadow: none; }
 /* white tick on the green "done" orb */
 .check[aria-pressed='true'], .check.on { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55); }
+
+/* ---------- Aero lettering ----------
+   Vista-era glass type: a humanist sans, light-to-deep gradient fill with a
+   sharp "glass" break across the middle, a white bevel highlight and a soft glow. */
+:root {
+  --type-fill: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent) 70%, #fff) 0%,
+    color-mix(in srgb, var(--accent) 88%, #fff) 46%,
+    color-mix(in srgb, var(--accent) 92%, #000) 54%,
+    color-mix(in srgb, var(--accent) 55%, var(--ink)) 100%);
+  --type-glow: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.95)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.9)) drop-shadow(0 2px 4px color-mix(in srgb, var(--accent) 30%, transparent));
+}
+:root[data-dark='1'] {
+  --type-fill: linear-gradient(180deg, #ffffff 0%, color-mix(in srgb, var(--accent) 35%, #fff) 46%, color-mix(in srgb, var(--accent) 80%, #fff) 54%, var(--accent) 100%);
+  --type-glow: drop-shadow(0 0 1px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 55%, transparent));
+}
+body { font-feature-settings: 'kern', 'liga'; -webkit-font-smoothing: antialiased; letter-spacing: 0.005em; }
+h1, h2, h3, .brand span, .t-display, .alarm-time, .night-time { letter-spacing: -0.012em; }
+h1 { font-weight: 700; font-size: 2.05rem; line-height: 1.12; }
+h2 { font-weight: 600; font-size: 1.28rem; }
+h3 { font-weight: 600; }
+.btn, .chip, .tabbar button { letter-spacing: 0.01em; }
+h4.cat { font-weight: 700; letter-spacing: 0.1em; font-size: 0.74rem; }
+
+/* Glossy gradient lettering on titles, the wordmark and big numbers. */
+h1, .brand span, .t-display, .a-time, .stats3 b, .stat b, .count-line b {
+  background: var(--type-fill);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  text-shadow: none !important;
+  filter: var(--type-glow);
+}
+.brand span { font-weight: 700; font-size: 1.12rem; }
+.t-display { font-weight: 600; }
+/* Emoji inside a gradient heading keep their own colours. */
+h1 .em { -webkit-text-fill-color: initial; }
+/* On the alarm screen the type is white glass on colour. */
+.alarm-time, .night-time { font-weight: 300; }
+.alarm-time { background: linear-gradient(180deg, #fff 0%, #fff 48%, rgba(255, 255, 255, 0.82) 52%, rgba(255, 255, 255, 0.92) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25)); text-shadow: none; }

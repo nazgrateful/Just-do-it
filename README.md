@@ -6,7 +6,7 @@ A free, private, installable web app. No account, no ads, and nothing leaves you
 
 | | |
 |---|---|
-| 🫧 **Frutiger Aero look** | Glass panels, glossy aqua buttons, a sky background with clouds, bokeh, light rays, a green horizon and floating bubbles, in both light and dark mode. Text sits on near-solid glass with a soft glow, and was checked against WCAG AA contrast. It is the default vibe. Any other aesthetic you pick (cozy, dark academia, coastal…) tints the glass. |
+| 🫧 **Frutiger Aero look** | Glass panels, glossy aqua buttons, a sky background with clouds, bokeh, light rays, a green horizon and floating bubbles, in both light and dark mode. Text sits on near-solid glass with a soft glow, and was checked against WCAG AA contrast. **Lettering:** a Frutiger-style humanist sans (Source Sans 3, bundled under the SIL Open Font License, or real Frutiger / Segoe UI when installed). Titles, the wordmark and big numbers use glossy, Vista-style glass-gradient lettering. It is the default vibe. Any other aesthetic you pick (cozy, dark academia, coastal…) tints the glass. |
 | ✨ **Design-your-life questions** | You answer every question **in your own words first**. Ready-made ideas sit in a **💡 Show suggestions** panel under each question, for when you want them. **Vibe:** your aesthetic (which re-colours the whole app), the words you want to describe you, and who you want to be in a year. **Home & cleaning:** the feel of your home, cleaning schedule style, days and time, chores, products, scent and tools. **Exercise:** days, time, length, workout types, where you train, your level. **Body:** the look you're after, what you want it to *do* (pull-ups, splits, 5 km…), how you want to feel. **Also:** food, morning and evening routines and sleep, style and self-care, mind, money and people, environment, relationships, skills and alarms. |
 | 🧩 **Your plan, built for you** | Your answers become habits: a cleaning schedule (zone-per-day, daily reset, weekly or monthly deep clean), workouts spread over your chosen days, routines, a daily practice block, alarms and relationship cards. |
 | ✓ **Habit tracker** | Daily checklist, streaks and best streaks, and a 12-week heatmap for every habit. |
@@ -60,7 +60,7 @@ npm test       # unit tests (Node 18+)
 ## Files
 
 ```
-index.html, css/styles.css, sw.js, manifest.webmanifest, icons/
+index.html, css/styles.css, sw.js, manifest.webmanifest, icons/, fonts/ (Source Sans 3 + licence)
 js/app.js        router, theme, update flow
 js/data.js       questions, aesthetics, skill library, cleaning kits
 js/plan.js       answers → habits, skills, alarms, events, people

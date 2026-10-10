@@ -1,11 +1,12 @@
 // Service worker: works offline, and installs updates only when you tap "Update".
 // It never touches your saved data (that lives in localStorage, not in this cache).
-const CACHE = 'just-do-it-v3';
+const CACHE = 'just-do-it-v4';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './css/styles.css',
+  './fonts/SourceSans3-latin.woff2',
   './icons/icon.svg',
   './icons/icon-180.png',
   './icons/icon-192.png',
