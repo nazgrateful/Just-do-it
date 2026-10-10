@@ -546,3 +546,16 @@ details.suggest > summary::after { content: ' ▾'; }
 .me-float { position: fixed; right: 12px; top: calc(64px + env(safe-area-inset-top)); width: 104px; z-index: 8; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.22); opacity: 0; transform: translateY(-8px) scale(.96); pointer-events: none; transition: opacity .25s ease, transform .25s ease; }
 .me-float.show { opacity: 1; transform: none; pointer-events: auto; }
 .me-float svg { display: block; width: 100%; height: auto; }
+.look-family > summary .lc-sw i { width: 12px; height: 12px; }
+h2.az { margin: 1rem 0 0.2rem; }
+
+/* ---------- parts inside a life area (Today, Habits) ---------- */
+details.sub-group { border-top: 1px dashed var(--line); }
+details.sub-group > summary { display: flex; justify-content: space-between; align-items: center; padding: 8px 2px; cursor: pointer; list-style: none; font-weight: 600; font-size: 0.92rem; }
+details.sub-group > summary::-webkit-details-marker { display: none; }
+details.sub-group > summary small { color: var(--muted); font-weight: 600; }
+details.sub-group > summary::after { content: '▾'; color: var(--muted); font-size: 0.75rem; margin-left: 8px; }
+details.sub-group[open] > summary::after { content: '▴'; }
+details.sub-group.all-done > summary span { color: var(--muted); text-decoration: line-through; }
+.list .sub-h { list-style: none; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 700; margin: 10px 2px 2px; }
+.ideas-row { margin: 18px 0 6px; }

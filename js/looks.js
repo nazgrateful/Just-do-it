@@ -4,6 +4,9 @@
 //
 // Line format:  Name | emoji | bg surface ink accent accent2 | heading-font body-font | shape | pattern | words
 // A look whose bg is dark stays dark; light looks get an automatic dark version.
+// The full Aesthetics Wiki index is added from looks-index.js (see FAMILIES and PALETTES below).
+
+import { INDEX } from './looks-index.js';
 
 const CATALOG = {
   'Calm & minimal': `
@@ -204,9 +207,240 @@ Hiking|🥾|#eef0e8 #f9faf5 #1f2a20 #4f7a3f #b36b2c|grotesk sans|soft|grid|trail
 
 // ---------------------------------------------------------------- parsing
 
-const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const slug = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-export const LOOKS = Object.entries(CATALOG).flatMap(([category, text]) =>
+// ---------------------------------------------------------------- families & palettes for the full index
+
+/** A style family: fonts, shapes, background pattern, and where it sits in the gallery. */
+export const FAMILIES = {
+  min: { head: 'sans', body: 'sans', shape: 'sharp', pattern: 'none', cat: 'Calm & minimal' },
+  soft: { head: 'serif', body: 'sans', shape: 'soft', pattern: 'grain', cat: 'Calm & minimal' },
+  glass: { head: 'sans', body: 'sans', shape: 'glass', pattern: 'clouds', cat: 'Calm & minimal' },
+  clay: { head: 'round', body: 'round', shape: 'bubbly', pattern: 'none', cat: 'Calm & minimal' },
+  flat: { head: 'grotesk', body: 'sans', shape: 'sharp', pattern: 'none', cat: 'Art & design' },
+  cozy: { head: 'serif', body: 'round', shape: 'round', pattern: 'grain', cat: 'Cozy & home' },
+  nat: { head: 'serif', body: 'sans', shape: 'soft', pattern: 'flowers', cat: 'Nature & cottage' },
+  whim: { head: 'hand', body: 'round', shape: 'round', pattern: 'sparkle', cat: 'Cute & whimsical' },
+  cute: { head: 'round', body: 'round', shape: 'bubbly', pattern: 'hearts', cat: 'Cute & whimsical' },
+  kei: { head: 'round', body: 'round', shape: 'bubbly', pattern: 'dots', cat: 'Japanese & Korean styles' },
+  gyaru: { head: 'script', body: 'round', shape: 'bubbly', pattern: 'sparkle', cat: 'Japanese & Korean styles' },
+  lol: { head: 'script', body: 'serif', shape: 'ornate', pattern: 'hearts', cat: 'Lolita, doll & coquette' },
+  acad: { head: 'classic', body: 'serif', shape: 'ornate', pattern: 'paper', cat: 'Academia' },
+  hist: { head: 'classic', body: 'serif', shape: 'ornate', pattern: 'grain', cat: 'History & eras' },
+  asia: { head: 'classic', body: 'serif', shape: 'ornate', pattern: 'grain', cat: 'History & eras' },
+  nouv: { head: 'display', body: 'serif', shape: 'ornate', pattern: 'flowers', cat: 'Art & design' },
+  art: { head: 'grotesk', body: 'sans', shape: 'sharp', pattern: 'grid', cat: 'Art & design' },
+  pop: { head: 'grotesk', body: 'round', shape: 'brutal', pattern: 'dots', cat: 'Art & design' },
+  brut: { head: 'grotesk', body: 'mono', shape: 'brutal', pattern: 'grid', cat: 'Art & design' },
+  luxe: { head: 'display', body: 'sans', shape: 'sharp', pattern: 'none', cat: 'Luxe & fashion' },
+  glam: { head: 'display', body: 'sans', shape: 'ornate', pattern: 'sparkle', cat: 'Luxe & fashion' },
+  prep: { head: 'classic', body: 'sans', shape: 'retro', pattern: 'stripes', cat: 'Luxe & fashion' },
+  street: { head: 'grotesk', body: 'grotesk', shape: 'brutal', pattern: 'none', cat: 'Street & subcultures' },
+  rap: { head: 'grotesk', body: 'grotesk', shape: 'sharp', pattern: 'none', cat: 'Music scenes' },
+  rave: { head: 'future', body: 'round', shape: 'neon', pattern: 'dots', cat: 'Music scenes' },
+  disco: { head: 'script', body: 'sans', shape: 'neon', pattern: 'sparkle', cat: 'Music scenes' },
+  indie: { head: 'hand', body: 'sans', shape: 'paper', pattern: 'grain', cat: 'Music scenes' },
+  rock: { head: 'type', body: 'grotesk', shape: 'sharp', pattern: 'grain', cat: 'Music scenes' },
+  punk: { head: 'type', body: 'grotesk', shape: 'brutal', pattern: 'stripes', cat: 'Dark & alternative' },
+  goth: { head: 'gothic', body: 'serif', shape: 'ornate', pattern: 'none', cat: 'Dark & alternative' },
+  metal: { head: 'gothic', body: 'grotesk', shape: 'sharp', pattern: 'grain', cat: 'Dark & alternative' },
+  grunge: { head: 'type', body: 'sans', shape: 'paper', pattern: 'grain', cat: 'Dark & alternative' },
+  scene: { head: 'pixel', body: 'round', shape: 'neon', pattern: 'checker', cat: 'Dark & alternative' },
+  horr: { head: 'gothic', body: 'mono', shape: 'sharp', pattern: 'scanlines', cat: 'Spooky & horror' },
+  spook: { head: 'gothic', body: 'sans', shape: 'retro', pattern: 'stars', cat: 'Spooky & horror' },
+  cyber: { head: 'future', body: 'mono', shape: 'neon', pattern: 'scanlines', cat: 'Internet & retro tech' },
+  synth: { head: 'future', body: 'sans', shape: 'neon', pattern: 'sunset', cat: 'Internet & retro tech' },
+  vapor: { head: 'pixel', body: 'mono', shape: 'window', pattern: 'sunset', cat: 'Internet & retro tech' },
+  web: { head: 'pixel', body: 'sans', shape: 'window', pattern: 'stars', cat: 'Internet & retro tech' },
+  aero: { head: 'sans', body: 'sans', shape: 'glass', pattern: 'clouds', cat: 'Internet & retro tech' },
+  y2k: { head: 'future', body: 'round', shape: 'round', pattern: 'sparkle', cat: 'Internet & retro tech' },
+  pixel: { head: 'pixel', body: 'mono', shape: 'pixel', pattern: 'grid', cat: 'Internet & retro tech' },
+  meme: { head: 'system', body: 'system', shape: 'window', pattern: 'none', cat: 'Internet & retro tech' },
+  weird: { head: 'mono', body: 'system', shape: 'window', pattern: 'none', cat: 'Dreamy & surreal' },
+  dream: { head: 'serif', body: 'sans', shape: 'soft', pattern: 'clouds', cat: 'Dreamy & surreal' },
+  r50: { head: 'script', body: 'sans', shape: 'retro', pattern: 'checker', cat: 'Decades & retro' },
+  r60: { head: 'grotesk', body: 'sans', shape: 'retro', pattern: 'stripes', cat: 'Decades & retro' },
+  r70: { head: 'script', body: 'round', shape: 'round', pattern: 'stripes', cat: 'Decades & retro' },
+  r80: { head: 'future', body: 'sans', shape: 'neon', pattern: 'grid', cat: 'Decades & retro' },
+  r90: { head: 'grotesk', body: 'sans', shape: 'retro', pattern: 'dots', cat: 'Decades & retro' },
+  kitsch: { head: 'script', body: 'round', shape: 'retro', pattern: 'checker', cat: 'Decades & retro' },
+  noir: { head: 'display', body: 'sans', shape: 'sharp', pattern: 'scanlines', cat: 'Decades & retro' },
+  west: { head: 'classic', body: 'serif', shape: 'paper', pattern: 'grain', cat: 'Country & western' },
+  folk: { head: 'serif', body: 'serif', shape: 'paper', pattern: 'flowers', cat: 'Folk & cultural' },
+  coast: { head: 'serif', body: 'sans', shape: 'soft', pattern: 'waves', cat: 'Coastal & tropical' },
+  trop: { head: 'script', body: 'round', shape: 'round', pattern: 'flowers', cat: 'Coastal & tropical' },
+  wint: { head: 'serif', body: 'sans', shape: 'soft', pattern: 'sparkle', cat: 'Seasons & holidays' },
+  autm: { head: 'serif', body: 'sans', shape: 'paper', pattern: 'grain', cat: 'Seasons & holidays' },
+  holi: { head: 'classic', body: 'serif', shape: 'retro', pattern: 'sparkle', cat: 'Seasons & holidays' },
+  space: { head: 'future', body: 'sans', shape: 'round', pattern: 'stars', cat: 'Sci-fi & space' },
+  fant: { head: 'classic', body: 'serif', shape: 'ornate', pattern: 'stars', cat: 'Fantasy & mystic' },
+  myst: { head: 'classic', body: 'serif', shape: 'ornate', pattern: 'sparkle', cat: 'Fantasy & mystic' },
+  sport: { head: 'grotesk', body: 'sans', shape: 'sharp', pattern: 'stripes', cat: 'Sporty & outdoors' },
+  outd: { head: 'grotesk', body: 'sans', shape: 'sharp', pattern: 'grid', cat: 'Sporty & outdoors' },
+  indus: { head: 'grotesk', body: 'mono', shape: 'sharp', pattern: 'grid', cat: 'Industrial & tactical' },
+};
+
+/** Named palettes: background, boxes, text, accent, second accent. */
+export const PALETTES = Object.fromEntries(
+  `linen #f4f1ea #fbf9f4 #2e3836 #4a6b63 #8fafc4
+cream #f7f1e3 #fffbf0 #3a3524 #9c7b55 #c9b28d
+beige #efe7da #f8f3ea #3b3127 #a58a6a #d8c8b0
+sand #f3ead8 #fdf6e8 #3a2f22 #c08a4a #8aa3a8
+sage #eef1e8 #f9fbf5 #24301f #5f7a55 #b7a46b
+forest #dfe6d8 #eef3ea #1c2a1e #2f5d3a #8a6f4a
+moss #e5e2d0 #f1efe2 #2e2a1e #6b7b3a #9c6b3f
+earth #efe4d6 #f8f0e5 #33261b #8a5a3b #6b7b4a
+terracotta #f6eadf #fff7ef #3a2418 #c0622f #6b8a7a
+rust #f3e4d8 #fcf2ea #36200f #a8471f #3f5a6b
+honey #fdf3d7 #fffaeb #3d2c0f #c98a12 #7a9a52
+sunflower #fff8dc #fffdf0 #3a2e0a #e0a800 #3f6fb5
+peach #fff1e8 #fffaf5 #3e261c #e8835a #f2b6a0
+coral #fff0ec #ffffff #3a1f1a #ef6a5a #2ec4b6
+blush #fbeff0 #fffafa #4a2a30 #c76a7d #e8c4c8
+pink #ffeef3 #fff8fa #4a2c36 #e36b98 #b39ddb
+hotpink #ffe3f1 #fff5fa #4a0f2e #e0218a #ff8fc7
+sakura #fdf0f4 #fffafc #3d2a33 #d9668f #8fb7a2
+cherry #fff1f1 #ffffff #3a1418 #c8102e #2f6b3a
+red #fbeeee #ffffff #2a1214 #c62828 #1f1f24
+wine #2a1418 #3a1d22 #f3e1e3 #c0405a #c9a24a
+burgundy #f3e6e6 #fff7f7 #3a1820 #7a1f35 #c9a24a
+plum #f3ecf5 #fcf8fd #34203a #7a3b80 #c9a0d0
+lavender #f4f0fb #ffffff #2e2a40 #8a74c8 #f0b6d6
+lilac #f3eef8 #fcfaff #2e2638 #9b7bc4 #c48aa6
+babyblue #eef6ff #ffffff #233040 #5a96d0 #f6c6d8
+sky #e8f4fb #ffffff #18303c #2f8fc4 #f2c14e
+ocean #e6f3f6 #f8fdfe #10303a #1f7a9a #e6c79a
+navy #eef1f7 #ffffff #121c33 #1f3b73 #c8102e
+teal #e6f4f1 #f8fdfc #10302b #1f8a7a #e8a35a
+mint #ecf8f1 #ffffff #183027 #2f9a6e #f2a7c3
+aqua #e0fbff #f5feff #0b2a3a #00a0ad #b46cff
+denim #edf1f6 #fafcff #1a2433 #3d5a80 #c9a27a
+grey #ededed #f7f7f7 #1d1d1f #5b6470 #a9aeb5
+silver #eef0f3 #ffffff #1a1d22 #6e7b8a #b8c4d4
+chrome #e8ecf1 #ffffff #121820 #4a6fa5 #c0c8d4
+white #ffffff #ffffff #111111 #222222 #999999
+mono #ffffff #ffffff #000000 #000000 #777777
+black #0f0f12 #1a1a1f #f0f0f5 #c8c8d2 #8a8a9a
+charcoal #1c1c1e #26262a #ececec #a6a6b0 #c43a3a
+champagne #f6efe4 #fffaf3 #2e2418 #a88a4a #e8c4b8
+brown #efe3d4 #f9f1e7 #2e2118 #7a4a2a #b58a5a
+coffee #efe4d6 #faf3ea #2e2018 #8a5a3b #c9a27a
+chocolate #2a1d16 #382820 #f1e2d2 #d49a6a #8a5a3b
+cinnamon #f6ebe0 #fff7ef #3a2214 #a8552a #d8a46a
+autumn #f5e8d6 #fff6ea #3a2414 #c0622f #6b7b3a
+pumpkin #14110f #211c18 #f5ead8 #ff7a1a #9a6fe0
+winter #eef3f8 #ffffff #1c2a3a #4f82ad #b8c9db
+ice #eaf6fb #ffffff #13283a #2f8fc4 #b8e2f2
+christmas #f6f1ea #fffdf8 #1e2a22 #b22222 #1f6b3a
+easter #fbf6ff #ffffff #3a3352 #9b7be0 #6fd3b9
+neonpink #120a1a #1e1228 #ffe9f6 #ff2fa0 #00e1ff
+neongreen #070a07 #121612 #eaffea #39ff14 #ff00c8
+neoncyan #05070d #0d1220 #d6fff5 #00ffc6 #ff2bd6
+acid #0b0b0b #161616 #f5ffe0 #c6ff00 #ff3ea5
+toxic #0d1a12 #15281c #e6ffe9 #6bff8a #c86bff
+vapor #2b1b4a #3b2563 #fde8ff #ff71ce #01cdfe
+synth #1a0b2e #2a1446 #ffe8ff #ff2a6d #05d9e8
+galaxy #121633 #1c2147 #f2efe6 #b892ff #e8c766
+midnight #0f1424 #18203a #e8ecff #9fb4ff #7fe0c4
+night #0b0e1a #151a2c #eaf0ff #ffb347 #8ab4ff
+blood #120709 #1f0d10 #f3e1e3 #d0203e #8a3c4a
+gothpurple #1b1622 #261f2f #f8eaff #c07ae8 #9be7ff
+gothpink #1a1418 #261c22 #ffe9f2 #ff6fa8 #c9c9d6
+dusk #1f1a16 #2a231d #eadfcd #c99a6b #8a5a3b
+sepia #efe1c6 #f8efdc #2e2214 #8a3a1f #3b5a6b
+sepiadark #1e1812 #2a221a #efe2cc #c8a46a #7a5a3a
+parchment #e8dcc2 #f4ebd6 #2e2416 #7a2b1f #3f5a3a
+marble #f4f2ee #ffffff #22222a #7a6a4a #b8b2a8
+jade #e9f3ee #f8fcfa #12302a #1f7a5a #c9a24a
+imperial #f6ece0 #fffaf2 #2a1410 #b8201f #b8902a
+matcha #eef2e4 #fafcf3 #26301f #6a8a42 #c9a27a
+desert #f5e6cf #fdf3e3 #3a2614 #b06a2a #5b8a9e
+tropical #f2fbf3 #ffffff #13301f #13a35b #ff6f59
+flamingo #fff0f5 #ffffff #3a1a2a #ff4f8b #2ec4b6
+primary #fffbe6 #ffffff #1a1a2e #e63328 #2f80ed
+rainbow #fff7fb #ffffff #2a1a3a #ff4fa3 #4fc3ff
+pastel #f6f0ff #ffffff #3d3352 #a07de8 #8fe3cf
+candy #fff3fb #ffffff #3a1d3a #ff5fa2 #43d3c4
+retro50 #fff6ee #ffffff #1a1a1a #e63946 #2ec4b6
+retro60 #fff8ec #ffffff #1a1a1a #ff6b35 #2a9d8f
+retro70 #fbefd5 #fff8e6 #3a2410 #d9822b #6b8e23
+avocado #f1ecd6 #fbf7e8 #2e2a14 #6a7a1f #c0622f
+retro80 #120a24 #1e1236 #fff0ff #ff3fa4 #00e1ff
+retro90 #f4f0e8 #ffffff #1a1a2e #6b4ce6 #1fb5a8
+khaki #efeadb #f8f5ea #2a2a1c #6e6748 #a8471f
+camo #2a2e22 #363b2c #ecebe0 #a8b86a #c09a5a
+military #e9e7dc #f5f3ea #23261c #4b5320 #a0522d
+industrial #e2e2df #f1f1ef #18191b #50555c #e2622b
+concrete #e6e6e2 #ffffff #111111 #111111 #ff5a1f
+noir #0e0e10 #18181b #e8e8ea #d0d0d4 #c0344a
+blackgold #0f0e0c #1a1814 #f4ead8 #c9a24a #b02a2a
+blackred #121212 #1e1e1e #f5f5f5 #ff3030 #ffe600
+blackpink #151215 #221c22 #fbeef5 #ff3ea5 #d4af37
+flapper #121212 #1c1c1c #f0e6d0 #d4af37 #3f9b8a
+victorian #2b1e1e #3a2a28 #efe2cf #c08a4e #8a3d3d
+rococo #fbf1f0 #fffafa #3a2a2a #c4808e #8fb4a0
+baroque #1e140c #2c1f14 #f3e3c4 #c9a24a #b03a3a
+regency #eef0f5 #fbfcff #2a2e3d #5a6fa0 #d9a5a0
+egypt #f3e3bd #faf0d6 #2a1f0e #1f6b8a #b8902a
+celtic #e8efe4 #f6faf3 #1c2a1e #2f6b3a #b8902a
+viking #e3e0d8 #f2efe8 #1e1e1e #6b2d2d #4b5d73
+byzantine #2a1630 #3a2142 #f3e7d4 #d4af37 #5aa0c8
+japanese #f6f1e7 #fffcf6 #1f1f24 #c8312f #2f4a6b
+chinese #fff4ec #fffaf6 #2a1410 #c8102e #b8902a
+korean #f3eee8 #fbf9f6 #2a2622 #8a7460 #d9c8b8
+mizuiro #eaf7ff #ffffff #1a2f40 #3a9ad0 #b8e2f2
+pearl #f7f4f1 #ffffff #2e2a2a #9a8a80 #d9cfe6
+silverpink #f4f1f6 #ffffff #2a2430 #b8708f #b8c4d4
+blueberry #eef0fb #ffffff #1c1f3d #3f4fb5 #8a74c8
+tomato #fff6ec #fffbf5 #3a1e14 #d8442f #4f7a3f
+cyberpop #f4f0ff #ffffff #1a1036 #7a3cff #00b8aa
+clay #f2ece6 #fbf8f4 #2e2622 #d06a4f #81b29a
+glass #e9eff8 #ffffff #142033 #3a6bc0 #8fd3fe
+lofi #2a2633 #36313f #f1e6dc #e7a977 #8fa8c8
+pixel #0a0a0a #161616 #f5f5f5 #ffcc00 #33cc66
+pc98 #10142a #1a2040 #e8ecff #ff6fa8 #6fd3ff
+terminal #000000 #0a0a0a #b8ffb8 #33ff33 #33ff33
+webblue #e9f0ff #ffffff #0b1640 #0033cc #ff00aa
+oldweb #c0c0c0 #dcdcdc #000000 #000080 #008080
+aero #dff3ff #f5fbff #03233d #0067b8 #4cae1a
+aerodark #071526 #0d2238 #e3f4ff #3fb4ff #58e0a0
+eco #e6f6ea #f7fff8 #0f2e1d #1f8a4c #2aa0d8
+bling #ffe6f4 #fff6fb #3a1030 #e8239a #b892ff
+brazil #fffbe6 #ffffff #13301f #1a8a3a #e0b000
+mexico #fff6ea #ffffff #2a1a10 #d6336c #1f9a8a
+devil #140808 #200e0e #ffe8e8 #ff3a30 #ff8a00
+angel #f7f9ff #ffffff #2e3346 #a08a4a #c9d8ff
+ethereal #f6f4fb #ffffff #2e2b3d #8a80c8 #f0d9e7
+dreamy #efe9ff #fbf9ff #2a2340 #7a6cc0 #ffd27f
+weird #e6f0e6 #ffffff #1c1c1c #3a55ff #c4c4c4
+liminal #efe8c8 #f8f2d8 #2e2b1c #8a7a3a #8fa3a8
+pool #e3f7fb #ffffff #0f2e3a #1a8fb0 #f2f2f2
+mall #f2ecf5 #ffffff #2a2238 #a05ad0 #4fb3b4
+casino #0f1a12 #18261c #f4ead8 #c9a24a #e0303a
+safari #efe6d2 #f8f2e4 #2e2818 #7a5a2a #4f6b3a
+outback #f3e1cc #fbf0e2 #3a2414 #b0562a #2f6b8a`
+    .split('\n')
+    .map((l) => {
+      const [name, bg, surface, ink, accent, accent2] = l.trim().split(/\s+/);
+      return [name, { bg, surface, ink, accent, accent2 }];
+    }),
+);
+
+const CATEGORY_RENAME = { 'Academia & classic': 'Academia', 'Art & design movements': 'Art & design', 'Cute & kawaii': 'Cute & whimsical', 'Spiritual & mystic': 'Fantasy & mystic', 'Sci-fi & futurism': 'Sci-fi & space', 'Coastal, travel & seasons': 'Coastal & tropical' };
+
+/** Best-guess family for a hand-made look (used for its extra decorations). */
+function familyOf(l) {
+  const by = { gothic: 'goth', pixel: 'web', future: 'cyber', classic: 'hist', script: 'r50', type: 'grunge', hand: 'whim' };
+  if (l.shape === 'glass') return 'aero';
+  if (l.head === 'future' && (l.shape === 'round' || l.pattern === 'sparkle')) return 'y2k';
+  if (l.shape === 'brutal') return 'brut';
+  if (l.shape === 'bubbly') return 'cute';
+  if (l.shape === 'window') return 'vapor';
+  if (l.shape === 'neon') return 'synth';
+  return by[l.head] || (l.shape === 'ornate' ? 'acad' : l.shape === 'paper' ? 'indie' : l.shape === 'retro' ? 'r90' : l.shape === 'round' ? 'cozy' : 'soft');
+}
+
+const curated = Object.entries(CATALOG).flatMap(([category, text]) =>
   text
     .trim()
     .split('\n')
@@ -214,11 +448,29 @@ export const LOOKS = Object.entries(CATALOG).flatMap(([category, text]) =>
       const [name, emoji, colors, fonts, shape, pattern, words] = line.split('|').map((x) => x.trim());
       const [bg, surface, ink, accent, accent2] = colors.split(/\s+/);
       const [head, body] = fonts.split(/\s+/);
-      return { id: slug(name), name, emoji, category, bg, surface, ink, accent, accent2, head, body, shape, pattern, words };
+      const l = { id: slug(name), name, emoji, category: CATEGORY_RENAME[category] || category, bg, surface, ink, accent, accent2, head, body, shape, pattern, words, curated: true };
+      return { ...l, family: familyOf(l) };
     }),
 );
-export const LOOK_CATEGORIES = Object.keys(CATALOG);
-export const lookById = (id) => LOOKS.find((l) => l.id === id);
+const curatedById = new Map(curated.map((l) => [l.id, l]));
+
+// Every entry of the wiki index; hand-made looks with the same name win (but take the index family).
+const fromIndex = INDEX.trim()
+  .split('\n')
+  .map((line) => {
+    const [name, family, palette, emoji, words] = line.split('|').map((x) => x.trim());
+    const id = slug(name);
+    const f = FAMILIES[family] || FAMILIES.soft;
+    const hand = curatedById.get(id);
+    if (hand) return { ...hand, family, category: f.cat, fromIndex: true };
+    return { id, name, emoji, category: f.cat, ...(PALETTES[palette] || PALETTES.linen), head: f.head, body: f.body, shape: f.shape, pattern: f.pattern, words, family, fromIndex: true };
+  });
+const indexIds = new Set(fromIndex.map((l) => l.id));
+
+export const LOOKS = [...fromIndex, ...curated.filter((l) => !indexIds.has(l.id))].sort((a, b) => a.name.localeCompare(b.name));
+export const LOOK_CATEGORIES = [...new Set(Object.values(FAMILIES).map((f) => f.cat).concat(curated.map((l) => l.category)))];
+const byId = new Map(LOOKS.map((l) => [l.id, l]));
+export const lookById = (id) => byId.get(id);
 
 // ---------------------------------------------------------------- fonts, shapes, patterns
 

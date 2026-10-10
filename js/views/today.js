@@ -5,8 +5,26 @@ import { hasContent } from '../store.js';
 import { normalizeAvatar, sceneSvg } from '../avatar.js';
 import { ymd, esc, fmtTime, fmtMinutes, daysBetween } from '../util.js';
 
-// Life areas you've opened on Today (stay open while you tick things off).
+// Life areas (and their parts) you've opened on Today stay open while you tick things off.
 const openAreas = new Set();
+
+/** Inside a life area: one small folded row per part (Sleep, Food…), so it never feels like a wall. */
+function subGroups(state, area, list, today) {
+  const parts = {};
+  for (const h of list) (parts[h.sub || 'Other'] ||= []).push(h);
+  const entries = Object.entries(parts);
+  if (entries.length === 1) return `<ul class="habits">${list.map((h) => habitRow(state, h, today)).join('')}</ul>`;
+  return entries
+    .map(([part, hs]) => {
+      const n = hs.filter((h) => isDone(state, h.id, today)).length;
+      const key = `${area}/${part}`;
+      return `<details class="sub-group${n === hs.length ? ' all-done' : ''}" data-area="${esc(key)}"${openAreas.has(key) ? ' open' : ''}>
+        <summary><span>${esc(part)}</span><small>${n === hs.length ? '✓' : `${n}/${hs.length}`}</small></summary>
+        <ul class="habits">${hs.map((h) => habitRow(state, h, today)).join('')}</ul>
+      </details>`;
+    })
+    .join('');
+}
 
 export const domainEmoji = (name) => DOMAINS.find((d) => d.name === name)?.emoji || '⭐';
 
@@ -17,7 +35,7 @@ export function habitRow(state, h, date) {
     <li class="habit${done ? ' done' : ''}">
       <button class="check" data-toggle="${h.id}" aria-pressed="${done}" aria-label="${done ? 'Undo' : 'Done'}: ${esc(h.name)}">${done ? '✓' : ''}</button>
       <span class="h-emoji" aria-hidden="true">${esc(h.emoji)}</span>
-      <span class="h-main"><b>${esc(h.name)}</b>${h.time || h.sub ? `<small>${[h.time && fmtTime(h.time), h.sub].filter(Boolean).map(esc).join(' · ')}</small>` : ''}${h.notes ? `<small class="notes">${esc(h.notes)}</small>` : ''}</span>
+      <span class="h-main"><b>${esc(h.name)}</b>${h.time ? `<small>${fmtTime(h.time)}</small>` : ''}${h.notes ? `<small class="notes">${esc(h.notes)}</small>` : ''}</span>
       ${st ? `<span class="streak" title="Current streak">🔥${st}</span>` : ''}
     </li>`;
 }
@@ -88,7 +106,7 @@ export function render({ state }) {
                     <span class="dg-main"><b>${esc(area)}</b><small>${all ? 'All done ✓' : `${n} of ${list.length} done`}</small></span>
                     <span class="mini-bar"><i style="width:${(n / list.length) * 100}%"></i></span>
                   </summary>
-                  <ul class="habits">${list.map((h) => habitRow(state, h, today)).join('')}</ul>
+                  ${subGroups(state, area, list, today)}
                   ${list.length > 1 ? `<button class="btn small" data-all="${esc(area)}">${all ? 'Undo all' : `✓ Done all ${list.length}`}</button>` : ''}
                 </details>`;
               })

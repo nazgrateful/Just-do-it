@@ -68,6 +68,7 @@ function applyTheme() {
   const dark = pref === 'dark' || (pref === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
   const root = document.documentElement;
   root.removeAttribute('style');
+  delete root.dataset.family;
   const special = { 'tranquil-serenity': 'serene', 'frutiger-aero': 'aero' }[id] || id;
   const look = special === 'custom' ? state.settings.customLook : AESTHETICS[special] ? null : lookById(special);
   if (look) {
@@ -78,6 +79,7 @@ function applyTheme() {
     root.dataset.font = 'look';
     root.dataset.dark = isDarkLook ? '1' : '0';
     root.dataset.bubble = bubbleShape(look);
+    root.dataset.family = look.family || 'soft';
     $('meta[name=theme-color]')?.setAttribute('content', vars['--bg']);
     return;
   }

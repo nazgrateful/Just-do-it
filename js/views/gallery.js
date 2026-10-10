@@ -30,34 +30,54 @@ function card(look, active) {
     </button>`;
 }
 
+const openCats = new Set();
+let limit = 60;
+
 export function render({ state }) {
   const cur = aliasOf[current(state)] || current(state);
   const needle = q.trim().toLowerCase();
-  const list = LOOKS.filter((l) => (cat === 'All' || l.category === cat) && (!needle || `${l.name} ${l.words} ${l.category}`.toLowerCase().includes(needle)));
   const custom = state.settings.customLook;
   const curName = cur === 'custom' ? custom?.name || 'My look' : lookById(cur)?.name || 'Tranquil serenity';
-  const groups = cat === 'All' && !needle ? LOOK_CATEGORIES : [null];
+  const matches = (l) => !needle || `${l.name} ${l.words} ${l.category}`.toLowerCase().includes(needle);
+  const more = (n) => (n > limit ? `<button class="btn small" data-more>Show more (${n - limit} left)</button>` : '');
+  let body = '';
+  if (needle || cat === 'A–Z' || (cat !== 'All' && cat !== 'A–Z')) {
+    // A flat, paged list: search results, one category, or everything A–Z.
+    const list = LOOKS.filter((l) => matches(l) && (cat === 'All' || cat === 'A–Z' || l.category === cat));
+    let letter = '';
+    const cards = list.slice(0, limit).map((l) => {
+      const L = /[a-z]/i.test(l.name[0]) ? l.name[0].toUpperCase() : '#';
+      const head = cat === 'A–Z' && !needle && L !== letter ? `<h2 class="az">${(letter = L)}</h2>` : '';
+      return head ? `</div>${head}<div class="look-grid">${card(l, l.id === cur)}` : card(l, l.id === cur);
+    });
+    body = list.length ? `<p class="small muted">${list.length} look${list.length === 1 ? '' : 's'}</p><div class="look-grid">${cards.join('')}</div>${more(list.length)}` : '<p class="empty">No looks match. Try another word, or make your own.</p>';
+  } else {
+    // Families, folded: open one to see its looks (keeps the page light).
+    body = LOOK_CATEGORIES.map((g) => {
+      const items = LOOKS.filter((l) => l.category === g);
+      if (!items.length) return '';
+      const open = openCats.has(g);
+      const sw = items.slice(0, 6).map((l) => `<i style="background:${l.accent}"></i>`).join('');
+      return `<details class="group look-family" data-family-open="${esc(g)}"${open ? ' open' : ''}>
+        <summary><span><b>${esc(g)}</b> <small class="muted">${items.length}</small></span><span class="lc-sw">${sw}</span></summary>
+        ${open ? `<div class="look-grid">${items.slice(0, limit).map((l) => card(l, l.id === cur)).join('')}</div>${more(items.length)}` : ''}
+      </details>`;
+    }).join('');
+  }
   return `
     <section>
       <div class="title-row"><h1>Looks</h1><a class="btn small" href="#settings">Done</a></div>
-      <p class="muted">${LOOKS.length} aesthetics from the Aesthetics Wiki and Pinterest. Each one changes the colours, lettering, boxes, buttons and shapes, and the bubbles on your Life map. Tap one to try it.</p>
+      <p class="muted">${LOOKS.length} aesthetics, from the Aesthetics Wiki's visual index. Each one changes the background, colours, lettering, boxes, buttons, chips, shapes and the bubbles on your Life map. Tap one to try it.</p>
       <p class="small">Using: <b>${esc(curName)}</b>${state.settings.look ? ' · <button class="linkish" data-reset>Back to my vibe answer</button>' : ''}</p>
-      <input class="input" type="search" id="look-q" placeholder="Search looks: cottagecore, y2k, goth, coastal…" value="${esc(q)}">
-      <div class="chips seg">${['All', ...LOOK_CATEGORIES].map((c) => `<button class="chip${cat === c ? ' on' : ''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+      <input class="input" type="search" id="look-q" placeholder="Search ${LOOKS.length} looks: cottagecore, y2k, goth, coastal…" value="${esc(q)}">
+      <div class="chips seg">${['All', 'A–Z'].map((c) => `<button class="chip${cat === c ? ' on' : ''}" data-cat="${esc(c)}">${c === 'All' ? 'By family' : 'A–Z'}</button>`).join('')}</div>
       <div class="look-grid">
         <button class="look-card make" data-make>
           <span class="lc-box"><span class="lc-title">＋ Make your own</span><span class="lc-words">Pick your colours, fonts, shapes and pattern${custom ? ` · edit “${esc(custom.name)}”` : ''}</span></span>
         </button>
         ${custom ? card({ ...custom, id: 'custom' }, cur === 'custom') : ''}
       </div>
-      ${groups
-        .map((g) => {
-          const items = g ? list.filter((l) => l.category === g) : list;
-          if (!items.length) return '';
-          return `${g ? `<h2>${esc(g)}</h2>` : ''}<div class="look-grid">${items.map((l) => card(l, l.id === cur)).join('')}</div>`;
-        })
-        .join('') || '<p class="empty">No looks match. Try another word, or make your own.</p>'}
-      <p class="small muted">Can't find yours? The Aesthetics Wiki lists over a thousand, so tap <b>Make your own</b> and build it.</p>
+      ${body}
     </section>`;
 }
 
@@ -93,7 +113,8 @@ export function mount(root, app) {
   root.addEventListener('click', (e) => {
     const t = e.target;
     const c = t.closest('[data-cat]');
-    if (c) return (cat = c.dataset.cat), app.render();
+    if (c) return (cat = c.dataset.cat), (limit = 60), app.render();
+    if (t.closest('[data-more]')) return (limit += 120), app.render();
     if (t.closest('[data-make]')) return builder(app);
     if (t.closest('[data-reset]')) {
       delete app.state.settings.look;
@@ -111,9 +132,19 @@ export function mount(root, app) {
       app.render();
     }
   });
+  root.addEventListener('toggle', (e) => {
+    const g = e.target.dataset?.familyOpen;
+    if (!g) return;
+    if (e.target.open && !openCats.has(g)) {
+      openCats.add(g);
+      limit = 60;
+      app.render();
+    } else if (!e.target.open) openCats.delete(g);
+  }, true);
   const input = root.querySelector('#look-q');
   input?.addEventListener('input', () => {
     q = input.value;
+    limit = 60;
     const pos = input.selectionStart;
     app.render();
     const el = document.querySelector('#look-q');

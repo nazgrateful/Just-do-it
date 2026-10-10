@@ -8,6 +8,7 @@ import { esc, fmtMinutes, fmtDate, ymd } from '../util.js';
 
 const STATUS = { todo: 'To learn', learning: 'Learning', learned: 'Learned ✓' };
 let filter = 'all';
+let showIdeas = false; // ideas stay tucked away until you ask for them
 
 function skillItem(state, s) {
   const mins = skillMinutes(state, s.id);
@@ -62,8 +63,8 @@ export function render({ state }) {
               .join('')
           : '<p class="empty">No skills yet.</p>'
       }
-      <h2>Ideas to add</h2>
-      ${Object.entries(SKILL_LIBRARY)
+      <div class="ideas-row"><button class="btn small" data-ideas>${showIdeas ? '✕ Hide ideas' : '💡 Skill ideas'}</button></div>
+      ${!showIdeas ? '' : Object.entries(SKILL_LIBRARY)
         .map(([cat, list]) => {
           const have = new Set(state.skills.map((s) => s.name));
           const left = list.filter((s) => !have.has(s));
@@ -121,6 +122,7 @@ export function mount(root, app) {
   const state = app.state;
   root.addEventListener('click', (e) => {
     if (e.target.closest('[data-stop]')) return;
+    if (e.target.closest('[data-ideas]')) return (showIdeas = !showIdeas), app.render();
     const f = e.target.closest('[data-filter]');
     if (f) return (filter = f.dataset.filter), app.render();
     const add = e.target.closest('[data-add]');
