@@ -1,8 +1,18 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.3.0';
+export const APP_VERSION = '1.4.0';
 
 export const RELEASES = [
+  {
+    version: '1.4.0',
+    date: '2026-10-10',
+    notes: [
+      'The timer now rings even when your screen is off, with a Stop button on the lock screen',
+      'Night-stand mode arms your next alarm so it rings through Do Not Disturb and a locked screen',
+      'New iPhone options in the Do Not Disturb guide: turn Focus off automatically at alarm time, and Time Sensitive Calendar/Reminders alerts',
+      'Android: “Also set it in my Clock app” button for the timer',
+    ],
+  },
   {
     version: '1.3.0',
     date: '2026-10-10',

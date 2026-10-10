@@ -12,7 +12,7 @@ A free, private, installable web app. No account, no ads, and nothing leaves you
 | ✓ **Habit tracker** | Daily checklist, streaks and best streaks, and a 12-week heatmap for every habit. |
 | 🎯 **100 skills in 365 days** | Skills are grouped by area so related skills sit together, and each group has its own progress. Each skill can link to the skills it **builds on**. A pace line shows whether you're on track, and you can log practice time. Over 140 skill ideas are included. |
 | 📅 **My schedule** | A **24-hour** day view, a **week** view and a **month** view. Habits, alarms, plans and learned skills appear in one place. Export everything to your phone's calendar (.ics) with weekly repeats. |
-| ⏱ **Timer** | Countdown, focus mode (25/5) and stopwatch. Keeps the screen on, and logs minutes to a skill. |
+| ⏱ **Timer** | Countdown, focus mode (25/5) and stopwatch. It **rings even with the screen off**: Start begins one MP3 track that is silent for the countdown and then rings, and phones keep playing audio while asleep. It shows a lock-screen card with Stop. On Android, it can also set the same timer in the Clock app. It logs minutes to a skill. |
 | ⏰ **Custom alarms** | Pick the time, days and label. **Important** alarms ring louder, flash, vibrate and keep ringing until you dismiss them. They can be sent to the phone's **own Clock app** so they break through Do Not Disturb (see below). Also includes snooze and an alarm-clock (night-stand) mode. |
 | 🏡 **Environment** | How and where you want to live, plus a room-by-room list of **everything you own**. Mark each thing love it, use it, maybe, let go, or want to buy. |
 | 💞 **People** | Every relationship in your life: how you want to show up, how you want to be treated, and your **boundaries**. You can also turn "how often I want to connect" into a habit. |
@@ -24,6 +24,8 @@ A website isn't allowed to switch off Do Not Disturb by itself, so the app uses 
 
 - **Android:** each important alarm has an **Add to Clock** button. It opens the Clock app with the time and label filled in (`AlarmClock.ACTION_SET_ALARM`). Tap Save, then set the repeat days in Clock.
 - **iPhone:** tap **Send to iPhone Clock**. This runs a shortcut called "Just Do It Alarms", which creates the Clock alarms. The app has the 2-minute, one-time setup steps.
+- **Night-stand mode (iPhone and Android, no setup):** at bedtime, a silent track starts and turns into your next alarm. Do Not Disturb doesn't mute audio that is already playing, so it rings through Focus and a locked screen.
+- **iPhone extras:** a Shortcuts automation that turns Do Not Disturb off at alarm time, and Time Sensitive Calendar/Reminders alerts. Native AlarmKit (iOS 26) would need an App Store build.
 - **Also included:**
   - step-by-step guides for letting the app through Focus / Do Not Disturb
   - a calendar export of important alarms

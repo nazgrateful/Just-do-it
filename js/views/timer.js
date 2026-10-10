@@ -1,6 +1,7 @@
 // Timer: countdown, focus (pomodoro) and stopwatch. Time can be logged to a skill.
 import { logSession } from '../store.js';
 import { previewSound, unlockAudio } from '../ring.js';
+import { armTimerSound, disarmTimerSound, timerSoundArmed, setLockScreenStop, androidTimerIntent, MAX_SECONDS } from '../timeraudio.js';
 import { esc, fmtDuration, $ } from '../util.js';
 
 const PRESETS = [5, 10, 15, 20, 25, 30, 45, 60, 90];
@@ -14,6 +15,8 @@ const t = {
   skillId: '',
   focusRound: 1,
   onBreak: false,
+  ringing: false, // the end-of-timer alarm is sounding
+  backgroundOk: false, // the screen-off track is playing
 };
 let ticker = null;
 let wakeLock = null;
@@ -36,8 +39,13 @@ function finish() {
   clearInterval(ticker);
   ticker = null;
   keepAwake(false);
-  previewSound(() => app.state, true);
-  setTimeout(() => previewSound(() => app.state, true), 1500);
+  if (timerSoundArmed()) {
+    // The screen-off track is already ringing (or about to); keep it going until Stop.
+    showTimesUp(app);
+  } else {
+    previewSound(() => app.state, true);
+    setTimeout(() => previewSound(() => app.state, true), 1500);
+  }
   navigator.vibrate?.([400, 150, 400]);
   if (t.skillId && !t.onBreak && mins >= 1) {
     logSession(app.state, t.skillId, mins);
@@ -56,6 +64,47 @@ function finish() {
     } catch {}
   }
   if (location.hash.startsWith('#timer')) app.render();
+}
+
+function stopRinging() {
+  disarmTimerSound();
+  t.ringing = false;
+  t.backgroundOk = false;
+  const el = $('#alarm-overlay');
+  if (el?.dataset.timer) {
+    el.hidden = true;
+    el.innerHTML = '';
+    delete el.dataset.timer;
+  }
+}
+setLockScreenStop(() => {
+  if (t.running) pause();
+  stopRinging();
+  appRef && location.hash.startsWith('#timer') && appRef.render();
+});
+
+function showTimesUp(app) {
+  t.ringing = true;
+  const el = $('#alarm-overlay');
+  el.dataset.timer = '1';
+  el.classList.remove('important');
+  el.innerHTML = `<div class="alarm-card"><div class="alarm-time">⏱</div><div class="alarm-label">Time's up!</div>
+    <button class="btn big primary" data-timer-stop>Stop</button></div>`;
+  el.hidden = false;
+  el.onclick = (e) => {
+    if (!e.target.closest('[data-timer-stop]')) return;
+    stopRinging();
+    if (location.hash.startsWith('#timer')) app.render();
+  };
+}
+
+function pause() {
+  t.elapsedBefore = t.mode === 'stopwatch' ? elapsed() : t.length - remaining();
+  t.running = false;
+  clearInterval(ticker);
+  ticker = null;
+  keepAwake(false);
+  stopRinging();
 }
 
 function update() {
@@ -88,7 +137,12 @@ export function render({ state }) {
       <label class="field"><span>Log this time to a skill</span>
         <select class="input" id="t-skill"><option value="">— none —</option>${skills.map((s) => `<option value="${s.id}"${s.id === t.skillId ? ' selected' : ''}>${esc(s.category)} · ${esc(s.name)}</option>`).join('')}</select>
       </label>
-      <p class="muted small">The screen stays on while the timer runs. Keep this app open for the end sound.</p>
+      ${t.mode !== 'stopwatch' ? `<div class="card small timer-note">
+        ${t.running && t.backgroundOk ? '🔊 <b>Ready to ring with the screen off.</b>' : '🔊 <b>Rings even when the screen is off.</b>'}
+        You can lock your phone. Just don't swipe the app closed, and keep your media volume up.
+        ${state.settings.platform === 'android' && !t.running ? `<div class="row wrap"><a class="btn small" href="${esc(androidTimerIntent(t.length - t.elapsedBefore, 'Just Do It timer', location.href.split('#')[0] + '#timer'))}">⏰ Also set it in my Clock app</a></div>` : ''}
+        ${t.length - t.elapsedBefore > MAX_SECONDS ? '<p class="warn">Timers over 4 hours only ring while the app is open — use your Clock app for those.</p>' : ''}
+      </div>` : ''}
     </section>`;
 }
 
@@ -110,20 +164,29 @@ export function mount(root, app) {
     const act = b.dataset.act;
     if (act === 'start') {
       unlockAudio();
+      stopRinging();
       t.running = true;
       t.startedAt = Date.now();
       t.endAt = Date.now() + (t.length - t.elapsedBefore) * 1000;
       ticker = setInterval(update, 250);
       keepAwake(true);
+      if (t.mode !== 'stopwatch') {
+        // Started inside the tap so the browser allows the sound.
+        armTimerSound((t.endAt - Date.now()) / 1000, {
+          volume: app.state.settings.volume,
+          label: `⏱ ${t.mode === 'focus' ? (t.onBreak ? 'Break' : 'Focus') : 'Timer'}`,
+          endsAt: new Date(t.endAt),
+        }).then((ok) => {
+          t.backgroundOk = ok && t.running;
+          if (location.hash.startsWith('#timer')) app.render();
+        });
+      }
       app.render();
     } else if (act === 'pause') {
-      t.elapsedBefore = t.mode === 'stopwatch' ? elapsed() : t.length - remaining();
-      t.running = false;
-      clearInterval(ticker);
-      ticker = null;
-      keepAwake(false);
+      pause();
       app.render();
     } else if (act === 'reset') {
+      stopRinging();
       if (t.mode === 'stopwatch' && !t.running && t.skillId && t.elapsedBefore >= 60) {
         logSession(app.state, t.skillId, t.elapsedBefore / 60);
         app.save();
