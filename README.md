@@ -1,4 +1,4 @@
-# Just Do It: design your life, build habits, learn 100 skills in 365 days
+# Just-Do-It: design your life, build habits, learn 100 skills in 365 days
 
 A free, private, installable web app. No account, no ads, and nothing leaves your phone. It works offline after the first visit.
 
