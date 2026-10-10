@@ -3,10 +3,12 @@
 
 /**
  * Each aesthetic sets the app's colors and font so the app itself matches the vibe.
- * Frutiger Aero is the core look (glass, gloss, sky, bubbles); the others tint it.
+ * Two complete looks exist: Tranquil serenity (the default: matte linen, sage, mist, serif
+ * headings) and Frutiger Aero (glass, gloss, sky, bubbles). The other aesthetics tint Serenity.
  */
 export const AESTHETICS = {
-  aero: { name: 'Frutiger Aero', emoji: '🫧', font: 'aero', accent: '#0067b8', accent2: '#4cae1a', accentDark: '#4fc3f7', accent2Dark: '#7ee05a', bg: '#dff3ff', surface: '#f5fbff', ink: '#03233d', dbg: '#03192e', dsurface: '#0a2f4d', dink: '#e3f4ff', words: 'glossy glass, blue skies, bubbles, clean water, green leaves, optimism' },
+  serene: { name: 'Tranquil serenity', emoji: '☁️', style: 'serene', font: 'serene', accent: '#4a6b63', accent2: '#8fafc4', accentDark: '#a8c1b4', accent2Dark: '#7d9cb2', bg: '#f4f1ea', surface: '#fbf9f4', ink: '#2e3836', dbg: '#151c1d', dsurface: '#1f2829', dink: '#e8e3d9', words: 'still water, linen, sage and mist, soft morning light, slow breath' },
+  aero: { name: 'Frutiger Aero', emoji: '🫧', style: 'aero', font: 'aero', accent: '#0067b8', accent2: '#4cae1a', accentDark: '#4fc3f7', accent2Dark: '#7ee05a', bg: '#dff3ff', surface: '#f5fbff', ink: '#03233d', dbg: '#03192e', dsurface: '#0a2f4d', dink: '#e3f4ff', words: 'glossy glass, blue skies, bubbles, clean water, green leaves, optimism' },
   minimal: { name: 'Clean minimalist', emoji: '◻️', font: 'sans', accent: '#2f2f2f', accentDark: '#e8e8e8', bg: '#fafafa', surface: '#ffffff', ink: '#1a1a1a', dbg: '#111111', dsurface: '#1c1c1c', dink: '#f2f2f2', words: 'white space, fewer things, better things' },
   cozy: { name: 'Cozy & warm', emoji: '🕯️', font: 'rounded', accent: '#b5643c', accentDark: '#e59a72', bg: '#fbf4ec', surface: '#fffaf4', ink: '#3b2a20', dbg: '#1d1612', dsurface: '#2a201a', dink: '#f6e8dc', words: 'soft light, blankets, warm drinks, slow mornings' },
   academia: { name: 'Dark academia', emoji: '📚', font: 'serif', accent: '#6b3a2a', accentDark: '#c99a6b', bg: '#f1ebe0', surface: '#f8f3ea', ink: '#2b211b', dbg: '#16120f', dsurface: '#221c17', dink: '#eadfcd', words: 'old books, wool, candlelit study, quiet ambition' },

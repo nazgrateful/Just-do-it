@@ -1,0 +1,94 @@
+/* =====================================================================
+   LOOKS — every aesthetic in the Looks gallery (js/looks.js).
+   One stylesheet driven by variables: colours, fonts, corner radius,
+   border, shadow and background pattern all come from the chosen look.
+   ===================================================================== */
+:root {
+  --glass: color-mix(in srgb, var(--surface) var(--surface-alpha, 94%), transparent);
+  --glass-strong: color-mix(in srgb, var(--surface) 97%, transparent);
+  --glass-edge: var(--bcolor);
+  --line: color-mix(in srgb, var(--ink) 13%, transparent);
+  --soft: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  --muted: color-mix(in srgb, var(--ink) 74%, var(--surface));
+  --halo: none;
+  --serif: var(--head-font);
+}
+body {
+  background-color: var(--bg);
+  background-image: var(--pattern);
+  background-size: var(--pattern-size);
+  background-attachment: var(--pattern-attach);
+}
+.aero-bg { display: none; }
+a { color: var(--accent-text); }
+
+/* boxes */
+.card, .item, details.group, .wcol, .weekgrid > div, dialog.sheet, .habits, .timeline, .anytime, .q, .month, .hint {
+  background: var(--glass);
+  border: var(--bw) var(--bs) var(--bcolor);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur));
+}
+.habits, .timeline, .anytime, .q, .month { padding: 8px 14px; }
+.q { padding: 14px 16px; margin: 14px 0; }
+.item { border-radius: calc(var(--radius) * 0.8); }
+details.group .item { background: var(--glass-strong); box-shadow: none; }
+dialog.sheet { background: var(--glass-strong); }
+.topbar { background: color-mix(in srgb, var(--bg) 84%, transparent); border-bottom: var(--bw) var(--bs) var(--bcolor); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.tabbar {
+  left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); padding: 6px;
+  background: var(--glass-strong); border: var(--bw) var(--bs) var(--bcolor); border-radius: calc(var(--radius) + 4px); box-shadow: var(--shadow);
+}
+.tabbar button { border-radius: var(--btn-radius); }
+.tabbar button[aria-current='page'] { background: var(--accent); color: var(--on-accent); }
+body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+
+/* buttons, chips, inputs */
+.btn, .chip {
+  background: var(--glass-strong); color: var(--ink);
+  border: var(--bw) var(--bs) var(--bcolor); border-radius: var(--btn-radius); box-shadow: none;
+}
+.btn.primary, .chip.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); text-shadow: var(--glow); }
+.btn.primary { box-shadow: var(--shadow); }
+.btn:active, .chip:active { transform: translate(1px, 1px); }
+.btn.danger { color: var(--danger); }
+.input { border-radius: min(var(--btn-radius), 14px); }
+.input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.check { border: 2px solid var(--accent); border-radius: min(var(--btn-radius), 50%); background: transparent; }
+.check[aria-pressed='true'], .check.on { background: var(--accent); color: var(--on-accent); }
+.switch input:checked + i { background: var(--accent); }
+.pill { background: var(--soft); color: var(--accent-text); border-radius: var(--btn-radius); }
+.steps-nav a { background: var(--glass); border: var(--bw) var(--bs) var(--bcolor); border-radius: var(--btn-radius); }
+.steps-nav a.on { outline: 2px solid var(--accent); }
+details.suggest > summary, .area-h { color: var(--accent-text); }
+
+/* rings, bars, calendar */
+.ring, .big-ring { background: conic-gradient(var(--accent) calc(var(--p) * 1%), var(--line) 0); border-radius: min(var(--radius), 50%); }
+.ring span, .big-ring > div { background: var(--surface); border-radius: min(var(--radius), 50%); }
+.ring, .ring span, .big-ring, .big-ring > div { border-radius: 50%; }
+.challenge .bar, .mini-bar, .quiz .progress { background: var(--line); border-radius: var(--btn-radius); }
+.challenge .bar i, .mini-bar i, .quiz .progress i { background: var(--accent); border-radius: var(--btn-radius); }
+.heat i.done { background: var(--accent); }
+.heat i.due { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.mcell { background: color-mix(in srgb, var(--accent) calc(var(--s) * 55%), var(--glass-strong)); border: var(--bw) var(--bs) var(--bcolor); border-radius: min(var(--radius), 12px); }
+.ev { background: var(--soft); border: 1px solid var(--line); border-radius: min(var(--btn-radius), 10px); }
+
+/* lettering */
+h1, h2, .brand span, .area-h, .t-display, .alarm-time, .night-time, .stats3 b, .a-time {
+  font-family: var(--head-font); font-weight: var(--head-weight); text-shadow: var(--glow);
+}
+h1 { font-size: calc(2.15rem * var(--head-scale)); line-height: 1.12; }
+h2 { font-size: calc(1.35rem * var(--head-scale)); }
+.brand span { font-size: calc(1.15rem * var(--head-scale)); }
+.area-h { font-size: calc(1.2rem * var(--head-scale)); text-transform: none; letter-spacing: 0.02em; }
+.t-display { font-size: calc(3.2rem * var(--head-scale)); font-variant-numeric: lining-nums tabular-nums; }
+.stats3 b { font-size: calc(1.5rem * var(--head-scale)); }
+.lead, .quote { color: var(--muted); }
+h4.cat { letter-spacing: 0.14em; }
+
+/* alarm & night screens */
+.alarm-overlay { background: var(--accent); color: var(--on-accent); }
+.alarm-card .btn { color: var(--ink); background: var(--surface); }
+.alarm-card .btn.primary { background: var(--on-accent); color: var(--accent); }
+.toast, .update-bar { background: var(--ink); color: var(--bg); border-radius: var(--btn-radius); }

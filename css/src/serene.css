@@ -1,0 +1,174 @@
+/* =====================================================================
+   TRANQUIL SERENITY — the default look
+   Matte linen and sand, sage and misty blue, soft daylight, still water and
+   distant hills; an elegant serif for headings over a soft humanist sans;
+   lots of space and slow, gentle motion. Your chosen aesthetic tints it.
+   ===================================================================== */
+:root {
+  --serif: 'Serene Serif', 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  --radius: 22px;
+  --glass: color-mix(in srgb, var(--surface) 90%, transparent);
+  --glass-strong: color-mix(in srgb, var(--surface) 96%, transparent);
+  --glass-edge: color-mix(in srgb, var(--ink) 8%, transparent);
+  --line: color-mix(in srgb, var(--ink) 11%, transparent);
+  --soft: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  --halo: none;
+  --drop: 0 1px 2px rgba(46, 56, 54, 0.04), 0 10px 30px rgba(46, 56, 54, 0.06);
+  --muted: color-mix(in srgb, var(--ink) 72%, var(--surface));
+}
+:root[data-dark='1'] {
+  --drop: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.28);
+  --glass-edge: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+:root[data-font='serene'] {
+  --font: 'Aero Sans', 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ---------- backdrop: linen, morning mist, distant hills ---------- */
+body {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent2) 28%, var(--bg)) 0%, color-mix(in srgb, var(--accent2) 10%, var(--bg)) 30%, var(--bg) 60%) fixed;
+  background-color: var(--bg);
+  letter-spacing: 0.005em;
+}
+.aero-bg {
+  position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+  /* a whisper of linen grain */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .3 0 0 0 0 .28 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  background-size: 160px;
+}
+.aero-rays, .bubble, .bokeh { display: none; }
+.cloud {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w); height: calc(var(--w) * 0.22);
+  border-radius: 999px; background: color-mix(in srgb, var(--surface) 85%, transparent); filter: blur(22px); opacity: 0.55;
+  animation: drift 70s ease-in-out infinite alternate;
+}
+.cloud:nth-child(even) { animation-duration: 95s; animation-direction: alternate-reverse; }
+@keyframes drift { from { transform: translateX(-6vw); } to { transform: translateX(8vw); } }
+.aero-hill {
+  position: absolute; left: -5%; right: -5%; bottom: 0; height: 30vh; opacity: 0.32;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 55%, var(--accent2)), color-mix(in srgb, var(--accent) 35%, var(--bg)));
+  clip-path: polygon(0 62%, 9% 48%, 18% 55%, 30% 30%, 41% 46%, 52% 36%, 63% 52%, 74% 28%, 86% 44%, 100% 34%, 100% 100%, 0 100%);
+}
+.aero-hill::before {
+  content: ''; position: absolute; inset: 0; opacity: 0.9;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent2) 60%, var(--surface)), color-mix(in srgb, var(--accent2) 25%, var(--bg)));
+  clip-path: polygon(0 80%, 12% 66%, 24% 74%, 37% 58%, 49% 70%, 61% 60%, 72% 72%, 84% 62%, 100% 70%, 100% 100%, 0 100%);
+}
+.aero-hill::after { /* still water */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 18%;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 70%, transparent), var(--bg));
+}
+:root[data-dark='1'] .aero-hill { opacity: 0.22; }
+:root[data-dark='1'] .cloud { opacity: 0.06; }
+@media (prefers-reduced-motion: reduce) { .cloud { animation: none; } }
+
+/* ---------- calm, matte surfaces ---------- */
+.card, .item, details.group, .wcol, .weekgrid > div, dialog.sheet, .habits, .timeline, .anytime, .q, .month {
+  background: var(--glass);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--drop);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.habits, .timeline, .anytime, .q, .month { border-radius: var(--radius); padding: 8px 14px; }
+.q { padding: 16px 18px; margin: 14px 0; }
+.card { padding: 18px; }
+.item { border-radius: 18px; padding: 12px 14px; }
+details.group .item { background: var(--glass-strong); box-shadow: none; }
+dialog.sheet { background: var(--glass-strong); }
+.topbar {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  border-bottom: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+.tabbar {
+  left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); border-radius: 26px; padding: 6px;
+  background: var(--glass-strong); border: 1px solid var(--glass-edge); box-shadow: var(--drop);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+}
+.tabbar button { border-radius: 20px; }
+.tabbar button[aria-current='page'] { color: var(--accent); background: var(--soft); font-weight: 600; }
+:root[data-dark='1'] .tabbar button[aria-current='page'] { color: var(--ink); }
+body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+.view { padding-top: 10px; }
+.view > section { animation: settle 0.6s ease-out both; }
+@keyframes settle { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .view > section { animation: none; } }
+
+/* ---------- soft controls ---------- */
+.btn, .chip {
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  border: 1px solid var(--line);
+  box-shadow: none; font-weight: 500; letter-spacing: 0.02em;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+.btn:hover, .chip:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.btn.primary {
+  background: var(--accent); border-color: var(--accent); color: #fff; text-shadow: none;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.chip.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-dark='1'] :is(.btn.primary, .chip.on) { color: var(--bg); }
+.input { background: var(--glass-strong); border: 1px solid var(--line); border-radius: 14px; box-shadow: none; }
+.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent); }
+.check { border: 1.5px solid color-mix(in srgb, var(--accent) 65%, transparent); background: transparent; }
+.check[aria-pressed='true'], .check.on { background: var(--accent); border-color: var(--accent); color: #fff; text-shadow: none; }
+:root[data-dark='1'] :is(.check[aria-pressed='true'], .check.on) { color: var(--bg); }
+.switch input:checked + i { background: var(--accent); }
+.pill { background: var(--soft); }
+
+/* rings & bars: thin and quiet */
+.ring { width: 58px; height: 58px; background: conic-gradient(var(--accent) calc(var(--p) * 1%), var(--line) 0); }
+.ring span { width: 50px; height: 50px; background: var(--surface); font-family: var(--serif); font-size: 1.35rem; font-weight: 500; }
+.big-ring { background: conic-gradient(var(--accent) calc(var(--p) * 1%), var(--line) 0); }
+.big-ring > div { width: calc(100% - 8px); background: var(--surface); box-shadow: inset 0 0 40px color-mix(in srgb, var(--accent2) 14%, transparent); }
+.challenge .bar, .mini-bar, .quiz .progress { background: var(--line); height: 8px; }
+.challenge .bar i, .mini-bar i, .quiz .progress i { background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+.heat i.done { background: var(--accent); }
+.heat i.due { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.mcell { background: color-mix(in srgb, var(--accent) calc(var(--s) * 45%), var(--glass-strong)); border-color: var(--glass-edge); }
+.ev { background: var(--soft); border: 1px solid var(--glass-edge); }
+.ev.event { background: color-mix(in srgb, var(--accent2) 30%, var(--surface)); }
+.ev.skill { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); }
+.hour { border-bottom-color: var(--line); }
+.hour.now { background: color-mix(in srgb, var(--accent2) 16%, transparent); }
+.steps-nav a { background: var(--glass); border-color: var(--glass-edge); }
+.steps-nav a.on { outline: 1.5px solid var(--accent); }
+.aes { box-shadow: var(--drop); }
+
+/* ---------- lettering: serif headings, airy sans text ---------- */
+h1, h2, .brand span, .area-h, .t-display, .alarm-time, .night-time, .stats3 b, .lead, .quote, blockquote, .hero-emoji + h1 {
+  font-family: var(--serif);
+}
+h1 { font-weight: 500; font-size: 2.45rem; line-height: 1.08; letter-spacing: -0.005em; margin: 0.4rem 0 0.7rem; }
+h2 { font-weight: 500; font-size: 1.55rem; letter-spacing: 0; margin-top: 1.8rem; }
+h3 { font-weight: 600; font-size: 1rem; letter-spacing: 0.01em; }
+h4.cat { font-weight: 600; letter-spacing: 0.18em; font-size: 0.72rem; color: var(--muted); }
+.lead, .quote { font-style: italic; font-size: 1.22rem; line-height: 1.4; color: var(--muted); }
+.brand span { font-style: italic; font-weight: 500; font-size: 1.35rem; letter-spacing: 0.01em; }
+.area-h { font-style: italic; font-weight: 500; text-transform: none; letter-spacing: 0; font-size: 1.5rem; color: var(--accent); margin-top: 1.8rem; }
+:root[data-dark='1'] .area-h { color: var(--accent); }
+.t-display { font-weight: 400; font-size: clamp(3rem, 15vw, 4.2rem); font-variant-numeric: lining-nums tabular-nums; }
+.stats3 b { font-weight: 500; font-size: 1.7rem; font-variant-numeric: lining-nums; }
+.a-time { font-family: var(--serif); font-weight: 500; font-size: 1.75rem; font-variant-numeric: lining-nums; }
+.stat b { font-weight: 600; }
+blockquote { border-left-color: var(--accent2); font-size: 1.15rem; }
+
+/* ---------- alarm and night-stand screens ---------- */
+.alarm-overlay {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent2) 75%, #fff), color-mix(in srgb, var(--accent) 85%, #000));
+  color: #fff;
+}
+@keyframes flash { from { filter: none; } to { filter: brightness(1.15) saturate(1.2); } }
+.alarm-time { font-weight: 300; font-size: 5rem; }
+.alarm-card .btn { color: var(--ink); background: var(--surface); }
+.alarm-card .btn.primary { color: var(--accent); background: #fff; border-color: #fff; }
+.night { background: #10171a; color: #d9e2df; }
+.night-time { font-weight: 300; }
+.toast, .update-bar { background: var(--ink); color: var(--bg); border: 0; }
+.hint { background: var(--soft); border: 0; }
+
+/* Cormorant's old-style figures make 1 look like I: use lining figures, and the sans for small numbers. */
+h1, h2, .t-display, .alarm-time, .night-time, .stats3 b, .a-time { font-feature-settings: 'lnum' 1, 'pnum' 1; font-variant-numeric: lining-nums; }
+.t-display, .a-time, .alarm-time { font-feature-settings: 'lnum' 1, 'tnum' 1; }
+.ring span { font-family: var(--font); font-size: 1.1rem; font-weight: 600; }

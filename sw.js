@@ -1,11 +1,16 @@
 // Service worker: works offline, and installs updates only when you tap "Update".
 // It never touches your saved data (that lives in localStorage, not in this cache).
-const CACHE = 'just-do-it-v6';
+const CACHE = 'just-do-it-v9';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './css/styles.css',
+  './css/serene.css',
+  './css/aero.css',
+  './css/looks.css',
+  './fonts/CormorantGaramond-latin.woff2',
+  './fonts/CormorantGaramond-italic-latin.woff2',
   './fonts/SourceSans3-latin.woff2',
   './icons/icon.svg',
   './icons/icon-180.png',
@@ -13,6 +18,9 @@ const ASSETS = [
   './icons/icon-512.png',
   './js/app.js',
   './js/alarmcore.js',
+  './js/avatar.js',
+  './js/bubbles.js',
+  './js/looks.js',
   './js/backup.js',
   './js/data.js',
   './js/ics.js',
@@ -23,10 +31,12 @@ const ASSETS = [
   './js/util.js',
   './js/version.js',
   './js/views/alarms.js',
+  './js/views/gallery.js',
   './js/views/calendar.js',
   './js/views/files.js',
   './js/views/guide.js',
   './js/views/habits.js',
+  './js/views/me.js',
   './js/views/quiz.js',
   './js/views/settings.js',
   './js/views/sheet.js',

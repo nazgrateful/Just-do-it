@@ -1,8 +1,36 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.5.0';
+export const APP_VERSION = '1.8.0';
 
 export const RELEASES = [
+  {
+    version: '1.8.0',
+    date: '2026-10-10',
+    notes: [
+      'My world (🪞 at the top): a little avatar you can dress up (skin, eyes, hair, clothes, shoes, extras) in front of a home you design. Pick a place, sky, walls, floor and things, then save it as a picture',
+      '“Enjoy the process of creating yourself and your world.”',
+    ],
+  },
+  {
+    version: '1.7.0',
+    date: '2026-10-10',
+    notes: [
+      'Looks gallery (Settings → Browse all looks): 167 aesthetics from the Aesthetics Wiki and Pinterest. Each changes colours, lettering, boxes, buttons, shapes and background pattern',
+      'Make your own look: pick colours, heading and text fonts, shapes and pattern (text stays readable automatically)',
+      'Life map is now a bubble chart: life areas → parts → habits. Bubble shapes match your look (hearts, stars, flowers, hexagons, squares…)',
+      'Today groups habits by life area into one folded row each, with “Done all”',
+      'Every question is optional: skip any step, or skip the questions for now',
+    ],
+  },
+  {
+    version: '1.6.0',
+    date: '2026-10-10',
+    notes: [
+      'New Tranquil serenity look (now the default): matte linen and sand, sage and misty blue, soft mist drifting over distant hills',
+      'Elegant serif headings (Cormorant Garamond) over a soft humanist sans, more space, quieter controls and slow, gentle motion',
+      'Frutiger Aero is still there: pick it under Meaning → Identity → Show aesthetic ideas',
+    ],
+  },
   {
     version: '1.5.0',
     date: '2026-10-10',
