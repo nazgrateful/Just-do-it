@@ -1,6 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#b5643c"/>
-  <circle cx="256" cy="256" r="150" fill="none" stroke="#fbf4ec" stroke-width="28" opacity=".35"/>
-  <path d="M256 106 A150 150 0 1 1 115 205" fill="none" stroke="#fbf4ec" stroke-width="28" stroke-linecap="round"/>
-  <path d="M190 262 l48 48 l92 -104" fill="none" stroke="#fbf4ec" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7fd3ff"/><stop offset=".55" stop-color="#1e9be8"/><stop offset="1" stop-color="#0a5fa8"/>
+    </linearGradient>
+    <radialGradient id="orb" cx=".38" cy=".32" r=".75">
+      <stop offset="0" stop-color="#eaffd8"/><stop offset=".35" stop-color="#8fe05b"/><stop offset=".8" stop-color="#3a9e14"/><stop offset="1" stop-color="#25750a"/>
+    </radialGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#sky)"/>
+  <ellipse cx="256" cy="120" rx="230" ry="110" fill="url(#gloss)" opacity=".45"/>
+  <circle cx="256" cy="276" r="158" fill="url(#orb)"/>
+  <circle cx="256" cy="276" r="158" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="6"/>
+  <ellipse cx="256" cy="186" rx="112" ry="60" fill="url(#gloss)"/>
+  <path d="M184 282 l50 50 l96 -110" fill="none" stroke="#fff" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="408" cy="392" r="26" fill="#fff" fill-opacity=".25" stroke="#fff" stroke-opacity=".7" stroke-width="3"/>
+  <circle cx="440" cy="340" r="12" fill="#fff" fill-opacity=".25" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
 </svg>

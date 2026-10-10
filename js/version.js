@@ -1,8 +1,16 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.1.0';
 
 export const RELEASES = [
+  {
+    version: '1.1.0',
+    date: '2026-10-10',
+    notes: [
+      'New Frutiger Aero look: glass panels, glossy buttons, sky, light rays and floating bubbles',
+      'Frutiger Aero is now the default vibe; any other aesthetic you pick tints the glass',
+    ],
+  },
   {
     version: '1.0.0',
     date: '2026-10-10',

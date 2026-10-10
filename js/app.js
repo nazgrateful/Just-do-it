@@ -55,11 +55,12 @@ function render() {
 }
 
 function applyTheme() {
-  const a = AESTHETICS[state.answers.aesthetic] || AESTHETICS.cozy;
+  const a = AESTHETICS[state.answers.aesthetic] || AESTHETICS.aero;
   const pref = state.settings.theme;
   const dark = pref === 'dark' || (pref === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
   const r = document.documentElement.style;
   r.setProperty('--accent', dark ? a.accentDark : a.accent);
+  r.setProperty('--accent2', (dark ? a.accent2Dark : a.accent2) || (dark ? a.accentDark : a.accent));
   r.setProperty('--bg', dark ? a.dbg : a.bg);
   r.setProperty('--surface', dark ? a.dsurface : a.surface);
   r.setProperty('--ink', dark ? a.dink : a.ink);

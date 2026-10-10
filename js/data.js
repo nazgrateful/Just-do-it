@@ -1,8 +1,12 @@
 // Static content: the "who do you want to be" questionnaire, aesthetic palettes,
 // and the skill library used to suggest the 100 skills.
 
-/** Each aesthetic sets the app's colors and font so the app itself matches the vibe. */
+/**
+ * Each aesthetic sets the app's colors and font so the app itself matches the vibe.
+ * Frutiger Aero is the core look (glass, gloss, sky, bubbles); the others tint it.
+ */
 export const AESTHETICS = {
+  aero: { name: 'Frutiger Aero', emoji: '🫧', font: 'aero', accent: '#0a84d6', accent2: '#3fb618', accentDark: '#4fc3f7', accent2Dark: '#7ee05a', bg: '#dff3ff', surface: '#f5fbff', ink: '#06304f', dbg: '#03192e', dsurface: '#0a2f4d', dink: '#e3f4ff', words: 'glossy glass, blue skies, bubbles, clean water, green leaves, optimism' },
   minimal: { name: 'Clean minimalist', emoji: '◻️', font: 'sans', accent: '#2f2f2f', accentDark: '#e8e8e8', bg: '#fafafa', surface: '#ffffff', ink: '#1a1a1a', dbg: '#111111', dsurface: '#1c1c1c', dink: '#f2f2f2', words: 'white space, fewer things, better things' },
   cozy: { name: 'Cozy & warm', emoji: '🕯️', font: 'rounded', accent: '#b5643c', accentDark: '#e59a72', bg: '#fbf4ec', surface: '#fffaf4', ink: '#3b2a20', dbg: '#1d1612', dsurface: '#2a201a', dink: '#f6e8dc', words: 'soft light, blankets, warm drinks, slow mornings' },
   academia: { name: 'Dark academia', emoji: '📚', font: 'serif', accent: '#6b3a2a', accentDark: '#c99a6b', bg: '#f1ebe0', surface: '#f8f3ea', ink: '#2b211b', dbg: '#16120f', dsurface: '#221c17', dink: '#eadfcd', words: 'old books, wool, candlelit study, quiet ambition' },

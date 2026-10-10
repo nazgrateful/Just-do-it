@@ -6,6 +6,7 @@ A free, private, installable web app. No account, no ads, and nothing leaves you
 
 | | |
 |---|---|
+| 🫧 **Frutiger Aero look** | Glass panels, glossy aqua buttons, a sky background with light rays, a green horizon and floating bubbles, in both light and dark mode. It is the default vibe. Any other aesthetic you pick (cozy, dark academia, coastal…) tints the glass. |
 | ✨ **Design-your-life questions** | **Vibe:** your aesthetic (which re-colours the whole app), the words you want to describe you, and who you want to be in a year. **Home & cleaning:** the feel of your home, cleaning schedule style, days and time, chores, products, scent and tools. **Exercise:** days, time, length, workout types, where you train, your level. **Body:** the look you're after, what you want it to *do* (pull-ups, splits, 5 km…), how you want to feel. **Also:** food, morning and evening routines and sleep, style and self-care, mind, money and people, environment, relationships, skills and alarms. |
 | 🧩 **Your plan, built for you** | Your answers become habits: a cleaning schedule (zone-per-day, daily reset, weekly or monthly deep clean), workouts spread over your chosen days, routines, a daily practice block, alarms and relationship cards. |
 | ✓ **Habit tracker** | Daily checklist, streaks and best streaks, and a 12-week heatmap for every habit. |

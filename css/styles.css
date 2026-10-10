@@ -340,3 +340,199 @@ dialog::backdrop { background: #0007; }
   .cards2 { grid-template-columns: 1fr; }
   .stats3 b { font-size: 1.15rem; }
 }
+
+/* =====================================================================
+   FRUTIGER AERO — the core look
+   Glass panels, glossy pill buttons, sky gradients, light rays,
+   a grassy horizon and floating bubbles. Your chosen aesthetic tints it.
+   ===================================================================== */
+:root {
+  --accent2: var(--accent);
+  --glass: color-mix(in srgb, var(--surface) 58%, transparent);
+  --glass-strong: color-mix(in srgb, var(--surface) 82%, transparent);
+  --glass-edge: rgba(255, 255, 255, 0.75);
+  --shine: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.25) 48%, rgba(255, 255, 255, 0) 52%);
+  --drop: 0 8px 24px color-mix(in srgb, var(--accent) 18%, transparent), 0 1px 2px rgba(0, 40, 80, 0.12);
+  --radius: 20px;
+}
+:root[data-dark='1'] {
+  --glass: color-mix(in srgb, var(--surface) 55%, transparent);
+  --glass-strong: color-mix(in srgb, var(--surface) 85%, transparent);
+  --glass-edge: rgba(160, 220, 255, 0.28);
+  --shine: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.08) 48%, rgba(255, 255, 255, 0) 52%);
+  --drop: 0 8px 28px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(120, 200, 255, 0.08);
+}
+:root[data-font='aero'] {
+  --font: 'Frutiger', 'Frutiger LT Std', 'Segoe UI', 'Myriad Pro', 'Helvetica Neue', system-ui, sans-serif;
+}
+
+/* ---------- sky backdrop ---------- */
+body {
+  background:
+    radial-gradient(120% 60% at 15% -10%, rgba(255, 255, 255, 0.9), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 55%, var(--bg)) 0%, color-mix(in srgb, var(--accent) 18%, var(--bg)) 38%, var(--bg) 75%) fixed;
+  background-color: var(--bg);
+}
+:root[data-dark='1'] body {
+  background:
+    radial-gradient(90% 50% at 80% -5%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 65%),
+    radial-gradient(70% 40% at 10% 105%, color-mix(in srgb, var(--accent2) 30%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 25%, var(--bg)), var(--bg) 70%) fixed;
+  background-color: var(--bg);
+}
+.aero-bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.aero-rays {
+  position: absolute; inset: -40% -20% auto auto; width: 140vmax; height: 140vmax; opacity: 0.35;
+  background: repeating-conic-gradient(from 200deg at 85% 15%, rgba(255, 255, 255, 0.55) 0deg 4deg, transparent 4deg 13deg);
+  -webkit-mask: radial-gradient(circle at 85% 15%, #000 0, transparent 55%);
+  mask: radial-gradient(circle at 85% 15%, #000 0, transparent 55%);
+}
+.aero-hill {
+  position: absolute; left: -10%; right: -10%; bottom: -10vh; height: 24vh; border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background:
+    radial-gradient(60% 40% at 30% 10%, rgba(255, 255, 255, 0.55), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent2) 75%, #fff), var(--accent2) 45%, color-mix(in srgb, var(--accent2) 70%, #000));
+  opacity: 0.42;
+  filter: blur(0.5px);
+}
+:root[data-dark='1'] .aero-hill { opacity: 0.25; }
+:root[data-dark='1'] .aero-rays { opacity: 0.12; }
+.bubble {
+  position: absolute; left: var(--x); bottom: -120px; width: var(--s); height: var(--s); border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0 8%, rgba(255, 255, 255, 0) 22%),
+    radial-gradient(circle at 70% 78%, rgba(255, 255, 255, 0.5) 0 6%, rgba(255, 255, 255, 0) 18%),
+    radial-gradient(circle, color-mix(in srgb, var(--accent) 8%, transparent) 55%, color-mix(in srgb, var(--accent) 35%, rgba(255, 255, 255, 0.6)) 100%);
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.7);
+  animation: rise var(--d) linear var(--w) infinite;
+  opacity: 0.8;
+}
+@keyframes rise {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(18px, -60vh); }
+  100% { transform: translate(-10px, -125vh); }
+}
+@media (prefers-reduced-motion: reduce) { .bubble { animation: none; bottom: auto; top: calc(var(--x) * 0.9); } }
+
+/* ---------- glass surfaces ---------- */
+.card, .item, details.group, .wcol, .weekgrid > div, .aes, dialog.sheet {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 60%), var(--glass);
+  border: 1px solid var(--glass-edge);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), var(--drop);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
+}
+:root[data-dark='1'] :is(.card, .item, details.group, .wcol, .weekgrid > div, .aes, dialog.sheet) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 60%), var(--glass);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), var(--drop);
+}
+details.group .item { background: var(--glass-strong); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8); }
+dialog.sheet { background: var(--glass-strong); }
+.mood { background: linear-gradient(160deg, color-mix(in srgb, var(--a, var(--accent)) 22%, transparent), transparent), var(--glass); }
+.warn-card { background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent), color-mix(in srgb, var(--warn) 14%, var(--glass)); }
+
+.topbar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15)), color-mix(in srgb, var(--bg) 35%, transparent);
+  border-bottom: 1px solid var(--glass-edge);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--accent) 14%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+}
+.brand span { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8); }
+.brand img { border-radius: 9px; box-shadow: 0 2px 6px rgba(0, 60, 120, 0.3); }
+.tabbar {
+  left: 10px; right: 10px; bottom: calc(8px + env(safe-area-inset-bottom)); border-radius: 26px; padding: 5px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.25)), var(--glass);
+  border: 1px solid var(--glass-edge);
+  box-shadow: inset 0 1px 0 #fff, 0 10px 30px color-mix(in srgb, var(--accent) 25%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+:root[data-dark='1'] .tabbar, :root[data-dark='1'] .topbar { background: var(--glass); box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5); }
+.tabbar button { border-radius: 20px; }
+.tabbar button[aria-current='page'] {
+  color: #fff; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  background: var(--shine), linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, #fff), var(--accent));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 3px 10px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+body { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+
+/* ---------- glossy buttons, chips and orbs ---------- */
+.btn, .chip {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0.35) 51%, rgba(255, 255, 255, 0.7)), var(--glass);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, rgba(255, 255, 255, 0.8));
+  box-shadow: inset 0 1px 0 #fff, 0 2px 6px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+:root[data-dark='1'] :is(.btn, .chip) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0) 51%), var(--glass);
+  border-color: var(--glass-edge);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.btn.primary, .chip.on, .check[aria-pressed='true'], .check.on {
+  color: #fff; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+  background: var(--shine), linear-gradient(180deg, color-mix(in srgb, var(--accent) 65%, #fff) 0%, var(--accent) 55%, color-mix(in srgb, var(--accent) 80%, #000) 100%);
+  border-color: color-mix(in srgb, var(--accent) 75%, #000);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -2px 6px color-mix(in srgb, var(--accent2) 40%, transparent), 0 4px 12px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.btn:active, .chip:active { transform: translateY(1px); filter: brightness(0.97); }
+.btn.danger { color: var(--danger); }
+.icon-btn { border-radius: 50%; }
+.icon-btn:hover { background: rgba(255, 255, 255, 0.4); }
+.input {
+  background: linear-gradient(180deg, rgba(0, 60, 120, 0.06), transparent 40%), var(--glass-strong);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, rgba(255, 255, 255, 0.6));
+  box-shadow: inset 0 1px 3px rgba(0, 40, 80, 0.12);
+}
+.input:focus { outline: none; border-color: var(--accent); box-shadow: inset 0 1px 3px rgba(0, 40, 80, 0.12), 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+
+.check {
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, rgba(255, 255, 255, 0.8));
+  background: radial-gradient(circle at 35% 30%, #fff 0 18%, rgba(255, 255, 255, 0.4) 40%, transparent 70%), var(--glass);
+  box-shadow: inset 0 -2px 4px color-mix(in srgb, var(--accent) 20%, transparent), 0 1px 3px rgba(0, 40, 80, 0.15);
+}
+.check[aria-pressed='true'], .check.on {
+  background: radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.95) 0 14%, rgba(255, 255, 255, 0) 38%), radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--accent2) 85%, #fff), var(--accent2) 60%, color-mix(in srgb, var(--accent2) 70%, #000));
+  border-color: color-mix(in srgb, var(--accent2) 70%, #000);
+}
+.switch i { background: linear-gradient(180deg, rgba(0, 40, 80, 0.25), rgba(0, 40, 80, 0.1)); box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25); }
+.switch input:checked + i { background: var(--shine), linear-gradient(180deg, color-mix(in srgb, var(--accent2) 70%, #fff), var(--accent2)); }
+.switch i::after { background: radial-gradient(circle at 40% 30%, #fff, #e3eef7); }
+
+/* rings & progress bars look like liquid in glass */
+.ring, .big-ring { box-shadow: inset 0 2px 6px rgba(0, 40, 80, 0.2), 0 0 0 1px var(--glass-edge); }
+.ring { background: conic-gradient(var(--accent2), var(--accent) calc(var(--p) * 1%), rgba(255, 255, 255, 0.45) 0); }
+.big-ring { background: conic-gradient(var(--accent2), var(--accent) calc(var(--p) * 1%), rgba(255, 255, 255, 0.45) 0); }
+.ring span, .big-ring > div {
+  background: radial-gradient(circle at 40% 25%, rgba(255, 255, 255, 0.95), transparent 55%), var(--glass-strong);
+  box-shadow: 0 2px 8px rgba(0, 40, 80, 0.18);
+}
+.challenge .bar, .mini-bar, .quiz .progress { background: rgba(255, 255, 255, 0.45); box-shadow: inset 0 1px 3px rgba(0, 40, 80, 0.2); }
+.challenge .bar i, .mini-bar i, .quiz .progress i { background: var(--shine), linear-gradient(90deg, var(--accent2), var(--accent)); }
+.heat i.done { background: linear-gradient(180deg, color-mix(in srgb, var(--accent2) 60%, #fff), var(--accent2)); }
+.heat i.due { background: rgba(255, 255, 255, 0.55); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 15%, transparent); }
+.mcell { background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent), color-mix(in srgb, var(--accent2) calc(var(--s) * 60%), var(--glass)); border-color: var(--glass-edge); }
+.ev { background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15)), var(--soft); border: 1px solid var(--glass-edge); }
+.ev.event { background: var(--shine), color-mix(in srgb, var(--accent) 35%, var(--glass)); }
+.ev.skill { background: var(--shine), color-mix(in srgb, var(--accent2) 35%, var(--glass)); }
+.hour { border-bottom-color: rgba(255, 255, 255, 0.5); }
+.hour.now { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 22%, transparent), transparent); }
+
+/* headings get a soft glow */
+h1 { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85), 0 0 18px rgba(255, 255, 255, 0.6); }
+:root[data-dark='1'] h1 { text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 50%, transparent); }
+
+/* alarm screen: deep aqua glass */
+.alarm-overlay {
+  background: radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--accent) 60%, #fff), var(--accent) 45%, color-mix(in srgb, var(--accent) 60%, #002));
+  color: #fff;
+}
+@keyframes flash { from { filter: none; } to { filter: hue-rotate(-190deg) saturate(1.3); } }
+.alarm-time { text-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 255, 255, 0.6); }
+.alarm-card .btn { color: var(--ink); }
+.toast, .update-bar {
+  background: var(--shine), linear-gradient(180deg, color-mix(in srgb, var(--ink) 80%, var(--accent)), var(--ink));
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+.update-bar { bottom: calc(96px + env(safe-area-inset-bottom)); }
+.toast { bottom: calc(100px + env(safe-area-inset-bottom)); }
