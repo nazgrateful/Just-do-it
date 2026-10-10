@@ -1,8 +1,20 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.4.0';
+export const APP_VERSION = '1.5.0';
 
 export const RELEASES = [
+  {
+    version: '1.5.0',
+    date: '2026-10-10',
+    notes: [
+      'Reorganised around the map of a life: Body, Mind, Meaning (soul) first, then Relationships, Work & purpose, Money, Environment (cleaning lives here), Play & rest, Self-management',
+      'Each step of the questions covers one life area, with headings for its parts (e.g. Body → Sleep, Food, Movement, Grooming, Medical care, Recovery)',
+      'New questions for attention, emotions, thinking, values, faith, reflection, family, partner, friends, community, career, money, digital space, life admin, play and discipline',
+      'Today and Habits are sorted in the same order; new Life map tab shows life area → part → your habits',
+      'Monthly and yearly things (like check-ups or visiting family) go on your calendar instead of the daily list',
+      'Your existing habits were moved into the new areas automatically; nothing was removed',
+    ],
+  },
   {
     version: '1.4.0',
     date: '2026-10-10',

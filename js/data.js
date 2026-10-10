@@ -23,125 +23,177 @@ export const AESTHETICS = {
 
 const yesNo = ['Important (breaks through Do Not Disturb)', 'Normal reminder', 'No alarm'];
 
+/**
+ * The map of a human life: big domain → area → daily habits.
+ * Order = priority: body, mind and soul first, then relationships, then the rest.
+ * Habits the plan creates are filed under the same domain and area.
+ */
+export const DOMAINS = [
+  { name: 'Body', emoji: '💪', areas: ['Sleep', 'Food', 'Movement', 'Hygiene & grooming', 'Medical care', 'Recovery'] },
+  { name: 'Mind', emoji: '🧠', areas: ['Attention', 'Emotions', 'Thinking', 'Learning', 'Mental rest'] },
+  { name: 'Meaning', emoji: '🕊️', areas: ['Identity', 'Values', 'Faith & philosophy', 'Reflection'] },
+  { name: 'Relationships', emoji: '💞', areas: ['Family', 'Partner', 'Friends', 'Community', 'Communication'] },
+  { name: 'Work & purpose', emoji: '🎯', areas: ['Career', 'Skills', 'Productivity', 'Creative work', 'Contribution'] },
+  { name: 'Money', emoji: '💰', areas: ['Earning', 'Spending', 'Saving', 'Growing', 'Protecting'] },
+  { name: 'Environment', emoji: '🏡', areas: ['Where I live', 'Home & cleaning', 'Belongings', 'Digital space', 'Life admin', 'Surroundings'] },
+  { name: 'Play & rest', emoji: '🎈', areas: ['Hobbies', 'Entertainment', 'Adventure', 'Celebration'] },
+  { name: 'Self-management', emoji: '🧭', areas: ['Time', 'Discipline', 'Habit mechanics', 'Choices', 'Alarms'] },
+];
+export const DOMAIN_NAMES = [...DOMAINS.map((d) => d.name), 'Other'];
+export const domainOrder = (name) => {
+  const i = DOMAIN_NAMES.indexOf(name);
+  return i < 0 ? DOMAIN_NAMES.length : i;
+};
+
+// `habit: true` = each picked answer becomes a habit in that area (see plan.js).
+const H = (id, area, q, options) => ({ id, area, q, type: 'multi', habit: true, options });
+
 export const SECTIONS = [
   {
-    id: 'vibe', emoji: '✨', title: 'Your overall vibe',
-    intro: 'This sets the look of the whole app and the feel of your plan.',
+    id: 'body', emoji: '💪', title: 'Body',
+    intro: 'Sleep, food, movement, grooming, medical care and recovery: the base everything else stands on.',
     questions: [
-      { id: 'aesthetic', q: 'Which aesthetic feels most like the life you want?', type: 'aesthetic' },
-      { id: 'words', q: 'Pick the words you want people to use about you in a year.', type: 'multi', options: ['Calm', 'Disciplined', 'Playful', 'Elegant', 'Adventurous', 'Creative', 'Grounded', 'Powerful', 'Soft', 'Focused', 'Free', 'Capable', 'Kind', 'Healthy'] },
-      { id: 'why', q: 'Who do you want to be 365 days from now?', type: 'text', placeholder: 'e.g. Someone who keeps promises to myself, lives in a calm home and can do 100 new things.' },
+      { id: 'wake', area: 'Sleep', q: 'What time do you want to wake up?', type: 'time', default: '06:30' },
+      { id: 'bed', area: 'Sleep', q: 'What time do you want to be in bed?', type: 'time', default: '22:30' },
+      H('windDown', 'Sleep', 'What helps you wind down at night?', ['Dim the lights', 'No screens 1h before bed', 'Read', 'Herbal tea', 'Stretch', 'Shower', 'Same bedtime every night']),
+      { id: 'naps', area: 'Sleep', q: 'Naps?', type: 'single', options: ['No naps', 'Power nap (20 min)', 'Only when I really need one'] },
+      { id: 'eatVibe', area: 'Food', q: 'What is your food vibe?', type: 'single', options: ['Clean & simple', 'Mediterranean', 'High protein', 'Plant-based', 'Intuitive, no rules', 'Comfort food made healthier'] },
+      H('foodHabits', 'Food', 'What, when and how much do you want to eat and drink?', ['Drink 2 L of water', 'A vegetable with every meal', 'Cook at home', 'Meal prep on Sunday', 'Protein at breakfast', 'Less sugar', 'No eating after 8pm', 'Eat slowly, stop at 80% full', 'Less caffeine', 'No caffeine after 2pm', 'Less alcohol']),
+      { id: 'fitDays', area: 'Movement', q: 'Which days do you want to work out?', type: 'days', default: [1, 3, 5] },
+      { id: 'fitTime', area: 'Movement', q: 'What time of day?', type: 'single', options: ['Early morning', 'Morning', 'Lunch', 'Afternoon', 'Evening'] },
+      { id: 'fitLength', area: 'Movement', q: 'How long per session?', type: 'single', options: ['15 min', '30 min', '45 min', '60 min', '90 min'] },
+      { id: 'workouts', area: 'Movement', q: 'Which workouts do you enjoy (or want to try)?', type: 'multi', options: ['Strength / weights', 'Pilates', 'Yoga', 'Running', 'Walking', 'HIIT', 'Calisthenics', 'Cycling', 'Swimming', 'Dance', 'Boxing / martial arts', 'Climbing', 'Hiking', 'Mobility & stretching', 'Team sports'] },
+      { id: 'where', area: 'Movement', q: 'Where will you train?', type: 'single', options: ['Gym', 'Home', 'Outdoors', 'Studio / classes', 'A mix'] },
+      { id: 'level', area: 'Movement', q: 'Where are you starting from?', type: 'single', options: ['Brand new', 'Getting back into it', 'Fairly consistent', 'Advanced'] },
+      H('moveHabits', 'Movement', 'Movement through the day', ['Walk 8,000 steps', 'Posture check', 'Stretch 10 min', 'Take the stairs', 'Stand up every hour']),
+      { id: 'bodyLook', area: 'Movement', q: 'What kind of body are you working toward?', type: 'multi', options: ['Lean & toned', 'Athletic', 'Strong & muscular', 'Long & graceful (dancer)', 'Curvy & strong', 'Healthy & energetic, no look goal'] },
+      { id: 'abilities', area: 'Movement', q: 'What do you want your body to be able to do?', type: 'multi', options: ['Do 1 pull-up', 'Do 10 pull-ups', 'Do 20 push-ups', 'Run 5 km', 'Run 10 km', 'Run a half marathon', 'Touch my toes', 'Full splits', 'Hold a handstand', 'Do a cartwheel', 'Plank for 2 minutes', 'Squat my bodyweight', 'Deadlift my bodyweight', 'Hike a mountain', 'Swim 1 km', 'Climb stairs without getting winded', 'Carry all groceries in one trip', 'Do a muscle-up'] },
+      { id: 'feel', area: 'Movement', q: 'How do you want to feel in your body?', type: 'multi', options: ['More energy', 'Better sleep', 'Less pain', 'Better posture', 'More confident', 'Less stressed'] },
+      { id: 'styleVibe', area: 'Hygiene & grooming', q: 'What is your style vibe?', type: 'single', options: ['Minimal capsule', 'Classic & polished', 'Streetwear', 'Boho', 'Sporty', 'Romantic', 'Edgy', 'Old money', 'Whatever is comfy'] },
+      H('selfcare', 'Hygiene & grooming', 'Washing, teeth, skin, hair and clothes', ['Skincare routine', 'Floss', 'Shower routine', 'Haircare day', 'Nails', 'Plan outfits', 'Clothes ready the night before', 'Weekly bath / reset night']),
+      H('medical', 'Medical care', 'Check-ups, medication and looking after illness', ['Take medication on time', 'Take vitamins', 'Yearly check-up', 'Dentist every 6 months', 'Eye test every 2 years', 'Track my health', 'Rest properly when ill']),
+      H('recovery', 'Recovery', 'Rest days, breathing, outdoors and sunlight', ['Rest day each week', 'Breathing exercise', 'Time outdoors', 'Morning sunlight', 'Foam roll / massage', 'Hot bath or sauna']),
     ],
   },
   {
-    id: 'home', emoji: '🧽', title: 'Home & cleaning',
-    intro: 'Your home should look and feel the way you want, without cleaning taking over your life.',
+    id: 'mind', emoji: '🧠', title: 'Mind',
+    intro: 'Attention, emotions, thinking, learning and mental rest.',
     questions: [
-      { id: 'homeVibe', q: 'How do you want your home to feel?', type: 'single', options: ['Spotless & minimal', 'Lived-in & cozy', 'Organized but relaxed', 'Plant-filled jungle', 'Gallery-like & curated', 'Hotel-fresh'] },
-      { id: 'cleanStyle', q: 'What kind of cleaning schedule suits you?', type: 'single', options: ['15-minute daily reset', 'One zone per day', 'One big weekly clean', 'Little bits as I go + monthly deep clean'] },
-      { id: 'cleanDays', q: 'Which day(s) for the bigger clean?', type: 'days', default: [6] },
-      { id: 'cleanTime', q: 'When do you like to clean?', type: 'single', options: ['Morning', 'Lunch break', 'After work', 'Evening'] },
-      { id: 'chores', q: 'Which chores should be on your schedule?', type: 'multi', options: ['Make bed', 'Dishes', 'Kitchen wipe-down', 'Laundry', 'Bathroom', 'Floors', 'Dusting', 'Trash & recycling', 'Change sheets', 'Fridge clean-out', 'Declutter one thing', 'Water plants', 'Windows & mirrors', 'Car'] },
-      { id: 'products', q: 'What do you like to clean with?', type: 'multi', options: ['Natural DIY (vinegar, baking soda, castile soap)', 'Eco refill brands', 'Classic store brands', 'Fragrance-free / sensitive skin', 'Disinfecting (bleach, antibacterial)', 'Whatever is cheapest'] },
-      { id: 'scent', q: 'What should your home smell like?', type: 'single', options: ['Fresh citrus', 'Lavender & herbal', 'Eucalyptus & mint', 'Clean linen', 'Warm wood & vanilla', 'Nothing / unscented'] },
-      { id: 'tools', q: 'Which tools do you have or want?', type: 'multi', options: ['Microfiber cloths', 'Steam mop', 'Robot vacuum', 'Cordless vacuum', 'Scrub brushes', 'Squeegee', 'Handheld steamer', 'Label maker & bins', 'Caddy for supplies'] },
+      H('attention', 'Attention', 'Focus and phone use', ['No phone for the first hour', 'Screen-time limit', 'One task at a time', 'Deep-work block', 'No phone at meals', 'Sit with boredom 10 min (no phone)']),
+      H('emotions', 'Emotions', 'Noticing, calming and expressing feelings', ['Name my feelings', 'Mood check-in', 'Calm-down breathing when stressed', 'Talk it out with someone', 'Stress walk']),
+      H('thinking', 'Thinking', 'Self-talk, beliefs, problems and decisions', ['Kind self-talk', 'Question a negative thought', 'Write problems down', 'Sleep on big decisions']),
+      H('learning', 'Learning', 'Reading, studying and curiosity', ['Read daily', 'Study a topic I care about', 'Podcast or audiobook', 'Learn a language daily', 'Ask more questions']),
+      H('mindHabits', 'Mental rest', 'Quiet time for your mind', ['Meditate', 'Journal', 'Quiet time', 'Daydream walk', 'Therapy / self check-in']),
     ],
   },
   {
-    id: 'fitness', emoji: '🏋️', title: 'Exercise',
-    intro: 'We will build your workouts into your week and your calendar.',
+    id: 'meaning', emoji: '🕊️', title: 'Meaning & soul',
+    intro: 'Who you are, what matters to you, and the look and feel you want your life (and this app) to have.',
     questions: [
-      { id: 'fitDays', q: 'Which days do you want to work out?', type: 'days', default: [1, 3, 5] },
-      { id: 'fitTime', q: 'What time of day?', type: 'single', options: ['Early morning', 'Morning', 'Lunch', 'Afternoon', 'Evening'] },
-      { id: 'fitLength', q: 'How long per session?', type: 'single', options: ['15 min', '30 min', '45 min', '60 min', '90 min'] },
-      { id: 'workouts', q: 'Which kinds of workouts do you enjoy (or want to try)?', type: 'multi', options: ['Strength / weights', 'Pilates', 'Yoga', 'Running', 'Walking', 'HIIT', 'Calisthenics', 'Cycling', 'Swimming', 'Dance', 'Boxing / martial arts', 'Climbing', 'Hiking', 'Mobility & stretching', 'Team sports'] },
-      { id: 'where', q: 'Where will you train?', type: 'single', options: ['Gym', 'Home', 'Outdoors', 'Studio / classes', 'A mix'] },
-      { id: 'level', q: 'Where are you starting from?', type: 'single', options: ['Brand new', 'Getting back into it', 'Fairly consistent', 'Advanced'] },
-    ],
-  },
-  {
-    id: 'body', emoji: '💪', title: 'Your body',
-    intro: 'What you want your body to look like, and more importantly what you want it to be able to do.',
-    questions: [
-      { id: 'bodyLook', q: 'What kind of body are you working toward?', type: 'multi', options: ['Lean & toned', 'Athletic', 'Strong & muscular', 'Long & graceful (dancer)', 'Curvy & strong', 'Healthy & energetic, no look goal'] },
-      { id: 'abilities', q: 'What do you want your body to be able to do?', type: 'multi', options: ['Do 1 pull-up', 'Do 10 pull-ups', 'Do 20 push-ups', 'Run 5 km', 'Run 10 km', 'Run a half marathon', 'Touch my toes', 'Full splits', 'Hold a handstand', 'Do a cartwheel', 'Plank for 2 minutes', 'Squat my bodyweight', 'Deadlift my bodyweight', 'Hike a mountain', 'Swim 1 km', 'Climb stairs without getting winded', 'Carry all groceries in one trip', 'Do a muscle-up'] },
-      { id: 'feel', q: 'How do you want to feel in your body?', type: 'multi', options: ['More energy', 'Better sleep', 'Less pain', 'Better posture', 'More confident', 'Less stressed'] },
-    ],
-  },
-  {
-    id: 'food', emoji: '🥗', title: 'Food',
-    questions: [
-      { id: 'eatVibe', q: 'What is your food vibe?', type: 'single', options: ['Clean & simple', 'Mediterranean', 'High protein', 'Plant-based', 'Intuitive, no rules', 'Comfort food made healthier'] },
-      { id: 'foodHabits', q: 'Which food habits do you want?', type: 'multi', options: ['Drink 2 L of water', 'A vegetable with every meal', 'Cook at home', 'Meal prep on Sunday', 'Protein at breakfast', 'Less sugar', 'No eating after 8pm', 'Take vitamins', 'Less caffeine', 'Less alcohol'] },
-    ],
-  },
-  {
-    id: 'routine', emoji: '🌅', title: 'Mornings, evenings & sleep',
-    questions: [
-      { id: 'wake', q: 'What time do you want to wake up?', type: 'time', default: '06:30' },
-      { id: 'bed', q: 'What time do you want to be in bed?', type: 'time', default: '22:30' },
-      { id: 'morning', q: 'What should your morning routine include?', type: 'multi', options: ['Glass of water', 'Make bed', 'Stretch', 'Meditate', 'Journal', 'Read 10 pages', 'Skincare', 'Sunlight walk', 'No phone for the first hour', 'Cold shower', 'Plan the day'] },
-      { id: 'evening', q: 'And your evening routine?', type: 'multi', options: ['10-minute tidy-up', 'Lay out tomorrow\'s clothes', 'Skincare', 'Read', 'Gratitude list', 'No screens 1h before bed', 'Plan tomorrow', 'Stretch'] },
-    ],
-  },
-  {
-    id: 'style', emoji: '👗', title: 'Style & self-care',
-    questions: [
-      { id: 'styleVibe', q: 'What is your style vibe?', type: 'single', options: ['Minimal capsule', 'Classic & polished', 'Streetwear', 'Boho', 'Sporty', 'Romantic', 'Edgy', 'Old money', 'Whatever is comfy'] },
-      { id: 'selfcare', q: 'Which self-care habits do you want?', type: 'multi', options: ['Skincare routine', 'Haircare day', 'Nails', 'Weekly bath / reset night', 'Plan outfits', 'Posture check', 'Floss'] },
-    ],
-  },
-  {
-    id: 'mind', emoji: '🧠', title: 'Mind, money & people',
-    questions: [
-      { id: 'mindHabits', q: 'Mind', type: 'multi', options: ['Meditate', 'Journal', 'Read daily', 'Limit social media', 'Pray / spiritual practice', 'Gratitude', 'Therapy / self check-in', 'Time outside'] },
-      { id: 'money', q: 'Money', type: 'multi', options: ['Track spending', 'Save every week', 'No-spend days', 'Budget review on Sunday', 'Invest monthly', 'Learn about investing'] },
-      { id: 'people', q: 'People', type: 'multi', options: ['Call family weekly', 'See a friend weekly', 'Date night', 'Meet new people', 'Volunteer', 'Say no more often'] },
-    ],
-  },
-  {
-    id: 'environment', emoji: '🏡', title: 'Your environment',
-    intro: 'How and where you want to live. Later you can list everything you own in Life → Environment.',
-    questions: [
-      { id: 'livePlace', q: 'Where do you want to live?', type: 'multi', options: ['Big city', 'Small town', 'Suburbs', 'Countryside', 'By the sea', 'In the mountains', 'Abroad', 'On the road (van / travel)', 'Where I am now'] },
-      { id: 'homeType', q: 'What kind of home?', type: 'single', options: ['Studio', 'Apartment', 'House', 'House with a garden', 'Farmhouse / land', 'Tiny home', 'Shared house'] },
-      { id: 'liveWith', q: 'Who do you want to live with?', type: 'multi', options: ['Alone', 'Partner', 'Kids', 'Family', 'Friends / roommates', 'Pets'] },
-      { id: 'mustHaves', q: 'Must-haves in your space', type: 'multi', options: ['Lots of natural light', 'Plants', 'A home gym corner', 'A desk / office', 'A reading nook', 'A creative studio', 'A big kitchen', 'Outdoor space', 'Quiet', 'Storage for everything', 'A guest room', 'Walkable to shops'] },
-      { id: 'ownStyle', q: 'How do you feel about stuff?', type: 'single', options: ['Own as little as possible', 'Few things, high quality', 'Curated collections I love', 'Cozy abundance', 'Haven\'t thought about it'] },
-      { id: 'dreamHome', q: 'Describe your dream home in a few words', type: 'text', placeholder: 'e.g. Bright apartment near the park, white walls, wood floors, plants everywhere, a desk by the window.' },
+      { id: 'aesthetic', area: 'Identity', q: 'What aesthetic and vibe do you want your life to have?', type: 'aesthetic' },
+      { id: 'words', area: 'Identity', q: 'Which words do you want people to use about you in a year?', type: 'multi', options: ['Calm', 'Disciplined', 'Playful', 'Elegant', 'Adventurous', 'Creative', 'Grounded', 'Powerful', 'Soft', 'Focused', 'Free', 'Capable', 'Kind', 'Healthy'] },
+      { id: 'why', area: 'Identity', q: 'Who do you want to be 365 days from now?', type: 'text', placeholder: 'e.g. Someone who keeps promises to myself, lives in a calm home and can do 100 new things.' },
+      { id: 'values', area: 'Values', q: 'What matters most to you?', type: 'multi', options: ['Honesty', 'Kindness', 'Family', 'Health', 'Freedom', 'Growth', 'Faith', 'Courage', 'Creativity', 'Loyalty', 'Adventure', 'Peace', 'Justice', 'Excellence'] },
+      { id: 'wontDo', area: 'Values', q: "What won't you do, no matter what?", type: 'text', placeholder: 'e.g. Lie to people I love, stay where I am disrespected, trade my health for money.' },
+      H('faith', 'Faith & philosophy', 'Prayer, ritual, study and worship', ['Prayer', 'Meditation', 'Read scripture or philosophy', 'Weekly worship or service', 'A daily ritual', 'Time in nature as practice']),
+      H('reflection', 'Reflection', 'Reviewing your days and your life', ['Review my day', 'Gratitude', 'Weekly goals review', 'Monthly reflection', 'Yearly letter to myself', 'Remember life is short']),
     ],
   },
   {
     id: 'relationships', emoji: '💞', title: 'Relationships',
-    intro: 'You can add each person and your own boundaries in Life → People.',
+    intro: 'Family, partner, friends, community, and how you communicate. You can add each person and your boundaries in Life → People.',
     questions: [
-      { id: 'relTypes', q: 'Which relationships are in your life right now?', type: 'multi', options: ['Partner', 'Parents', 'Siblings', 'Children', 'Close friends', 'Friends', 'Coworkers', 'Boss', 'Roommates', 'Neighbours', 'Ex', 'Mentor', 'Community / faith group'] },
-      { id: 'relBehave', q: 'How do you want to show up in your relationships?', type: 'multi', options: ['Honest', 'Patient', 'Present (phone down)', 'Reliable', 'Generous', 'Playful', 'Supportive', 'Calm in conflict', 'Good listener', 'Affectionate', 'Independent'] },
-      { id: 'relTreated', q: 'How do you want to be treated?', type: 'multi', options: ['With respect', 'Honestly', 'Kindly', 'As an equal', 'With my time respected', 'Supported in my goals', 'Without judgement', 'With affection', 'With space when I need it'] },
-      { id: 'relBoundaries', q: 'Boundaries you want to set', type: 'multi', options: ['No work messages after hours', 'No yelling', 'I can say no without explaining', 'My money is my decision', 'Ask before borrowing', 'Phone-free meals', 'Time alone every day', 'No gossip about me', 'Visits need notice', 'I leave when I feel disrespected'] },
+      { id: 'relTypes', area: 'Family', q: 'Which relationships are in your life right now?', type: 'multi', options: ['Partner', 'Parents', 'Siblings', 'Children', 'Grandparents', 'Close friends', 'Friends', 'Coworkers', 'Boss', 'Roommates', 'Neighbours', 'Ex', 'Mentor', 'Community / faith group'] },
+      H('family', 'Family', 'Family habits', ['Call family weekly', 'Visit parents monthly', 'Family dinner', 'Keep our traditions', 'Check in on elders']),
+      H('partner', 'Partner', 'Partner habits', ['Daily affection', 'Date night', 'Weekly check-in talk', 'Plan our future together', 'Repair after an argument']),
+      H('friends', 'Friends', 'Friend habits', ['Message a friend', 'See a friend weekly', 'Show up for big moments', 'Meet new people']),
+      H('community', 'Community', 'Neighbours, groups, coworkers and strangers', ['Know my neighbours', 'Join a group or club', 'Volunteer', 'Kindness to a stranger']),
+      { id: 'relBehave', area: 'Communication', q: 'How do you want to show up in your relationships?', type: 'multi', options: ['Honest', 'Patient', 'Present (phone down)', 'Reliable', 'Generous', 'Playful', 'Supportive', 'Calm in conflict', 'Good listener', 'Affectionate', 'Independent'] },
+      { id: 'relTreated', area: 'Communication', q: 'How do you want to be treated?', type: 'multi', options: ['With respect', 'Honestly', 'Kindly', 'As an equal', 'With my time respected', 'Supported in my goals', 'Without judgement', 'With affection', 'With space when I need it'] },
+      { id: 'relBoundaries', area: 'Communication', q: 'Boundaries you want to set', type: 'multi', options: ['No work messages after hours', 'No yelling', 'I can say no without explaining', 'My money is my decision', 'Ask before borrowing', 'Phone-free meals', 'Time alone every day', 'No gossip about me', 'Visits need notice', 'I leave when I feel disrespected'] },
+      H('communication', 'Communication', 'Communication habits', ['Listen without interrupting', 'Say no kindly', 'Apologise properly', 'Honest but kind', 'Say thank you more']),
     ],
   },
   {
-    id: 'skills', emoji: '🎯', title: '100 skills in 365 days',
-    intro: 'That is about one new skill every 3–4 days. Write your own list first; open the ideas if you get stuck. You can change it any time.',
+    id: 'work', emoji: '🎯', title: 'Work & purpose',
+    intro: 'Career, skills, productivity, creative work and contribution. This is where the 100 skills in 365 days live: about one new skill every 3–4 days.',
     questions: [
-      { id: 'skillAreas', q: 'Which areas do you want to learn in?', type: 'multi', options: null /* filled from SKILL_LIBRARY */ },
-      { id: 'skillPicks', q: 'Which skills do you want to learn? Aim for 100!', type: 'skills' },
-      { id: 'dailyMinutes', q: 'How much time a day can you give to learning?', type: 'single', options: ['15 min', '30 min', '45 min', '60 min', '90 min'] },
-      { id: 'learnTime', q: 'When will you practise?', type: 'single', options: ['Morning', 'Lunch', 'Evening', 'Weekend blocks'] },
+      { id: 'career', area: 'Career', q: 'Where do you want your work to be heading?', type: 'text', placeholder: 'e.g. Start my own studio, get promoted, finish my degree, change careers.' },
+      H('careerHabits', 'Career', 'Career habits', ['Weekly career review', 'Network monthly', 'Update my CV', 'Study for a qualification']),
+      { id: 'skillAreas', area: 'Skills', q: 'Which areas do you want to learn in?', type: 'multi', options: null /* filled from SKILL_LIBRARY */ },
+      { id: 'skillPicks', area: 'Skills', q: 'Which skills do you want to learn? Aim for 100!', type: 'skills' },
+      { id: 'dailyMinutes', area: 'Skills', q: 'How much time a day can you give to learning?', type: 'single', options: ['15 min', '30 min', '45 min', '60 min', '90 min'] },
+      { id: 'learnTime', area: 'Skills', q: 'When will you practise?', type: 'single', options: ['Morning', 'Lunch', 'Evening', 'Weekend blocks'] },
+      H('productivity', 'Productivity', 'Planning, priorities, starting and finishing', ['Plan tomorrow tonight', 'Top 3 priorities', 'Time-block my day', 'Weekly planning', 'Finish before starting something new']),
+      H('creative', 'Creative work', 'Making, sharing and improving things', ['Make something weekly', 'Share my work', 'Daily sketch or writing']),
+      H('contribution', 'Contribution', 'Helping, teaching and legacy', ['Help one person a day', 'Teach or mentor someone', 'Volunteer monthly', 'Donate regularly']),
     ],
   },
   {
-    id: 'alarms', emoji: '⏰', title: 'Alarms',
-    intro: 'Important alarms are designed to break through Do Not Disturb. The app will show you how to set that up on your phone.',
+    id: 'money', emoji: '💰', title: 'Money',
+    intro: 'Earning, spending, saving, growing and protecting.',
     questions: [
-      { id: 'alarmWake', q: 'Wake-up alarm?', type: 'single', options: yesNo },
-      { id: 'alarmWorkout', q: 'Workout alarm?', type: 'single', options: yesNo },
-      { id: 'alarmLearn', q: 'Daily skill-practice alarm?', type: 'single', options: yesNo },
-      { id: 'alarmBed', q: 'Wind-down / bedtime alarm?', type: 'single', options: yesNo },
+      H('earning', 'Earning', 'Earning', ['Build a side income', 'Ask for a raise', 'Build valuable skills']),
+      H('spending', 'Spending', 'Spending', ['Track spending', 'Budget review on Sunday', 'No-spend days', '24-hour rule before buying wants']),
+      H('saving', 'Saving', 'Saving', ['Save every week', 'Build an emergency fund', 'Save for a goal']),
+      H('growing', 'Growing', 'Growing', ['Invest monthly', 'Learn about investing']),
+      H('protecting', 'Protecting', 'Protecting', ['Pay down debt', 'Review insurance yearly', 'File taxes early', 'Keep money records organised']),
+    ],
+  },
+  {
+    id: 'environment', emoji: '🏡', title: 'Environment',
+    intro: 'Where you live, your home and cleaning, your belongings, digital space, life admin and surroundings. List everything you own in Life → Environment.',
+    questions: [
+      { id: 'livePlace', area: 'Where I live', q: 'Where do you want to live?', type: 'multi', options: ['Big city', 'Small town', 'Suburbs', 'Countryside', 'By the sea', 'In the mountains', 'Abroad', 'On the road (van / travel)', 'Where I am now'] },
+      { id: 'homeType', area: 'Where I live', q: 'What kind of home?', type: 'single', options: ['Studio', 'Apartment', 'House', 'House with a garden', 'Farmhouse / land', 'Tiny home', 'Shared house'] },
+      { id: 'liveWith', area: 'Where I live', q: 'Who do you want to live with?', type: 'multi', options: ['Alone', 'Partner', 'Kids', 'Family', 'Friends / roommates', 'Pets'] },
+      { id: 'mustHaves', area: 'Where I live', q: 'Must-haves in your space', type: 'multi', options: ['Lots of natural light', 'Plants', 'A home gym corner', 'A desk / office', 'A reading nook', 'A creative studio', 'A big kitchen', 'Outdoor space', 'Quiet', 'Storage for everything', 'A guest room', 'Walkable to shops'] },
+      { id: 'dreamHome', area: 'Where I live', q: 'Describe your dream home in a few words', type: 'text', placeholder: 'e.g. Bright apartment near the park, white walls, wood floors, plants everywhere, a desk by the window.' },
+      { id: 'homeVibe', area: 'Home & cleaning', q: 'How do you want your home to feel?', type: 'single', options: ['Spotless & minimal', 'Lived-in & cozy', 'Organized but relaxed', 'Plant-filled jungle', 'Gallery-like & curated', 'Hotel-fresh'] },
+      { id: 'cleanStyle', area: 'Home & cleaning', q: 'What kind of cleaning schedule suits you?', type: 'single', options: ['15-minute daily reset', 'One zone per day', 'One big weekly clean', 'Little bits as I go + monthly deep clean'] },
+      { id: 'cleanDays', area: 'Home & cleaning', q: 'Which day(s) for the bigger clean?', type: 'days', default: [6] },
+      { id: 'cleanTime', area: 'Home & cleaning', q: 'When do you like to clean?', type: 'single', options: ['Morning', 'Lunch break', 'After work', 'Evening'] },
+      { id: 'chores', area: 'Home & cleaning', q: 'Which chores should be on your schedule?', type: 'multi', options: ['Make bed', 'Dishes', 'Kitchen wipe-down', 'Laundry', 'Bathroom', 'Floors', 'Dusting', 'Trash & recycling', 'Change sheets', 'Fridge clean-out', 'Declutter one thing', 'Water plants', 'Windows & mirrors', 'Car', 'Small repairs'] },
+      { id: 'products', area: 'Home & cleaning', q: 'What do you like to clean with?', type: 'multi', options: ['Natural DIY (vinegar, baking soda, castile soap)', 'Eco refill brands', 'Classic store brands', 'Fragrance-free / sensitive skin', 'Disinfecting (bleach, antibacterial)', 'Whatever is cheapest'] },
+      { id: 'scent', area: 'Home & cleaning', q: 'What should your home smell like?', type: 'single', options: ['Fresh citrus', 'Lavender & herbal', 'Eucalyptus & mint', 'Clean linen', 'Warm wood & vanilla', 'Nothing / unscented'] },
+      { id: 'tools', area: 'Home & cleaning', q: 'Which cleaning tools do you have or want?', type: 'multi', options: ['Microfiber cloths', 'Steam mop', 'Robot vacuum', 'Cordless vacuum', 'Scrub brushes', 'Squeegee', 'Handheld steamer', 'Label maker & bins', 'Caddy for supplies'] },
+      { id: 'ownStyle', area: 'Belongings', q: 'How do you feel about stuff?', type: 'single', options: ['Own as little as possible', 'Few things, high quality', 'Curated collections I love', 'Cozy abundance', "Haven't thought about it"] },
+      H('belongings', 'Belongings', 'Buying, organising, maintaining and letting go', ['One in, one out', 'Put things back where they live', 'Maintain what I own', 'Monthly donate bag']),
+      H('digital', 'Digital space', 'Files, passwords, inbox and notifications', ['Inbox zero weekly', 'Use a password manager', 'Back up files monthly', 'Turn off non-essential notifications', 'Clear phone photos weekly']),
+      H('admin', 'Life admin', 'Documents, appointments, bills and errands', ['Pay bills on time', 'Weekly errands run', 'Keep documents organised', 'Book appointments early']),
+      H('surroundings', 'Surroundings', 'Neighbourhood, commute, nature and safety', ['Walk in nature weekly', 'Explore my neighbourhood', 'Make my commute useful', 'Check smoke alarms monthly']),
+    ],
+  },
+  {
+    id: 'play', emoji: '🎈', title: 'Play & rest',
+    intro: 'Hobbies, entertainment, adventure and celebration.',
+    questions: [
+      H('hobbies', 'Hobbies', 'Hobbies (sports, art, music, games, crafts)', ['Play music', 'Draw or paint', 'Play a sport', 'Gardening', 'Crafts', 'Games night', 'Photography']),
+      H('entertainment', 'Entertainment', 'Shows, books, social media, going out', ['Limit social media to 30 min', 'Read for fun', 'Movie night', 'Go out weekly']),
+      H('adventure', 'Adventure', 'Travel and new experiences', ['Try something new monthly', 'Day trip monthly', 'Travel twice a year']),
+      H('celebration', 'Celebration', 'Holidays, milestones, humour, fun with others', ['Celebrate small wins', 'Plan birthdays ahead', 'Laugh every day', 'Host friends monthly']),
+    ],
+  },
+  {
+    id: 'self', emoji: '🧭', title: 'Self-management',
+    intro: 'The layer that runs all the others: time, discipline, habit mechanics, choices and alarms.',
+    questions: [
+      { id: 'morning', area: 'Time', q: 'What should your morning routine include?', type: 'multi', options: ['Glass of water', 'Make bed', 'Stretch', 'Meditate', 'Journal', 'Read 10 pages', 'Skincare', 'Sunlight walk', 'No phone for the first hour', 'Cold shower', 'Plan the day'] },
+      { id: 'evening', area: 'Time', q: 'And your evening routine?', type: 'multi', options: ['10-minute tidy-up', "Lay out tomorrow's clothes", 'Skincare', 'Read', 'Gratitude list', 'No screens 1h before bed', 'Plan tomorrow', 'Stretch'] },
+      H('rhythm', 'Time', 'Your weekly rhythm', ['Sunday planning', 'Weekly reset', 'Monthly review']),
+      H('discipline', 'Discipline', 'Keeping promises to yourself', ['Keep one promise to myself daily', 'Hardest thing first', 'Wait 24h before giving in to cravings']),
+      H('habitMech', 'Habit mechanics', 'Triggers, rewards and tracking', ['Tick off my habits every day', 'Stack new habits onto old ones', 'Reward myself weekly', 'Never miss twice']),
+      H('choices', 'Choices', 'Saying no, priorities and setbacks', ['Say no to one thing a week', 'Review my priorities weekly', 'Restart the day after a setback']),
+      { id: 'alarmWake', area: 'Alarms', q: 'Wake-up alarm?', type: 'single', options: yesNo },
+      { id: 'alarmWorkout', area: 'Alarms', q: 'Workout alarm?', type: 'single', options: yesNo },
+      { id: 'alarmLearn', area: 'Alarms', q: 'Daily skill-practice alarm?', type: 'single', options: yesNo },
+      { id: 'alarmBed', area: 'Alarms', q: 'Wind-down / bedtime alarm?', type: 'single', options: yesNo },
     ],
   },
 ];
+
+/** Domain (big area) a section belongs to. */
+export const SECTION_DOMAIN = { body: 'Body', mind: 'Mind', meaning: 'Meaning', relationships: 'Relationships', work: 'Work & purpose', money: 'Money', environment: 'Environment', play: 'Play & rest', self: 'Self-management' };
 
 export const SKILL_LIBRARY = {
   'Kitchen & food': ['Cook perfect rice', 'Make fresh pasta', 'Bake sourdough bread', 'Knife skills (julienne, dice, chiffonade)', 'Make a French omelette', 'Roast a whole chicken', 'Make 3 sauces from scratch', 'Brew pour-over coffee', 'Pull an espresso shot', 'Ferment kimchi or sauerkraut', 'Make sushi rolls', 'Bake a layer cake', 'Meal prep a week in 2 hours', 'Cook a curry from scratch', 'Make homemade pizza dough'],
@@ -158,7 +210,7 @@ export const SKILL_LIBRARY = {
   'Practical life': ['Drive a manual car', 'Parallel park', 'Plan a trip on a budget', 'Grow vegetables from seed', 'Basic bike repair (flat tire, chain)', 'Cut hair at home', 'Wrap a gift beautifully', 'Make a will & organize documents', 'Shuffle cards like a pro', 'Do a magic trick'],
 };
 
-SECTIONS.find((s) => s.id === 'skills').questions[0].options = Object.keys(SKILL_LIBRARY);
+SECTIONS.find((s) => s.id === 'work').questions.find((q) => q.id === 'skillAreas').options = Object.keys(SKILL_LIBRARY);
 
 export const SKILL_CATEGORY_EMOJI = {
   'Kitchen & food': '🍳', 'Home & DIY': '🔧', 'Body & movement': '🤸', 'Outdoors & survival': '🏕️', 'Creative & art': '🎨', Music: '🎵', 'Tech & digital': '💻', 'Money & career': '💼', 'People & communication': '🗣️', 'Mind & languages': '🧠', 'Self-care & style': '💄', 'Practical life': '🧰', Other: '⭐',

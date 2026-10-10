@@ -1,8 +1,10 @@
 import { streak, bestStreak, isDue, isDone, toggleHabit } from '../store.js';
 import { openSheet, daysPicker, readDays, field } from './sheet.js';
 import { ymd, addDays, esc, fmtTime, daysLabel, uid } from '../util.js';
+import { DOMAINS, DOMAIN_NAMES, domainOrder } from '../data.js';
+import { domainEmoji } from './today.js';
 
-const AREAS = ['Home', 'Fitness', 'Morning', 'Evening', 'Food', 'Self-care', 'Mind', 'Money', 'People', 'Skills', 'Other'];
+
 
 function heatmap(state, h, today) {
   // 12 weeks, oldest first, one column per week.
@@ -19,16 +21,17 @@ function heatmap(state, h, today) {
 export function render({ state }) {
   const today = ymd();
   const byArea = {};
-  for (const h of state.habits) (byArea[h.area || 'Other'] ||= []).push(h);
+  for (const h of [...state.habits].sort((x, y) => (x.sub || '').localeCompare(y.sub || ''))) (byArea[h.area || 'Other'] ||= []).push(h);
+  const ordered = Object.entries(byArea).sort(([x], [y]) => domainOrder(x) - domainOrder(y));
   return `
     <section>
       <div class="title-row"><h1>Habits</h1><button class="btn primary" data-new>+ New</button></div>
       <p class="muted">Tap a habit to edit it. The grid shows the last 12 weeks.</p>
       ${
         state.habits.length
-          ? Object.entries(byArea)
+          ? ordered
               .map(([area, list]) => `
-          <h4 class="cat">${esc(area)}</h4>
+          <h4 class="cat">${domainEmoji(area)} ${esc(area)}</h4>
           <ul class="list">${list
             .map((h) => {
               const done = isDone(state, h.id, today);
@@ -36,7 +39,7 @@ export function render({ state }) {
             <li class="item habit-card" data-edit="${h.id}">
               <div class="hc-top">
                 <span class="h-emoji">${esc(h.emoji)}</span>
-                <span class="h-main"><b>${esc(h.name)}</b><small>${daysLabel(h.days)}${h.time ? ' · ' + fmtTime(h.time) : ''}</small></span>
+                <span class="h-main"><b>${esc(h.name)}</b><small>${h.sub ? esc(h.sub) + ' · ' : ''}${daysLabel(h.days)}${h.time ? ' · ' + fmtTime(h.time) : ''}</small></span>
                 <span class="streak">🔥${streak(state, h, today)} <small>best ${bestStreak(state, h, today)}</small></span>
                 ${isDue(h, today) ? `<button class="check${done ? ' on' : ''}" data-toggle="${h.id}" aria-label="Done today">${done ? '✓' : ''}</button>` : ''}
               </div>
@@ -52,11 +55,12 @@ export function render({ state }) {
 
 function edit(app, h) {
   const isNew = !h;
-  h ||= { id: uid(), name: '', emoji: '✅', area: 'Other', days: [], time: '', notes: '', createdAt: ymd() };
+  h ||= { id: uid(), name: '', emoji: '✅', area: 'Body', sub: '', days: [], time: '', notes: '', createdAt: ymd() };
+  const allAreas = DOMAINS.flatMap((d) => d.areas);
   openSheet(
     `<h2>${isNew ? 'New habit' : 'Edit habit'}</h2>
      <div class="row">${field('Emoji', `<input class="input emoji-in" name="emoji" value="${esc(h.emoji)}" maxlength="4">`)}${field('Name', `<input class="input" name="name" required value="${esc(h.name)}" placeholder="e.g. Drink 2 L of water">`)}</div>
-     ${field('Area', `<select class="input" name="area">${AREAS.map((a) => `<option${a === h.area ? ' selected' : ''}>${a}</option>`).join('')}</select>`)}
+     <div class="row">${field('Life area', `<select class="input" name="area">${DOMAIN_NAMES.map((a) => `<option${a === h.area ? ' selected' : ''}>${a}</option>`).join('')}</select>`)}${field('Part', `<input class="input" name="sub" list="subs" value="${esc(h.sub || '')}" placeholder="e.g. Sleep"><datalist id="subs">${allAreas.map((x) => `<option value="${esc(x)}">`).join('')}</datalist>`)}</div>
      <div class="field"><span>Days</span>${daysPicker(h.days)}</div>
      ${field('Time (optional)', `<input class="input" type="time" name="time" value="${esc(h.time)}">`)}
      ${field('Notes', `<textarea class="input" name="notes" rows="2">${esc(h.notes)}</textarea>`)}
@@ -70,7 +74,7 @@ function edit(app, h) {
         if (!confirm(`Delete “${h.name}” and its history?`)) return false;
         app.state.habits = app.state.habits.filter((x) => x.id !== h.id);
       } else {
-        Object.assign(h, { name: fd.get('name').trim(), emoji: fd.get('emoji').trim() || '✅', area: fd.get('area'), time: fd.get('time'), notes: fd.get('notes').trim(), days: readDays(form) });
+        Object.assign(h, { name: fd.get('name').trim(), emoji: fd.get('emoji').trim() || '✅', area: fd.get('area'), sub: fd.get('sub').trim(), time: fd.get('time'), notes: fd.get('notes').trim(), days: readDays(form) });
         if (!h.days.length) return alert('Pick at least one day'), false;
         if (isNew) app.state.habits.push(h);
       }

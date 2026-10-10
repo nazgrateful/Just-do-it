@@ -97,10 +97,16 @@ export function render({ state }) {
     <section class="quiz">
       <div class="progress"><i style="width:${(i / SECTIONS.length) * 100}%"></i></div>
       <p class="muted small">Step ${i + 1} of ${SECTIONS.length}${state.onboarded ? ' · <a href="#vision">Exit</a>' : ''}</p>
+      <nav class="steps-nav" aria-label="Life areas">${SECTIONS.map((x, k) => `<a href="#quiz/${k}" class="${k === i ? 'on' : ''}" title="${esc(x.title)}">${x.emoji}</a>`).join('')}</nav>
       <h1>${s.emoji} ${esc(s.title)}</h1>
       ${s.intro ? `<p class="lead">${esc(s.intro)}</p>` : ''}
       ${i === 0 ? '<p class="hint">✍️ Answer in your own words first. If you want ideas, open <b>💡 Show suggestions</b> under any question.</p>' : ''}
-      ${s.questions.map((q) => `<div class="q"><h3>${esc(q.q)}</h3>${question(q, a)}</div>`).join('')}
+      ${s.questions
+        .map((q, k) => {
+          const head = q.area && q.area !== s.questions[k - 1]?.area ? `<h2 class="area-h">${esc(q.area)}</h2>` : '';
+          return `${head}<div class="q"><h3>${esc(q.q)}</h3>${question(q, a)}</div>`;
+        })
+        .join('')}
       <div class="quiz-nav">
         ${i > 0 ? `<button class="btn" data-goto="${i - 1}">Back</button>` : '<span></span>'}
         <button class="btn primary" data-goto="${i + 1}">${i === SECTIONS.length - 1 ? 'Finish' : 'Next'}</button>

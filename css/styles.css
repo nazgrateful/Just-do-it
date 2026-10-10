@@ -657,3 +657,15 @@ h1 .em { -webkit-text-fill-color: initial; }
 .alarm-time { background: linear-gradient(180deg, #fff 0%, #fff 48%, rgba(255, 255, 255, 0.82) 52%, rgba(255, 255, 255, 0.92) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25)); text-shadow: none; }
 .timer-note { text-align: left; }
 .timer-note .row { margin-top: 8px; }
+
+/* ---------- life map ---------- */
+.area-h { font-size: 1.05rem; margin: 1.4rem 0 0.2rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; }
+:root[data-dark='1'] .area-h { color: color-mix(in srgb, var(--accent) 80%, #fff); }
+.steps-nav { display: flex; gap: 4px; flex-wrap: wrap; margin: 4px 0 8px; }
+.steps-nav a { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; text-decoration: none; background: var(--glass); border: 1px solid var(--glass-edge); }
+.steps-nav a.on { outline: 2px solid var(--accent); background: var(--glass-strong); }
+.map-area { padding: 6px 0; border-bottom: 1px dashed var(--line); }
+.map-area ul { margin: 4px 0 0; padding-left: 1.1rem; }
+.map-area li { margin: 2px 0; }
+.map-area > b { display: block; }
+.heat i.due { background: color-mix(in srgb, var(--accent) 16%, transparent); box-shadow: none; }

@@ -87,3 +87,12 @@ test('save keeps a daily safety copy of the previous data', () => {
   save(defaultState(), st);
   assert.equal(JSON.parse(st.getItem(SNAPSHOT_KEY)).data.habits.length, 1);
 });
+
+test('v1 data moves into the life map and keeps its old area', () => {
+  const s = migrate({ schema: 1, habits: [{ id: 'a', name: 'Dishes', area: 'Home' }, { id: 'b', name: 'Run', area: 'Fitness' }, { id: 'c', name: 'Mine', area: 'Other' }], events: [{ id: 'e', area: 'Home' }] });
+  assert.deepEqual([s.habits[0].area, s.habits[0].sub, s.habits[0].areaV1], ['Environment', 'Home & cleaning', 'Home']);
+  assert.deepEqual([s.habits[1].area, s.habits[1].sub], ['Body', 'Movement']);
+  assert.equal(s.habits[2].area, 'Other');
+  assert.equal(s.events[0].area, 'Environment');
+  assert.equal(s.schema, 2);
+});

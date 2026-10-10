@@ -1,8 +1,10 @@
 import { isDue, isDone, toggleHabit, streak, challengeStats, skillMinutes } from '../store.js';
 import { nextOccurrence } from '../alarmcore.js';
-import { AESTHETICS } from '../data.js';
+import { AESTHETICS, DOMAINS, domainOrder } from '../data.js';
 import { hasContent } from '../store.js';
 import { ymd, esc, fmtTime, fmtMinutes, daysBetween } from '../util.js';
+
+export const domainEmoji = (name) => DOMAINS.find((d) => d.name === name)?.emoji || '⭐';
 
 export function habitRow(state, h, date) {
   const done = isDone(state, h.id, date);
@@ -11,7 +13,7 @@ export function habitRow(state, h, date) {
     <li class="habit${done ? ' done' : ''}">
       <button class="check" data-toggle="${h.id}" aria-pressed="${done}" aria-label="${done ? 'Undo' : 'Done'}: ${esc(h.name)}">${done ? '✓' : ''}</button>
       <span class="h-emoji" aria-hidden="true">${esc(h.emoji)}</span>
-      <span class="h-main"><b>${esc(h.name)}</b>${h.time ? `<small>${fmtTime(h.time)}</small>` : ''}${h.notes ? `<small class="notes">${esc(h.notes)}</small>` : ''}</span>
+      <span class="h-main"><b>${esc(h.name)}</b>${h.time || h.sub ? `<small>${[h.time && fmtTime(h.time), h.sub].filter(Boolean).map(esc).join(' · ')}</small>` : ''}${h.notes ? `<small class="notes">${esc(h.notes)}</small>` : ''}</span>
       ${st ? `<span class="streak" title="Current streak">🔥${st}</span>` : ''}
     </li>`;
 }
@@ -20,7 +22,9 @@ export function groupedHabits(state, date) {
   const due = state.habits.filter((h) => isDue(h, date)).sort((a, b) => (a.time || '99').localeCompare(b.time || '99'));
   const groups = {};
   for (const h of due) (groups[h.area || 'Other'] ||= []).push(h);
-  return { due, groups };
+  // Body, mind and soul first, then relationships, then the rest.
+  const ordered = Object.fromEntries(Object.entries(groups).sort(([x], [y]) => domainOrder(x) - domainOrder(y)));
+  return { due, groups: ordered };
 }
 
 export function render({ state }) {
@@ -66,7 +70,7 @@ export function render({ state }) {
       ${learning.length ? `<h2>Learning now</h2><ul class="list">${learning.map((s) => `<li class="item"><span>🎯 <b>${esc(s.name)}</b> <small class="muted">${fmtMinutes(skillMinutes(state, s.id))} practised</small></span><a class="btn small" href="#timer/skill/${s.id}">Practise</a></li>`).join('')}</ul>` : ''}
 
       <h2>Today's habits</h2>
-      ${due.length ? Object.entries(groups).map(([area, list]) => `<h4 class="cat">${esc(area)}</h4><ul class="habits">${list.map((h) => habitRow(state, h, today)).join('')}</ul>`).join('') : `<p class="empty">No habits for today. <a href="#habits">Add one</a> or <a href="#quiz">answer the questions</a> to build a plan.</p>`}
+      ${due.length ? Object.entries(groups).map(([area, list]) => `<h4 class="cat">${domainEmoji(area)} ${esc(area)}</h4><ul class="habits">${list.map((h) => habitRow(state, h, today)).join('')}</ul>`).join('') : `<p class="empty">No habits for today. <a href="#habits">Add one</a> or <a href="#quiz">answer the questions</a> to build a plan.</p>`}
     </section>`;
 }
 

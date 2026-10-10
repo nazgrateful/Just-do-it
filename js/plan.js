@@ -1,7 +1,7 @@
 // Turns questionnaire answers into a starter plan: habits, skills, alarms and events.
 // Pure functions (no DOM) so they can be tested in Node.
 import { uid, ymd, addDays, weekday } from './util.js';
-import { SKILL_LIBRARY } from './data.js';
+import { SKILL_LIBRARY, SECTIONS, SECTION_DOMAIN, DOMAINS } from './data.js';
 
 const ALL = [0, 1, 2, 3, 4, 5, 6];
 
@@ -61,25 +61,62 @@ const WORKOUT_EMOJI = {
 const WEEKLY = {
   'Meal prep on Sunday': [0], 'Budget review on Sunday': [0], 'Call family weekly': [0], 'See a friend weekly': [5], 'Date night': [5],
   'Weekly bath / reset night': [0], 'Haircare day': [3], Nails: [6], 'No-spend days': [1, 2, 3], 'Save every week': [5],
-  'Volunteer': [6], 'Meet new people': [4], 'Invest monthly': [1], 'Plan outfits': [0], 'Therapy / self check-in': [0],
+  Volunteer: [6], 'Meet new people': [4], 'Plan outfits': [0], 'Therapy / self check-in': [0], 'Family dinner': [0],
+  'Weekly check-in talk': [0], 'Weekly worship or service': [0], 'Rest day each week': [0], 'Make something weekly': [6],
+  'Movie night': [5], 'Go out weekly': [5], 'Weekly errands run': [6], 'Walk in nature weekly': [6], 'Sunday planning': [0],
+  'Weekly reset': [0], 'Reward myself weekly': [0], 'Say no to one thing a week': [1], 'Review my priorities weekly': [0],
+  'Weekly goals review': [0], 'Inbox zero weekly': [5], 'Clear phone photos weekly': [0], 'Weekly career review': [5],
+  'Weekly planning': [0], 'Hot bath or sauna': [3], 'Games night': [5], 'Play a sport': [2, 6], 'Gardening': [6],
+  'Show up for big moments': [], 'Keep our traditions': [],
 };
+
+/**
+ * How often a habit happens, guessed from its wording:
+ * { days } for daily/weekly habits, { monthly } or { once } for things that go on the calendar instead.
+ */
+export function cadence(name) {
+  if (WEEKLY[name]) return WEEKLY[name].length ? { days: WEEKLY[name] } : { skip: true };
+  const t = name.toLowerCase();
+  if (/twice a year|every 6 months|every 2 years|yearly|annual/.test(t)) return { once: true };
+  if (/monthly|every month/.test(t)) return { monthly: true };
+  if (/weekly|each week|a week|sunday/.test(t)) return { days: [0] };
+  if (/weekend/.test(t)) return { days: [0, 6] };
+  return { days: ALL };
+}
+
 const HABIT_EMOJI = {
   'Drink 2 L of water': '💧', 'A vegetable with every meal': '🥦', 'Cook at home': '🍲', 'Meal prep on Sunday': '🥡', 'Protein at breakfast': '🍳',
-  'Less sugar': '🍬', 'No eating after 8pm': '🌙', 'Take vitamins': '💊', 'Less caffeine': '☕', 'Less alcohol': '🍷',
+  'Less sugar': '🍬', 'No eating after 8pm': '🌙', 'Take vitamins': '💊', 'Less caffeine': '☕', 'No caffeine after 2pm': '☕', 'Less alcohol': '🍷',
   'Glass of water': '💧', Stretch: '🙆', Meditate: '🧘', Journal: '📓', 'Read 10 pages': '📖', Skincare: '🧴', 'Sunlight walk': '☀️',
   'No phone for the first hour': '📵', 'Cold shower': '🚿', 'Plan the day': '🗒️', '10-minute tidy-up': '🧹', "Lay out tomorrow's clothes": '👕',
   Read: '📖', 'Gratitude list': '🙏', 'No screens 1h before bed': '📵', 'Plan tomorrow': '🗒️', 'Read daily': '📖', 'Limit social media': '📱',
-  'Pray / spiritual practice': '🕊️', Gratitude: '🙏', 'Time outside': '🌳', 'Track spending': '💸', 'Save every week': '🏦',
-  'Skincare routine': '🧴', Floss: '🦷', 'Posture check': '🧍',
+  Gratitude: '🙏', 'Time outdoors': '🌳', 'Morning sunlight': '☀️', 'Track spending': '💸', 'Save every week': '🏦',
+  'Skincare routine': '🧴', Floss: '🦷', 'Posture check': '🧍', 'Walk 8,000 steps': '🚶', Prayer: '🕊️', 'Review my day': '🌙',
+  'Take medication on time': '💊', 'Breathing exercise': '🌬️', 'Dim the lights': '🕯️', 'Herbal tea': '🍵', 'Daily affection': '🤍',
+  'Message a friend': '💬', 'Call family weekly': '📞', 'Date night': '🥂', 'Kindness to a stranger': '😊', 'Help one person a day': '🤝',
+  'Top 3 priorities': '🎯', 'Deep-work block': '🧠', 'Mood check-in': '🌡️', 'Name my feelings': '💭', 'Kind self-talk': '💗',
+  'Laugh every day': '😄', 'Celebrate small wins': '🎉', 'Never miss twice': '🔁', 'Hardest thing first': '🐸',
 };
+const DOMAIN_EMOJI = Object.fromEntries(DOMAINS.map((d) => [d.name, d.emoji]));
 
-function habit(name, area, { days = ALL, time = '', emoji = '', notes = '' } = {}) {
-  return { id: uid(), name, area, emoji: emoji || HABIT_EMOJI[name] || '✅', days: [...days], time, notes, createdAt: ymd() };
+function habit(name, area, sub, { days = ALL, time = '', emoji = '', notes = '' } = {}) {
+  return { id: uid(), name, area, sub, emoji: emoji || HABIT_EMOJI[name] || DOMAIN_EMOJI[area] || '✅', days: [...days], time, notes, createdAt: ymd() };
 }
 
 function alarm(label, time, days, choice, link) {
   if (!choice || choice === 'No alarm') return null;
   return { id: uid(), label, time, days: [...days], important: choice.startsWith('Important'), enabled: true, link: link || null };
+}
+
+/** The first `weekday` of each of the next 12 months, from today. */
+function monthlyDates(today, wd = 0) {
+  const out = [];
+  for (let m = 0; m < 12; m++) {
+    let s = ymd(new Date(Number(today.slice(0, 4)), Number(today.slice(5, 7)) - 1 + m, 1));
+    while (weekday(s) !== wd) s = addDays(s, 1);
+    if (s >= today) out.push(s);
+  }
+  return out;
 }
 
 /** Infer which library category a skill belongs to. */
@@ -96,42 +133,14 @@ export function buildPlan(a, today = ymd()) {
   const habits = [];
   const alarms = [];
   const events = [];
+  const event = (title, date, area, sub, extra = {}) => events.push({ id: uid(), title, date, time: '09:00', minutes: 60, area, sub, notes: '', ...extra });
 
-  // --- Cleaning -----------------------------------------------------------
-  const chores = a.chores || [];
-  const cleanTime = timeOf(a.cleanTime, '18:00');
-  const cleanDays = a.cleanDays?.length ? a.cleanDays : [6];
-  const kitNote = [a.products?.length ? `Use: ${a.products.join(', ')}` : '', a.scent ? `Scent: ${a.scent}` : '', a.tools?.length ? `Tools: ${a.tools.join(', ')}` : ''].filter(Boolean).join(' · ');
-  const daily = chores.filter((c) => DAILY_CHORES.includes(c));
-  const weekly = chores.filter((c) => !DAILY_CHORES.includes(c));
+  // --- Body · Sleep -------------------------------------------------------------
+  const wake = a.wake || '06:30';
+  const bed = a.bed || '22:30';
+  if (a.naps === 'Power nap (20 min)') habits.push(habit('Power nap · 20 min', 'Body', 'Sleep', { time: '14:00', emoji: '😴' }));
 
-  if (a.cleanStyle === 'One zone per day') {
-    for (const c of daily) habits.push(habit(c, 'Home', { emoji: CHORE_EMOJI[c], notes: kitNote }));
-    for (const [day, zone, zoneChores] of ZONES) {
-      const included = zoneChores.filter((c) => weekly.includes(c));
-      if (!included.length && !['Kitchen', 'Bathroom', 'Floors & dusting'].includes(zone)) continue;
-      habits.push(habit(`Zone: ${zone}`, 'Home', { days: [day], time: cleanTime, emoji: '🧽', notes: [included.join(', '), kitNote].filter(Boolean).join(' · ') }));
-    }
-  } else if (a.cleanStyle === '15-minute daily reset') {
-    habits.push(habit('15-minute home reset', 'Home', { time: cleanTime, emoji: '⏲️', notes: [daily.join(', ') || 'Tidy, wipe, put away', kitNote].filter(Boolean).join(' · ') }));
-    if (weekly.length) habits.push(habit(`Weekly clean: ${weekly.join(', ')}`, 'Home', { days: cleanDays, time: cleanTime, emoji: '🧽', notes: kitNote }));
-  } else {
-    for (const c of daily) habits.push(habit(c, 'Home', { emoji: CHORE_EMOJI[c], notes: kitNote }));
-    if (weekly.length || a.cleanStyle === 'One big weekly clean') {
-      habits.push(habit(`Big clean${weekly.length ? ': ' + weekly.join(', ') : ''}`, 'Home', { days: cleanDays, time: cleanTime, emoji: '🧽', notes: kitNote }));
-    }
-  }
-  if (a.cleanStyle === 'Little bits as I go + monthly deep clean') {
-    // First chosen clean day of each of the next 12 months.
-    for (let m = 0; m < 12; m++) {
-      const d = new Date(Number(today.slice(0, 4)), Number(today.slice(5, 7)) - 1 + m, 1);
-      let s = ymd(d);
-      while (weekday(s) !== cleanDays[0]) s = addDays(s, 1);
-      if (s >= today) events.push({ id: uid(), title: 'Monthly deep clean', date: s, time: cleanTime, minutes: 120, area: 'Home', notes: kitNote });
-    }
-  }
-
-  // --- Exercise -------------------------------------------------------------
+  // --- Body · Movement ------------------------------------------------------------
   const fitDays = a.fitDays?.length ? [...a.fitDays].sort() : [];
   const fitTime = timeOf(a.fitTime, '07:30');
   const fitLen = minutesOf(a.fitLength, 30);
@@ -142,41 +151,84 @@ export function buildPlan(a, today = ymd()) {
     byType.set(t, [...(byType.get(t) || []), d]);
   });
   for (const [t, days] of byType) {
-    habits.push(habit(`${t} · ${fitLen} min`, 'Fitness', { days, time: fitTime, emoji: WORKOUT_EMOJI[t] || '💪', notes: [a.where && `Where: ${a.where}`, a.level && `Level: ${a.level}`].filter(Boolean).join(' · ') }));
+    habits.push(habit(`${t} · ${fitLen} min`, 'Body', 'Movement', { days, time: fitTime, emoji: WORKOUT_EMOJI[t] || '💪', notes: [a.where && `Where: ${a.where}`, a.level && `Level: ${a.level}`].filter(Boolean).join(' · ') }));
   }
   const flex = (a.abilities || []).some((x) => /toes|splits|handstand|cartwheel/i.test(x));
-  if (flex && !(a.workouts || []).includes('Mobility & stretching')) habits.push(habit('Mobility · 10 min', 'Fitness', { emoji: '🙆' }));
+  if (flex && !(a.workouts || []).includes('Mobility & stretching')) habits.push(habit('Mobility · 10 min', 'Body', 'Movement', { emoji: '🙆' }));
 
-  // --- Simple habits from multi-choice answers -------------------------------
-  const wake = a.wake || '06:30';
-  const bed = a.bed || '22:30';
-  for (const h of a.morning || []) habits.push(habit(h, 'Morning', { time: wake }));
-  for (const h of a.evening || []) habits.push(habit(h, 'Evening', { time: shiftTime(bed, -60) }));
-  for (const h of a.foodHabits || []) habits.push(habit(h, 'Food', { days: WEEKLY[h] || ALL }));
-  for (const h of a.selfcare || []) habits.push(habit(h, 'Self-care', { days: WEEKLY[h] || ALL }));
-  for (const h of a.mindHabits || []) habits.push(habit(h, 'Mind', { days: WEEKLY[h] || ALL }));
-  for (const h of a.money || []) if (h !== 'Learn about investing') habits.push(habit(h, 'Money', { days: WEEKLY[h] || ALL, emoji: HABIT_EMOJI[h] || '💰' }));
-  for (const h of a.people || []) habits.push(habit(h, 'People', { days: WEEKLY[h] || ALL, emoji: '💬' }));
+  // --- Every "habit" question: each answer becomes a habit in its domain and area ---
+  const timeFor = { Sleep: shiftTime(bed, -60) };
+  for (const sec of SECTIONS) {
+    const domain = SECTION_DOMAIN[sec.id];
+    for (const q of sec.questions) {
+      if (!q.habit) continue;
+      for (const name of a[q.id] || []) {
+        const c = cadence(name);
+        if (c.skip) continue;
+        if (c.monthly) monthlyDates(today).forEach((d) => event(name, d, domain, q.area));
+        else if (c.once) event(`Book: ${name}`, addDays(today, 14), domain, q.area);
+        else habits.push(habit(name, domain, q.area, { days: c.days, time: timeFor[q.area] || '' }));
+      }
+    }
+  }
+  // Answers saved by older versions of the questions.
+  for (const h of a.money || []) if (h !== 'Learn about investing') habits.push(habit(h, 'Money', 'Spending', { days: cadence(h).days || [0] }));
+  for (const h of a.people || []) habits.push(habit(h, 'Relationships', 'Friends', { days: cadence(h).days || [0], emoji: '💬' }));
 
-  // --- Skills -----------------------------------------------------------------
+  // --- Self-management · Time: morning and evening routines ------------------------
+  for (const h of a.morning || []) habits.push(habit(h, 'Self-management', 'Time', { time: wake }));
+  for (const h of a.evening || []) habits.push(habit(h, 'Self-management', 'Time', { time: shiftTime(bed, -60) }));
+
+  // --- Environment · Home & cleaning ----------------------------------------------
+  const E = 'Environment';
+  const HC = 'Home & cleaning';
+  const chores = a.chores || [];
+  const cleanTime = timeOf(a.cleanTime, '18:00');
+  const cleanDays = a.cleanDays?.length ? a.cleanDays : [6];
+  const kitNote = [a.products?.length ? `Use: ${a.products.join(', ')}` : '', a.scent ? `Scent: ${a.scent}` : '', a.tools?.length ? `Tools: ${a.tools.join(', ')}` : ''].filter(Boolean).join(' · ');
+  const daily = chores.filter((c) => DAILY_CHORES.includes(c));
+  const weekly = chores.filter((c) => !DAILY_CHORES.includes(c));
+
+  if (a.cleanStyle === 'One zone per day') {
+    for (const c of daily) habits.push(habit(c, E, HC, { emoji: CHORE_EMOJI[c], notes: kitNote }));
+    for (const [day, zone, zoneChores] of ZONES) {
+      const included = zoneChores.filter((c) => weekly.includes(c));
+      if (!included.length && !['Kitchen', 'Bathroom', 'Floors & dusting'].includes(zone)) continue;
+      habits.push(habit(`Zone: ${zone}`, E, HC, { days: [day], time: cleanTime, emoji: '🧽', notes: [included.join(', '), kitNote].filter(Boolean).join(' · ') }));
+    }
+  } else if (a.cleanStyle === '15-minute daily reset') {
+    habits.push(habit('15-minute home reset', E, HC, { time: cleanTime, emoji: '⏲️', notes: [daily.join(', ') || 'Tidy, wipe, put away', kitNote].filter(Boolean).join(' · ') }));
+    if (weekly.length) habits.push(habit(`Weekly clean: ${weekly.join(', ')}`, E, HC, { days: cleanDays, time: cleanTime, emoji: '🧽', notes: kitNote }));
+  } else {
+    for (const c of daily) habits.push(habit(c, E, HC, { emoji: CHORE_EMOJI[c], notes: kitNote }));
+    if (weekly.length || a.cleanStyle === 'One big weekly clean') {
+      habits.push(habit(`Big clean${weekly.length ? ': ' + weekly.join(', ') : ''}`, E, HC, { days: cleanDays, time: cleanTime, emoji: '🧽', notes: kitNote }));
+    }
+  }
+  if (a.cleanStyle === 'Little bits as I go + monthly deep clean') {
+    monthlyDates(today, cleanDays[0]).forEach((d) => event('Monthly deep clean', d, E, HC, { time: cleanTime, minutes: 120, notes: kitNote }));
+  }
+
+  // --- Work & purpose · Skills --------------------------------------------------------
   const learnMin = minutesOf(a.dailyMinutes, 30);
   const learnTime = timeOf(a.learnTime, '19:00');
   const learnDays = a.learnTime === 'Weekend blocks' ? [0, 6] : ALL;
-  habits.push(habit(`Practise a skill · ${learnMin} min`, 'Skills', { days: learnDays, time: learnTime, emoji: '🎯' }));
+  habits.push(habit(`Practise a skill · ${learnMin} min`, 'Work & purpose', 'Skills', { days: learnDays, time: learnTime, emoji: '🎯' }));
 
   const names = new Set(a.skillPicks || []);
   for (const ab of a.abilities || []) names.add(ab);
-  if ((a.money || []).includes('Learn about investing')) names.add('Understand index-fund investing');
+  if ([...(a.money || []), ...(a.growing || [])].includes('Learn about investing')) names.add('Understand index-fund investing');
   const skills = [...names].map((n) => makeSkill(n, (a.abilities || []).includes(n) ? 'Body & movement' : categoryOf(n)));
 
-  // --- Alarms -------------------------------------------------------------------
-  const wanted = [
-    alarm('Wake up — just do it', wake, ALL, a.alarmWake),
-    fitDays.length ? alarm('Workout time', shiftTime(fitTime, -15), fitDays, a.alarmWorkout) : null,
-    alarm(`Skill practice (${learnMin} min)`, learnTime, learnDays, a.alarmLearn),
-    alarm('Wind down for bed', shiftTime(bed, -45), ALL, a.alarmBed),
-  ].filter(Boolean);
-  alarms.push(...wanted);
+  // --- Self-management · Alarms ---------------------------------------------------------
+  alarms.push(
+    ...[
+      alarm('Wake up — just do it', wake, ALL, a.alarmWake),
+      fitDays.length ? alarm('Workout time', shiftTime(fitTime, -15), fitDays, a.alarmWorkout) : null,
+      alarm(`Skill practice (${learnMin} min)`, learnTime, learnDays, a.alarmLearn),
+      alarm('Wind down for bed', shiftTime(bed, -45), ALL, a.alarmBed),
+    ].filter(Boolean),
+  );
 
   // --- Relationships: one card per kind of relationship, ready to personalise ---------
   const people = (a.relTypes || []).map((rel) => ({
@@ -187,5 +239,12 @@ export function buildPlan(a, today = ymd()) {
     contact: '', notes: '',
   }));
 
-  return { habits, skills, alarms, events, people };
+  // Same habit picked in two places (e.g. "Stretch" morning and at bedtime): keep the first.
+  const seen = new Set();
+  const unique = habits.filter((h) => {
+    const k = h.name.toLowerCase();
+    return !seen.has(k) && seen.add(k);
+  });
+
+  return { habits: unique, skills, alarms, events, people };
 }

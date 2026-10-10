@@ -65,3 +65,23 @@ test('answers typed in your own words still build a plan', async () => {
   assert.equal(w.time, '06:00');
   assert.ok(p.habits.some((h) => h.name.includes('Balcony')));
 });
+
+test('habits are filed under the life map: domain → area', async () => {
+  const { DOMAIN_NAMES } = await import('../js/data.js');
+  const p = buildPlan({
+    windDown: ['Herbal tea'], attention: ['Deep-work block'], faith: ['Prayer', 'Weekly worship or service'], family: ['Visit parents monthly'],
+    medical: ['Yearly check-up'], chores: ['Dishes'], digital: ['Inbox zero weekly'], rhythm: ['Sunday planning'],
+  }, '2026-10-10');
+  const by = Object.fromEntries(p.habits.map((h) => [h.name, [h.area, h.sub, h.days.join('')]]));
+  assert.deepEqual(by['Herbal tea'].slice(0, 2), ['Body', 'Sleep']);
+  assert.deepEqual(by['Deep-work block'].slice(0, 2), ['Mind', 'Attention']);
+  assert.deepEqual(by['Prayer'].slice(0, 2), ['Meaning', 'Faith & philosophy']);
+  assert.equal(by['Weekly worship or service'][2], '0');
+  assert.deepEqual(by['Dishes'].slice(0, 2), ['Environment', 'Home & cleaning']);
+  assert.deepEqual(by['Inbox zero weekly'], ['Environment', 'Digital space', '5']);
+  assert.deepEqual(by['Sunday planning'], ['Self-management', 'Time', '0']);
+  // monthly and yearly things go on the calendar instead of the daily list
+  assert.ok(!by['Visit parents monthly'] && p.events.some((e) => e.title === 'Visit parents monthly' && e.area === 'Relationships'));
+  assert.ok(p.events.some((e) => e.title === 'Book: Yearly check-up' && e.sub === 'Medical care'));
+  for (const h of p.habits) assert.ok(DOMAIN_NAMES.includes(h.area), h.area);
+});
