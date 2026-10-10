@@ -1,8 +1,17 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.8.0';
+export const APP_VERSION = '1.9.0';
 
 export const RELEASES = [
+  {
+    version: '1.9.0',
+    date: '2026-10-10',
+    notes: [
+      'Your avatar is now drawn in an anime style: big glossy eyes in any colour, pointed bangs with a shine, a soft cel outline, hatched blush',
+      'New: hime cut and twin tails, sailor uniform, cat ears, ahoge, star clip, cool and cat-mouth expressions',
+      'Anime backgrounds: billowing clouds, richer sunsets and starry nights, sunbeams, cherry-blossom petals, sparkles, plus Sakura path, School rooftop, Classroom and Shrine',
+    ],
+  },
   {
     version: '1.8.0',
     date: '2026-10-10',

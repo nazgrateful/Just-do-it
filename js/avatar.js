@@ -5,14 +5,17 @@ export const SKIN = ['#ffe0c7', '#f6cfa8', '#eab98f', '#d9a074', '#c08559', '#a2
 export const HAIR_COLORS = ['#2b1d16', '#4a2f1f', '#7a4a2a', '#b07a45', '#e2c27a', '#f3e2b8', '#b23a2b', '#8a8a8a', '#f1f1f1', '#f48fb1', '#9b7be0', '#58a6d8', '#5fb37a'];
 export const CLOTH_COLORS = ['#ffffff', '#f4efe6', '#d9cbb3', '#1f1f24', '#4a6b63', '#8fafc4', '#2e4a7a', '#b23a48', '#e8a1b4', '#f2c14e', '#7a8f4e', '#9b7be0', '#d0743c'];
 
+export const EYE_COLORS = ['#5b3a29', '#2b2b33', '#3f6fb5', '#2f8f83', '#6a9a3a', '#c9892b', '#b23a48', '#8a5bd6', '#e05aa0', '#7a8a9a'];
+
+// Drawn in an anime style: big glossy eyes, pointed hair locks, cel-shaded outlines.
 export const OPTIONS = {
-  eyes: ['round', 'happy', 'sparkle', 'sleepy', 'wink', 'lashes'],
-  mouth: ['smile', 'grin', 'small', 'open', 'smirk'],
-  hair: ['short', 'bob', 'long', 'wavy', 'bun', 'ponytail', 'pigtails', 'curly', 'braids', 'buzz', 'spiky'],
-  top: ['tee', 'hoodie', 'sweater', 'tank', 'blouse', 'blazer', 'dress', 'overalls'],
+  eyes: ['round', 'sparkle', 'happy', 'sleepy', 'wink', 'lashes', 'cool'],
+  mouth: ['smile', 'grin', 'small', 'open', 'smirk', 'cat'],
+  hair: ['short', 'bob', 'long', 'wavy', 'hime cut', 'twin tails', 'ponytail', 'bun', 'curly', 'braids', 'spiky', 'buzz'],
+  top: ['tee', 'hoodie', 'sweater', 'sailor', 'tank', 'blouse', 'blazer', 'dress', 'overalls'],
   bottom: ['jeans', 'trousers', 'skirt', 'shorts', 'leggings'],
   shoes: ['sneakers', 'boots', 'flats', 'heels', 'slippers'],
-  extras: ['glasses', 'sunglasses', 'beanie', 'sunhat', 'cap', 'crown', 'bow', 'flower crown', 'headphones', 'earrings', 'necklace', 'scarf', 'bag', 'blush', 'freckles'],
+  extras: ['blush', 'ahoge', 'cat ears', 'star clip', 'glasses', 'sunglasses', 'beanie', 'sunhat', 'cap', 'crown', 'bow', 'flower crown', 'headphones', 'earrings', 'necklace', 'scarf', 'bag', 'freckles'],
 };
 
 export const SCENES = {
@@ -23,15 +26,19 @@ export const SCENES = {
   'Cozy cabin': { outdoor: false, wall: '#a8754c', floor: 'wood', floorColor: '#6e4a2e', sky: 'snow', items: ['window', 'fireplace', 'rug', 'cat', 'candles'] },
   'Cottage garden': { outdoor: true, wall: '#bfe3f2', floor: 'grass', floorColor: '#8cc06b', sky: 'day', items: ['house', 'tree', 'flowers', 'fence'] },
   'Beach house': { outdoor: true, wall: '#bfe6f5', floor: 'sand', floorColor: '#ecd6a6', sky: 'day', items: ['house', 'sea', 'palm'] },
-  'City night': { outdoor: true, wall: '#1d2440', floor: 'street', floorColor: '#5a5f6e', sky: 'night', items: ['skyline', 'lamp post'] },
+  'City night': { outdoor: true, wall: '#1d2440', floor: 'street', floorColor: '#5a5f6e', sky: 'night', items: ['skyline', 'lamp post', 'sparkles'] },
+  'Sakura path': { outdoor: true, wall: '#bfe3f2', floor: 'path', floorColor: '#d9cfc2', sky: 'day', items: ['sakura tree', 'lanterns', 'petals', 'light rays'] },
+  'School rooftop': { outdoor: true, wall: '#bfe3f2', floor: 'tiles', floorColor: '#b9bec6', sky: 'sunset', items: ['skyline', 'water tower', 'railing', 'petals'] },
+  Classroom: { outdoor: false, wall: '#f1ead8', floor: 'wood', floorColor: '#b88a5c', sky: 'day', items: ['window', 'chalkboard', 'school desks', 'light rays', 'petals'] },
+  Shrine: { outdoor: true, wall: '#bfe3f2', floor: 'path', floorColor: '#cfc3b2', sky: 'sunset', items: ['torii', 'sakura tree', 'lanterns', 'petals'] },
 };
-export const ROOM_ITEMS = ['window', 'sofa', 'bed', 'desk', 'bookshelf', 'kitchen', 'fireplace', 'plant', 'lamp', 'rug', 'art', 'fairy lights', 'clock', 'candles', 'mirror', 'cat', 'dog', 'house', 'tree', 'flowers', 'fence', 'sea', 'palm', 'skyline', 'lamp post'];
-export const FLOORS = ['wood', 'tiles', 'carpet', 'grass', 'sand', 'street'];
+export const ROOM_ITEMS = ['window', 'light rays', 'petals', 'sparkles', 'sakura tree', 'torii', 'lanterns', 'chalkboard', 'school desks', 'railing', 'water tower', 'sofa', 'bed', 'desk', 'bookshelf', 'kitchen', 'fireplace', 'plant', 'lamp', 'rug', 'art', 'fairy lights', 'clock', 'candles', 'mirror', 'cat', 'dog', 'house', 'tree', 'flowers', 'fence', 'sea', 'palm', 'skyline', 'lamp post'].filter((v, i, a) => a.indexOf(v) === i);
+export const FLOORS = ['wood', 'tiles', 'carpet', 'grass', 'sand', 'street', 'path'];
 export const SKIES = ['day', 'sunset', 'night', 'rain', 'snow'];
 
 export function defaultAvatar() {
   return {
-    skin: SKIN[2], eyes: 'round', mouth: 'smile', hair: 'long', hairColor: HAIR_COLORS[1],
+    skin: SKIN[1], eyes: 'sparkle', eyeColor: EYE_COLORS[2], mouth: 'smile', hair: 'long', hairColor: HAIR_COLORS[1],
     top: 'sweater', topColor: '#8fafc4', bottom: 'jeans', bottomColor: '#2e4a7a', shoes: 'sneakers', shoesColor: '#ffffff',
     extras: ['blush'], name: '',
     scene: { preset: 'Living room', ...structuredCloneSafe(SCENES['Living room']) },
@@ -45,6 +52,7 @@ function structuredCloneSafe(o) {
 export function normalizeAvatar(a) {
   const d = defaultAvatar();
   if (!a || typeof a !== 'object') return d;
+  if (a.hair === 'pigtails') a = { ...a, hair: 'twin tails' };
   return { ...d, ...a, extras: Array.isArray(a.extras) ? a.extras : d.extras, scene: { ...d.scene, ...(a.scene || {}), items: Array.isArray(a.scene?.items) ? a.scene.items : d.scene.items } };
 }
 
@@ -56,18 +64,26 @@ const shade = (hex, t) => {
 
 // ---------------------------------------------------------------- the world
 
-function sky(type, x, y, w, h, id) {
+function cumulus(cx, cy, k, tint) {
+  // A billowing anime cloud: white puffs with a soft shaded base.
+  const puffs = [[0, 0, 26], [-26, 8, 20], [26, 8, 20], [-12, -14, 18], [14, -12, 20], [-42, 16, 14], [42, 16, 14]];
+  return `<g opacity=".95">${puffs.map(([dx, dy, r]) => `<circle cx="${cx + dx * k}" cy="${cy + dy * k + 5 * k}" r="${r * k}" fill="${tint}"/>`).join('')}${puffs.map(([dx, dy, r]) => `<circle cx="${cx + dx * k}" cy="${cy + dy * k}" r="${r * k}" fill="#ffffff"/>`).join('')}</g>`;
+}
+
+function sky(type, x, y, w, h, base) {
+  const id = `${base}-${type}`; // unique per sky type, so two pictures on a page never mix skies
   const grads = {
-    day: ['#9fd3f2', '#e3f4fb'], sunset: ['#f7a072', '#fbe1b6'], night: ['#141a3a', '#3a3f6e'], rain: ['#8d9aa6', '#c8d1d8'], snow: ['#b9c8d8', '#eef3f8'],
+    day: ['#3d8fe0', '#8ccaf7', '#e6f6ff'], sunset: ['#5b4b9a', '#f08a8a', '#ffd38f'], night: ['#090e2c', '#1f2a66', '#3d3f86'], rain: ['#6f7d8c', '#a3afba', '#cfd7de'], snow: ['#9fb3c8', '#d3dfea', '#f3f7fb'],
   };
-  const [a, b] = grads[type] || grads.day;
+  const [a, b, c] = grads[type] || grads.day;
+  const m = Math.min(w, h);
   let extra = '';
-  if (type === 'day') extra = `<ellipse cx="${x + w * 0.3}" cy="${y + h * 0.35}" rx="${w * 0.16}" ry="${h * 0.07}" fill="#fff" opacity=".9"/><ellipse cx="${x + w * 0.4}" cy="${y + h * 0.31}" rx="${w * 0.12}" ry="${h * 0.08}" fill="#fff" opacity=".9"/><circle cx="${x + w * 0.78}" cy="${y + h * 0.25}" r="${Math.min(w, h) * 0.09}" fill="#ffe27a"/>`;
-  if (type === 'sunset') extra = `<circle cx="${x + w * 0.5}" cy="${y + h * 0.85}" r="${Math.min(w, h) * 0.18}" fill="#ffcf6b" opacity=".9"/>`;
-  if (type === 'night') extra = `<circle cx="${x + w * 0.75}" cy="${y + h * 0.28}" r="${Math.min(w, h) * 0.09}" fill="#f6f1d3"/>` + [0.15, 0.35, 0.55, 0.25, 0.45, 0.85].map((fx, k) => `<circle cx="${x + w * fx}" cy="${y + h * (0.15 + ((k * 37) % 50) / 100)}" r="1.4" fill="#fff"/>`).join('');
-  if (type === 'rain') extra = [...Array(14)].map((_, k) => `<line x1="${x + ((k * 23) % w)}" y1="${y + ((k * 41) % h)}" x2="${x + ((k * 23) % w) - 4}" y2="${y + ((k * 41) % h) + 10}" stroke="#eef4f8" stroke-width="1.4" opacity=".8"/>`).join('');
-  if (type === 'snow') extra = [...Array(18)].map((_, k) => `<circle cx="${x + ((k * 29) % w)}" cy="${y + ((k * 47) % h)}" r="2" fill="#fff"/>`).join('');
-  return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id})"/>${extra}`;
+  if (type === 'day') extra = `<circle cx="${x + w * 0.82}" cy="${y + h * 0.16}" r="${m * 0.2}" fill="#fff8d6" opacity=".35"/><circle cx="${x + w * 0.82}" cy="${y + h * 0.16}" r="${m * 0.08}" fill="#fffbe8"/>` + cumulus(x + w * 0.3, y + h * 0.42, m / 260, '#d6e6f7') + cumulus(x + w * 0.72, y + h * 0.62, m / 360, '#d6e6f7');
+  if (type === 'sunset') extra = `<circle cx="${x + w * 0.5}" cy="${y + h * 0.9}" r="${m * 0.22}" fill="#ffe2a0" opacity=".9"/>` + cumulus(x + w * 0.25, y + h * 0.45, m / 280, '#f3a6a6') + cumulus(x + w * 0.78, y + h * 0.3, m / 380, '#e7a3c0');
+  if (type === 'night') extra = `<path d="M${x} ${y + h * 0.75} Q ${x + w * 0.5} ${y + h * 0.15} ${x + w} ${y + h * 0.3}" stroke="#b9c3ff" stroke-width="${m * 0.12}" opacity=".12" fill="none"/><circle cx="${x + w * 0.76}" cy="${y + h * 0.24}" r="${m * 0.16}" fill="#f6f1d3" opacity=".18"/><circle cx="${x + w * 0.76}" cy="${y + h * 0.24}" r="${m * 0.08}" fill="#fbf7e4"/>` + [...Array(28)].map((_, k) => `<circle cx="${x + ((k * 53) % 100) * w / 100}" cy="${y + ((k * 37) % 70) * h / 100}" r="${k % 5 ? 1 : 1.8}" fill="#fff" opacity="${k % 3 ? 0.7 : 1}"/>`).join('');
+  if (type === 'rain') extra = [...Array(26)].map((_, k) => `<line x1="${x + ((k * 23) % w)}" y1="${y + ((k * 41) % h)}" x2="${x + ((k * 23) % w) - 5}" y2="${y + ((k * 41) % h) + 14}" stroke="#eef4f8" stroke-width="1.2" opacity=".75"/>`).join('');
+  if (type === 'snow') extra = [...Array(30)].map((_, k) => `<circle cx="${x + ((k * 29) % w)}" cy="${y + ((k * 47) % h)}" r="${k % 3 ? 1.6 : 2.6}" fill="#fff"/>`).join('');
+  return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset=".6" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></linearGradient><clipPath id="${id}-c"><rect x="${x}" y="${y}" width="${w}" height="${h}"/></clipPath></defs><g clip-path="url(#${id}-c)"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id})"/>${extra}</g>`;
 }
 
 function floor(type, color) {
@@ -77,6 +93,7 @@ function floor(type, color) {
   if (type === 'carpet') pat = `<rect x="0" y="330" width="360" height="150" fill="${shade(color, 0.08)}" opacity=".3"/>`;
   if (type === 'grass') pat = [...Array(30)].map((_, k) => `<path d="M${(k * 13) % 360} ${352 + ((k * 31) % 120)} l3 -9 l3 9" fill="none" stroke="${shade(color, -0.25)}" stroke-width="1.5"/>`).join('');
   if (type === 'sand') pat = [...Array(26)].map((_, k) => `<circle cx="${(k * 17) % 360}" cy="${345 + ((k * 37) % 130)}" r="1.5" fill="${shade(color, -0.2)}"/>`).join('');
+  if (type === 'path') pat = `<path d="M130 330 L230 330 L300 480 L60 480 Z" fill="${shade(color, 0.12)}"/>` + [0, 1, 2, 3, 4].map((k) => `<path d="M${120 - k * 14} ${352 + k * 28} h${120 + k * 28}" stroke="${shade(color, -0.15)}" stroke-width="2"/>`).join('');
   if (type === 'street') pat = `<rect x="0" y="400" width="360" height="6" fill="#f2d45c" opacity=".7"/><rect x="0" y="330" width="360" height="14" fill="${shade(color, 0.2)}"/>`;
   return `<rect x="0" y="330" width="360" height="150" fill="${color}"/>${pat}`;
 }
@@ -106,17 +123,29 @@ const ITEMS = {
   sea: () => `<rect x="0" y="262" width="360" height="70" fill="#4fb3d9"/><path d="M0 280 q 20 -8 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0" fill="none" stroke="#e8f8ff" stroke-width="2"/><path d="M0 306 q 20 -8 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0" fill="none" stroke="#e8f8ff" stroke-width="2" opacity=".7"/>`,
   palm: () => `<path d="M60 334c4-60 10-110 30-150" fill="none" stroke="#8a6a4a" stroke-width="10" stroke-linecap="round"/><path d="M90 184c-30-10-56 0-66 14 22-6 40-4 66-14zM90 184c26-16 52-12 64 0-22-2-40 0-64 0zM90 184c-10-24-4-46 10-56-2 20 0 36-10 56zM90 184c-28 4-44 22-48 38 16-14 30-24 48-38z" fill="#4f9a4e"/>`,
   skyline: () => [[10, 150, 50], [64, 110, 40], [108, 170, 46], [216, 120, 44], [264, 160, 40], [308, 100, 46]].map(([x, y, w]) => `<rect x="${x}" y="${y}" width="${w}" height="${330 - y}" fill="#2b3156"/>` + [...Array(Math.floor((330 - y) / 22))].map((_, r) => `<rect x="${x + 8}" y="${y + 10 + r * 22}" width="8" height="10" fill="${r % 3 ? '#ffd36b' : '#3a4170'}"/><rect x="${x + w - 16}" y="${y + 10 + r * 22}" width="8" height="10" fill="${r % 2 ? '#ffd36b' : '#3a4170'}"/>`).join('')).join(''),
+  'light rays': (s) => (s.outdoor ? `<g opacity=".22">${[0, 1, 2, 3].map((k) => `<path d="M300 0 L${120 + k * 40} 330 L${150 + k * 40} 330 Z" fill="#fffbe0"/>`).join('')}</g>` : `<path d="M40 70 L156 70 L300 330 L110 330 Z" fill="#fffbe6" opacity=".22"/>`),
+  'sakura tree': () => `<path d="M70 334c4-50 0-90-12-120M66 260c14-16 30-22 44-24" stroke="#6a4a3e" stroke-width="12" fill="none" stroke-linecap="round"/>` + [[58, 190, 40], [26, 214, 28], [96, 206, 32], [70, 158, 30], [118, 236, 22], [36, 250, 20]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#f7b7cf"/><circle cx="${x - r * 0.25}" cy="${y - r * 0.3}" r="${r * 0.55}" fill="#fcd6e4"/>`).join(''),
+  torii: () => `<rect x="214" y="150" width="12" height="184" fill="#d2402f"/><rect x="314" y="150" width="12" height="184" fill="#d2402f"/><path d="M196 140 Q270 124 344 140 L344 152 Q270 138 196 152 Z" fill="#2b2b33"/><rect x="200" y="150" width="140" height="10" fill="#d2402f"/><rect x="206" y="176" width="128" height="9" fill="#d2402f"/><rect x="264" y="160" width="12" height="16" fill="#d2402f"/>`,
+  lanterns: () => `<path d="M0 40 Q 180 80 360 40" fill="none" stroke="#5a3a2a" stroke-width="1.5"/>` + [40, 110, 180, 250, 320].map((x, k) => `<line x1="${x}" y1="${48 + Math.sin((x / 360) * Math.PI) * 14}" x2="${x}" y2="${58 + Math.sin((x / 360) * Math.PI) * 14}" stroke="#5a3a2a"/><ellipse cx="${x}" cy="${72 + Math.sin((x / 360) * Math.PI) * 14}" rx="12" ry="15" fill="${k % 2 ? '#e8503a' : '#f4d06f'}"/><ellipse cx="${x}" cy="${72 + Math.sin((x / 360) * Math.PI) * 14}" rx="18" ry="20" fill="#ffd36b" opacity=".18"/>`).join(''),
+  chalkboard: () => `<rect x="178" y="66" width="170" height="104" rx="4" fill="#7a5a3a"/><rect x="184" y="72" width="158" height="92" fill="#2f5a46"/><path d="M196 96h70M196 112h96M196 128h56" stroke="#e8efe8" stroke-width="2.5" opacity=".8" stroke-linecap="round"/><text x="300" y="100" font-family="sans-serif" font-size="14" fill="#f4d06f">頑張って</text><rect x="184" y="164" width="158" height="5" fill="#a88a6a"/>`,
+  'school desks': () => [[214, 286], [292, 296]].map(([x, y]) => `<rect x="${x}" y="${y}" width="58" height="8" rx="2" fill="#c49a6c"/><rect x="${x + 4}" y="${y + 8}" width="4" height="34" fill="#7a7f88"/><rect x="${x + 50}" y="${y + 8}" width="4" height="34" fill="#7a7f88"/>`).join(''),
+  railing: () => `<rect x="0" y="282" width="360" height="5" fill="#9aa3ad"/><rect x="0" y="312" width="360" height="4" fill="#9aa3ad"/>` + [...Array(19)].map((_, k) => `<rect x="${k * 20}" y="282" width="3" height="50" fill="#8a929c"/>`).join(''),
+  'water tower': () => `<rect x="268" y="150" width="70" height="60" rx="6" fill="#d8dde3"/><rect x="268" y="150" width="70" height="10" fill="#c3c9d0"/><path d="M276 210l-6 72M330 210l6 72M286 210l-2 72M320 210l2 72" stroke="#8a929c" stroke-width="3"/>`,
+  petals: () => [...Array(16)].map((_, k) => { const x = (k * 67) % 350 + 5; const y = (k * 113) % 440 + 10; const r = (k * 47) % 180; return `<ellipse cx="${x}" cy="${y}" rx="4.5" ry="2.6" fill="#f9b8d0" transform="rotate(${r} ${x} ${y})" opacity=".9"/>`; }).join(''),
+  sparkles: () => [...Array(9)].map((_, k) => { const x = (k * 71) % 340 + 10; const y = (k * 97) % 300 + 20; const s = 3 + (k % 3) * 2; return `<path d="M${x} ${y - s * 2}l${s * 0.5} ${s * 1.5} ${s * 1.5} ${s * 0.5}-${s * 1.5} ${s * 0.5}-${s * 0.5} ${s * 1.5}-${s * 0.5}-${s * 1.5}-${s * 1.5}-${s * 0.5} ${s * 1.5}-${s * 0.5}z" fill="#fffbe0" opacity=".9"/>`; }).join(''),
   'lamp post': () => `<rect x="300" y="200" width="6" height="134" fill="#2a2a32"/><path d="M290 200h26l-5 -16h-16z" fill="#2a2a32"/><circle cx="303" cy="206" r="34" fill="#ffd36b" opacity=".22"/>`,
 };
 // Back items are drawn first; small floor items last.
-const ORDER = ['sea', 'skyline', 'house', 'tree', 'palm', 'fence', 'window', 'art', 'clock', 'mirror', 'bookshelf', 'kitchen', 'fireplace', 'fairy lights', 'sofa', 'bed', 'desk', 'lamp', 'lamp post', 'rug', 'plant', 'candles', 'flowers', 'cat', 'dog'];
+const ORDER = ['light rays', 'sea', 'skyline', 'water tower', 'house', 'torii', 'tree', 'sakura tree', 'palm', 'fence', 'railing', 'window', 'chalkboard', 'lanterns', 'art', 'clock', 'mirror', 'bookshelf', 'kitchen', 'fireplace', 'fairy lights', 'sofa', 'bed', 'desk', 'lamp', 'lamp post', 'school desks', 'rug', 'plant', 'candles', 'flowers', 'cat', 'dog', 'petals', 'sparkles'];
 
-const FRONT = ['plant', 'candles', 'flowers', 'cat', 'dog'];
+const FRONT = ['plant', 'candles', 'flowers', 'cat', 'dog', 'petals', 'sparkles'];
 const has = (scene, k) => (scene.items || []).includes(k);
 
 /** Everything behind the avatar: wall or sky, floor, furniture. */
 export function worldSvg(s) {
-  const back = s.outdoor ? sky(s.sky, 0, 0, 360, 330, 'bgsky') : `<rect width="360" height="330" fill="${s.wall}"/><rect y="318" width="360" height="12" fill="${shade(s.wall, -0.12)}"/>`;
+  const back = s.outdoor
+    ? sky(s.sky, 0, 0, 360, 330, 'bgsky')
+    : `<defs><linearGradient id="wallg-${s.wall.replace('#', '')}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${shade(s.wall, 0.12)}"/><stop offset="1" stop-color="${shade(s.wall, -0.08)}"/></linearGradient></defs><rect width="360" height="330" fill="url(#wallg-${s.wall.replace('#', '')})"/><rect y="300" width="360" height="30" fill="${shade(s.wall, -0.1)}"/><rect y="318" width="360" height="12" fill="${shade(s.wall, -0.2)}"/>`;
   return back + floor(s.floor, s.floorColor) + ORDER.filter((k) => has(s, k) && !FRONT.includes(k)).map((k) => ITEMS[k](s)).join('');
 }
 /** Small things that stand in front of the avatar (plants, pets…). */
@@ -126,46 +155,83 @@ export function worldFrontSvg(s) {
 
 // ---------------------------------------------------------------- the avatar
 
+// Anime hair: locks that end in points, a darker underside and a shine band.
 function hairBack(style, c) {
+  const d = shade(c, -0.18);
+  const tips = (y, x0, x1, n, depth) => [...Array(n + 1)].map((_, k) => `L${x1 - ((x1 - x0) * k) / n} ${y + (k % 2 ? -depth : 0)}`).join(' ');
   switch (style) {
-    case 'bob': return `<path d="M124 214c-4-52 22-84 56-84s60 32 56 84c0 26-6 46-14 52h-84c-8-6-14-26-14-52z" fill="${c}"/>`;
-    case 'long': return `<path d="M122 216c-6-56 22-88 58-88s64 32 58 88c2 60 6 100 -2 118h-112c-8-18-4-58-2-118z" fill="${c}"/>`;
-    case 'wavy': return `<path d="M120 216c-6-56 24-88 60-88s66 32 60 88c4 30 14 48 4 66 10 18 0 40-8 54h-112c-8-14-18-36-8-54-10-18 0-36 4-66z" fill="${c}"/>`;
-    case 'ponytail': return `<path d="M222 170c34 4 42 50 30 90-6 22-18 40-26 48 10-30 12-62 0-96z" fill="${c}"/>`;
-    case 'pigtails': return `<circle cx="116" cy="236" r="22" fill="${c}"/><circle cx="244" cy="236" r="22" fill="${c}"/><path d="M110 254c-8 22-4 46 6 58M250 254c8 22 4 46-6 58" stroke="${c}" stroke-width="16" stroke-linecap="round" fill="none"/>`;
-    case 'braids': return [0, 1, 2, 3, 4].map((k) => `<circle cx="132" cy="${262 + k * 16}" r="10" fill="${c}"/><circle cx="228" cy="${262 + k * 16}" r="10" fill="${c}"/>`).join('');
-    case 'curly': return [[-46, -10], [-52, 18], [-40, 42], [46, -10], [52, 18], [40, 42]].map(([dx, dy]) => `<circle cx="${180 + dx}" cy="${215 + dy}" r="20" fill="${c}"/>`).join('');
-    default: return '';
+    case 'bob': return `<path d="M120 206C116 152 146 126 180 126S244 152 240 206L242 262 ${tips(262, 118, 242, 8, 12).replace(/^L/, 'L')} L118 262Z" fill="${d}"/>`;
+    case 'long': case 'hime cut': return `<path d="M118 206C114 150 146 124 180 124S246 150 242 206C246 262 250 320 246 366 ${tips(366, 114, 246, 10, 22)} C110 320 114 262 118 206Z" fill="${d}"/>`;
+    case 'wavy': return `<path d="M116 206C112 150 146 124 180 124S248 150 244 206C252 236 238 260 250 288C258 312 240 330 248 352 ${tips(352, 112, 248, 8, 18)} C120 330 102 312 110 288C122 260 108 236 116 206Z" fill="${d}"/>`;
+    case 'ponytail': return `<path d="M120 206C116 152 146 128 180 128S244 152 240 206L236 250L124 250Z" fill="${d}"/><path d="M226 150C276 150 284 220 270 290L262 330 252 300 244 334 238 296C252 250 250 200 226 150Z" fill="${d}"/>`;
+    case 'twin tails': return `<path d="M120 206C116 152 146 128 180 128S244 152 240 206L236 250L124 250Z" fill="${d}"/>` + [[-1, 118], [1, 242]].map(([dir, x]) => `<path d="M${x} 168C${x + dir * 46} 180 ${x + dir * 54} 260 ${x + dir * 40} 340L${x + dir * 30} 382 ${x + dir * 26} 350 ${x + dir * 14} 378 ${x + dir * 14} 330C${x + dir * 26} 270 ${x + dir * 18} 210 ${x} 190Z" fill="${d}"/><circle cx="${x + dir * 4}" cy="172" r="7" fill="#e8503a"/>`).join('');
+    case 'braids': return `<path d="M120 206C116 152 146 128 180 128S244 152 240 206L236 250L124 250Z" fill="${d}"/>` + [0, 1, 2, 3, 4].map((k) => `<ellipse cx="132" cy="${262 + k * 17}" rx="10" ry="10" fill="${k % 2 ? c : d}"/><ellipse cx="228" cy="${262 + k * 17}" rx="10" ry="10" fill="${k % 2 ? c : d}"/>`).join('');
+    case 'curly': return [[-48, -6], [-54, 22], [-42, 48], [48, -6], [54, 22], [42, 48], [0, -40], [-30, -30], [30, -30]].map(([dx, dy]) => `<circle cx="${180 + dx}" cy="${208 + dy}" r="22" fill="${d}"/>`).join('');
+    case 'bun': return `<path d="M120 206C116 152 146 128 180 128S244 152 240 206L236 244L124 244Z" fill="${d}"/><circle cx="180" cy="122" r="24" fill="${c}"/><path d="M164 112q16 -10 32 0" stroke="${shade(c, 0.35)}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    case 'spiky': return `<path d="M118 214L100 190 124 182 106 150 136 152 132 118 160 136 170 102 186 132 206 104 212 138 240 122 234 156 262 160 240 184 260 204 238 210Z" fill="${d}"/>`;
+    case 'buzz': return '';
+    default: return `<path d="M120 206C116 152 146 128 180 128S244 152 240 206L238 236 230 222 226 246 132 246 128 222 122 236Z" fill="${d}"/>`;
   }
 }
 function hairFront(style, c) {
-  const d = shade(c, -0.12);
+  const hi = shade(c, 0.35);
+  const shine = `<path d="M140 168Q180 150 220 168" stroke="${hi}" stroke-width="6" fill="none" stroke-linecap="round" opacity=".7" stroke-dasharray="14 8"/>`;
+  // Pointed bangs over the forehead.
+  const bangs = `<path d="M126 206C124 158 150 134 180 134C210 134 236 158 234 206L228 186 222 214 212 182 202 208 192 178 182 206 172 178 162 208 150 184 142 214 134 188Z" fill="${c}"/>`;
+  const sideLocks = `<path d="M128 198C122 228 124 256 132 276L138 254 140 274C142 246 140 222 138 200Z" fill="${c}"/><path d="M232 198C238 228 236 256 228 276L222 254 220 274C218 246 220 222 222 200Z" fill="${c}"/>`;
   switch (style) {
-    case 'buzz': return `<path d="M130 206c0-40 22-62 50-62s50 22 50 62c-14-22-32-30-50-30s-36 8-50 30z" fill="${c}" opacity=".85"/>`;
-    case 'spiky': return `<path d="M128 208l-4-40 22 18 4-34 18 26 12-34 12 34 18-26 4 34 22-18-4 40c-14-22-34-30-52-30s-38 8-52 30z" fill="${c}"/>`;
-    case 'curly': return [...Array(9)].map((_, k) => `<circle cx="${136 + k * 11}" cy="${172 - Math.sin((k / 8) * Math.PI) * 18}" r="16" fill="${k % 2 ? c : d}"/>`).join('');
-    case 'bun': return `<circle cx="180" cy="148" r="22" fill="${c}"/><path d="M128 210c-2-46 22-70 52-70s54 24 52 70c-12-26-30-34-52-34s-40 8-52 34z" fill="${c}"/>`;
-    default: return `<path d="M127 212c-2-48 22-74 53-74s55 26 53 74c-6-14-14-24-24-28-8 10-22 14-40 12-14 0-26 6-42 16z" fill="${c}"/><path d="M150 168c10 6 26 8 40 2" stroke="${d}" stroke-width="3" fill="none" opacity=".5"/>`;
+    case 'buzz': return `<path d="M130 202C130 162 152 140 180 140S230 162 230 202C216 182 198 176 180 176S144 182 130 202Z" fill="${c}" opacity=".9"/>`;
+    case 'hime cut': return `<path d="M126 206C124 158 150 134 180 134S236 158 234 206L234 198H126Z" fill="${c}"/><path d="M128 196H232" stroke="${shade(c, -0.15)}" stroke-width="2"/>` + `<path d="M126 196V284L134 300 142 282V196Z" fill="${c}"/><path d="M234 196V284L226 300 218 282V196Z" fill="${c}"/>` + shine;
+    case 'spiky': return `<path d="M126 210L118 176 140 186 134 150 156 170 166 138 180 166 196 138 204 170 226 150 220 186 242 176 234 210 222 190 212 214 196 186 180 210 164 186 148 214 138 190Z" fill="${c}"/>` + shine;
+    case 'curly': return [...Array(9)].map((_, k) => `<circle cx="${136 + k * 11}" cy="${170 - Math.sin((k / 8) * Math.PI) * 18}" r="16" fill="${k % 2 ? c : shade(c, -0.08)}"/>`).join('');
+    case 'long': case 'wavy': case 'twin tails': return bangs + sideLocks + shine;
+    default: return bangs + shine;
   }
 }
-function eyes(type) {
-  const L = 162, R = 198, Y = 222;
+function eyes(type, color = '#3f6fb5', brow = '#3a2a24', skin = '#f6cfa8') {
+  const L = 160, R = 200, Y = 220;
+  const ink = '#1f1a24';
+  // Gradient ids include the colour so several avatars on one page don't share them.
+  const gid = `irisg-${color.replace('#', '')}`;
+  const defs = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(color, -0.45)}"/><stop offset=".55" stop-color="${color}"/><stop offset="1" stop-color="${shade(color, 0.45)}"/></linearGradient></defs>`;
+  const brows = `<path d="M${L - 11} ${Y - 21}q11 -6 21 -1M${R - 10} ${Y - 22}q10 -5 21 1" stroke="${brow}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+  const closed = (x, up = true) => `<path d="M${x - 12} ${Y + 2}q12 ${up ? -12 : 10} 24 0" stroke="${ink}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`;
+  const open = (x, k, { star = false, lid = false, lashes = false, cool = false } = {}) => {
+    const side = k ? 1 : -1;
+    const lidY = lid ? Y - 2 : cool ? Y - 6 : Y - 12;
+    return `
+      <ellipse cx="${x}" cy="${Y + 1}" rx="11" ry="13" fill="#ffffff" stroke="none"/>
+      <ellipse cx="${x}" cy="${Y + 2}" rx="9" ry="12" fill="url(#${gid})" stroke="none"/>
+      <ellipse cx="${x}" cy="${Y + 3}" rx="4.2" ry="6.5" fill="${shade(color, -0.7)}" stroke="none"/>
+      ${star ? `<path d="M${x + 3} ${Y - 9}l1.6 4 4 1.6-4 1.6-1.6 4-1.6-4-4-1.6 4-1.6z" fill="#fff" stroke="none"/>` : `<ellipse cx="${x + 3}" cy="${Y - 4}" rx="3.6" ry="4.4" fill="#fff" stroke="none"/>`}
+      <circle cx="${x - 4}" cy="${Y + 7}" r="1.8" fill="#fff" stroke="none"/>
+      ${lid || cool ? `<path d="M${x - 13} ${lidY - 14}h26v${14 + (lid ? 3 : 0)}h-26z" fill="${skin}" stroke="none"/>` : ''}
+      <path d="M${x - 13} ${lidY + 3}q13 -9 26 -1" stroke="${ink}" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+      <path d="M${x + side * 12} ${lidY + 2}l${side * 5} -3" stroke="${ink}" stroke-width="2.6" stroke-linecap="round"/>
+      ${lashes ? `<path d="M${x + side * 10} ${lidY - 2}l${side * 5} -6M${x + side * 5} ${lidY - 5}l${side * 3} -6" stroke="${ink}" stroke-width="2" stroke-linecap="round"/>` : ''}
+      <path d="M${x - 8} ${Y + 14}q8 3 16 0" stroke="${shade(color, -0.4)}" stroke-width="1.2" fill="none" opacity=".6"/>`;
+  };
+  let out;
   switch (type) {
-    case 'happy': return `<path d="M${L - 8} ${Y + 2}q8 -10 16 0M${R - 8} ${Y + 2}q8 -10 16 0" stroke="#2b2b33" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
-    case 'sleepy': return `<path d="M${L - 8} ${Y}q8 6 16 0M${R - 8} ${Y}q8 6 16 0" stroke="#2b2b33" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
-    case 'wink': return `<ellipse cx="${L}" cy="${Y}" rx="6" ry="8" fill="#2b2b33"/><circle cx="${L + 2}" cy="${Y - 3}" r="2" fill="#fff"/><path d="M${R - 8} ${Y + 2}q8 -10 16 0" stroke="#2b2b33" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
-    case 'sparkle': return [L, R].map((x) => `<ellipse cx="${x}" cy="${Y}" rx="8" ry="10" fill="#2b2b33"/><circle cx="${x + 3}" cy="${Y - 4}" r="3" fill="#fff"/><circle cx="${x - 3}" cy="${Y + 4}" r="1.5" fill="#fff"/>`).join('');
-    case 'lashes': return [L, R].map((x, k) => `<ellipse cx="${x}" cy="${Y}" rx="6" ry="8" fill="#2b2b33"/><circle cx="${x + 2}" cy="${Y - 3}" r="2" fill="#fff"/><path d="M${x + (k ? 5 : -5)} ${Y - 6}l${k ? 6 : -6} -5M${x + (k ? 7 : -7)} ${Y - 2}l${k ? 7 : -7} -2" stroke="#2b2b33" stroke-width="2" stroke-linecap="round"/>`).join('');
-    default: return [L, R].map((x) => `<ellipse cx="${x}" cy="${Y}" rx="6" ry="8" fill="#2b2b33"/><circle cx="${x + 2}" cy="${Y - 3}" r="2" fill="#fff"/>`).join('');
+    case 'happy': out = closed(L) + closed(R); break;
+    case 'sleepy': out = open(L, 0, { lid: true }) + open(R, 1, { lid: true }); break;
+    case 'wink': out = open(L, 0, { star: true }) + closed(R); break;
+    case 'lashes': out = open(L, 0, { lashes: true }) + open(R, 1, { lashes: true }); break;
+    case 'cool': out = open(L, 0, { cool: true }) + open(R, 1, { cool: true }); break;
+    case 'round': out = open(L, 0) + open(R, 1); break;
+    default: out = open(L, 0, { star: true }) + open(R, 1, { star: true });
   }
+  return defs + brows + out;
 }
 function mouth(type) {
+  const ink = '#7a2e3a';
   switch (type) {
-    case 'grin': return `<path d="M168 242q12 14 24 0z" fill="#8a3a3a"/><path d="M170 243h20" stroke="#fff" stroke-width="3"/>`;
-    case 'small': return `<path d="M175 245q5 4 10 0" stroke="#8a3a3a" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-    case 'open': return `<ellipse cx="180" cy="246" rx="7" ry="8" fill="#8a3a3a"/><ellipse cx="180" cy="250" rx="4" ry="3" fill="#e57f8a"/>`;
-    case 'smirk': return `<path d="M170 246q10 2 18 -6" stroke="#8a3a3a" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-    default: return `<path d="M170 242q10 10 20 0" stroke="#8a3a3a" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+    case 'grin': return `<path d="M171 248h18q-1 11 -9 11t-9 -11z" fill="#9a3040" stroke="${ink}" stroke-width="1.2"/><path d="M174 255q6 -4 12 0" fill="#f08a9a" stroke="none"/>`;
+    case 'small': return `<path d="M177 250q3 2 6 0" stroke="${ink}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+    case 'open': return `<path d="M174 248q6 12 12 0z" fill="#9a3040" stroke="${ink}" stroke-width="1.2"/>`;
+    case 'smirk': return `<path d="M173 251q8 1 14 -5" stroke="${ink}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+    case 'cat': return `<path d="M171 248q4.5 5 9 0q4.5 5 9 0" stroke="${ink}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+    default: return `<path d="M173 249q7 6 14 0" stroke="${ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
   }
 }
 
@@ -191,7 +257,7 @@ function clothes(a) {
   }
   // arms (skin) then sleeves
   out += `<rect x="116" y="278" width="20" height="78" rx="10" fill="${sk}"/><rect x="224" y="278" width="20" height="78" rx="10" fill="${sk}"/><circle cx="126" cy="358" r="11" fill="${sk}"/><circle cx="234" cy="358" r="11" fill="${sk}"/>`;
-  const sleeve = { tee: 306, blouse: 314, hoodie: 346, sweater: 346, blazer: 346, dress: 300, overalls: 306, tank: 0 }[a.top] ?? 306;
+  const sleeve = { sailor: 314, tee: 306, blouse: 314, hoodie: 346, sweater: 346, blazer: 346, dress: 300, overalls: 306, tank: 0 }[a.top] ?? 306;
   if (sleeve) out += `<rect x="114" y="276" width="24" height="${sleeve - 276}" rx="10" fill="${dress ? tc : overalls ? '#ffffff' : tc}"/><rect x="222" y="276" width="24" height="${sleeve - 276}" rx="10" fill="${dress ? tc : overalls ? '#ffffff' : tc}"/>`;
   // torso
   if (dress) out += `<path d="M138 276h84l6 50 26 78h-148l26 -78z" fill="${tc}"/><path d="M146 330h68" stroke="${td}" stroke-width="4"/>`;
@@ -202,6 +268,7 @@ function clothes(a) {
     if (a.top === 'sweater') out += `<path d="M138 344h84" stroke="${td}" stroke-width="6"/><path d="M160 276q20 12 40 0" fill="none" stroke="${td}" stroke-width="5"/>`;
     if (a.top === 'blazer') out += `<path d="M180 276l-18 40 18 38 18 -38z" fill="#ffffff"/><path d="M162 276l18 40 18 -40" fill="none" stroke="${td}" stroke-width="4"/><circle cx="180" cy="334" r="3" fill="${td}"/>`;
     if (a.top === 'blouse') out += `<path d="M162 276l18 14 18 -14" fill="#ffffff"/><circle cx="180" cy="300" r="2.5" fill="${td}"/><circle cx="180" cy="316" r="2.5" fill="${td}"/>`;
+    if (a.top === 'sailor') out += `<path d="M138 276L180 318 222 276 236 300 180 330 124 300Z" fill="#2e4a7a"/><path d="M140 282L180 318 220 282" stroke="#ffffff" stroke-width="2.5" fill="none"/><path d="M168 316L180 340 192 316 186 352 180 344 174 352Z" fill="#d2402f"/>`;
     if (a.top === 'tank') out += `<path d="M146 274v-6M214 274v-6" stroke="${tc}" stroke-width="8"/>`;
   }
   // shoes
@@ -224,7 +291,10 @@ function extrasBack(list, a) {
 }
 function extrasFront(list, a) {
   let s = '';
-  if (list.includes('blush')) s += `<ellipse cx="148" cy="238" rx="9" ry="5" fill="#ff8a9a" opacity=".45"/><ellipse cx="212" cy="238" rx="9" ry="5" fill="#ff8a9a" opacity=".45"/>`;
+  if (list.includes('blush')) s += [146, 214].map((x) => `<ellipse cx="${x}" cy="240" rx="11" ry="5.5" fill="#ff8aa0" opacity=".35" stroke="none"/><path d="M${x - 7} 243l4 -6M${x - 1} 243l4 -6M${x + 5} 243l4 -6" stroke="#f06a86" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>`).join('');
+  if (list.includes('ahoge')) s += `<path d="M184 136C186 112 206 104 210 118C202 112 192 118 190 136Z" fill="${a.hairColor}"/>`;
+  if (list.includes('cat ears')) s += [[-1, 140], [1, 220]].map(([dir, x]) => `<path d="M${x - 16} 160L${x + dir * 6} 116L${x + 16} 156Z" fill="${a.hairColor}"/><path d="M${x - 8} 154L${x + dir * 4} 128L${x + 8} 152Z" fill="#f7b7cf" stroke="none"/>`).join('');
+  if (list.includes('star clip')) s += `<path d="M222 170l3.5 8 8.5 .8-6.4 5.6 2 8.4-7.6-4.4-7.6 4.4 2-8.4-6.4-5.6 8.5-.8z" fill="#ffd36b"/>`;
   if (list.includes('freckles')) s += [[150, 232], [156, 236], [146, 238], [210, 232], [204, 236], [214, 238]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.4" fill="${shade(a.skin, -0.35)}"/>`).join('');
   if (list.includes('earrings')) s += `<circle cx="128" cy="244" r="4" fill="#e2c27a"/><circle cx="232" cy="244" r="4" fill="#e2c27a"/>`;
   if (list.includes('necklace')) s += `<path d="M160 276q20 18 40 0" fill="none" stroke="#e2c27a" stroke-width="2.5"/><circle cx="180" cy="290" r="4" fill="#e2c27a"/>`;
@@ -243,18 +313,24 @@ function extrasFront(list, a) {
 
 export function avatarSvg(a) {
   const x = a.extras || [];
+  const face = 'M130 200C130 160 152 144 180 144S230 160 230 200C230 234 214 256 196 266C188 271 172 271 164 266C146 256 130 234 130 200Z';
+  // Cel-style outline: shapes inherit a soft dark stroke unless they set their own.
   return `
     <ellipse cx="180" cy="450" rx="64" ry="9" fill="#000" opacity=".12"/>
-    ${extrasBack(x, a)}
-    ${hairBack(a.hair, a.hairColor)}
-    ${clothes(a)}
-    <rect x="171" y="258" width="18" height="20" rx="6" fill="${shade(a.skin, -0.08)}"/>
-    <ellipse cx="128" cy="226" rx="8" ry="11" fill="${a.skin}"/><ellipse cx="232" cy="226" rx="8" ry="11" fill="${a.skin}"/>
-    <ellipse cx="180" cy="214" rx="52" ry="54" fill="${a.skin}"/>
-    ${eyes(a.eyes)}
-    ${mouth(a.mouth)}
-    ${hairFront(a.hair, a.hairColor)}
-    ${extrasFront(x, a)}`;
+    <g stroke="#3a2630" stroke-opacity=".55" stroke-width="1.6" stroke-linejoin="round">
+      ${extrasBack(x, a)}
+      ${hairBack(a.hair, a.hairColor)}
+      ${clothes(a)}
+      <rect x="172" y="256" width="16" height="22" rx="6" fill="${shade(a.skin, -0.1)}"/>
+      <path d="M128 208q-8 2 -6 14q2 10 10 10z" fill="${a.skin}"/><path d="M232 208q8 2 6 14q-2 10 -10 10z" fill="${a.skin}"/>
+      <path d="${face}" fill="${a.skin}"/>
+      <path d="M150 256q30 16 60 0" stroke="${shade(a.skin, -0.12)}" stroke-width="3" fill="none" opacity=".5"/>
+      ${eyes(a.eyes, a.eyeColor || '#3f6fb5', shade(a.hairColor, -0.25), a.skin)}
+      <path d="M179 236l-2 5h3" stroke="${shade(a.skin, -0.35)}" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      ${mouth(a.mouth)}
+      ${hairFront(a.hair, a.hairColor)}
+      ${extrasFront(x, a)}
+    </g>`;
 }
 
 /** The whole picture: world behind, avatar, a few things in front. */
@@ -272,5 +348,5 @@ export function sceneSvg(a, { label = true } = {}) {
 export function randomize(a, rnd = Math.random) {
   const pick = (l) => l[Math.floor(rnd() * l.length)];
   const extras = OPTIONS.extras.filter(() => rnd() < 0.18);
-  return { ...a, eyes: pick(OPTIONS.eyes), mouth: pick(OPTIONS.mouth), hair: pick(OPTIONS.hair), hairColor: pick(HAIR_COLORS), top: pick(OPTIONS.top), topColor: pick(CLOTH_COLORS), bottom: pick(OPTIONS.bottom), bottomColor: pick(CLOTH_COLORS), shoes: pick(OPTIONS.shoes), shoesColor: pick(CLOTH_COLORS), extras };
+  return { ...a, eyes: pick(OPTIONS.eyes), eyeColor: pick(EYE_COLORS), mouth: pick(OPTIONS.mouth), hair: pick(OPTIONS.hair), hairColor: pick(HAIR_COLORS), top: pick(OPTIONS.top), topColor: pick(CLOTH_COLORS), bottom: pick(OPTIONS.bottom), bottomColor: pick(CLOTH_COLORS), shoes: pick(OPTIONS.shoes), shoesColor: pick(CLOTH_COLORS), extras };
 }

@@ -1,5 +1,5 @@
 // "My world": a little avatar you dress up, standing in a home you design.
-import { OPTIONS, SKIN, HAIR_COLORS, CLOTH_COLORS, SCENES, ROOM_ITEMS, FLOORS, SKIES, normalizeAvatar, sceneSvg, randomize } from '../avatar.js';
+import { OPTIONS, SKIN, EYE_COLORS, HAIR_COLORS, CLOTH_COLORS, SCENES, ROOM_ITEMS, FLOORS, SKIES, normalizeAvatar, sceneSvg, randomize } from '../avatar.js';
 import { downloadFile } from './files.js';
 import { esc } from '../util.js';
 
@@ -19,7 +19,7 @@ export function render({ state }) {
     panel =
       row('Name', `<input class="input" data-name value="${esc(a.name)}" placeholder="Your avatar's name" maxlength="22">`) +
       row('Skin', swatches('skin', SKIN, a.skin)) +
-      row('Eyes', `<div class="chips">${OPTIONS.eyes.map((o) => chip(o, a.eyes === o, `data-set="eyes" data-val="${o}"`)).join('')}</div>`) +
+      row('Eyes', `<div class="chips">${OPTIONS.eyes.map((o) => chip(o, a.eyes === o, `data-set="eyes" data-val="${o}"`)).join('')}</div>${swatches('eyeColor', EYE_COLORS, a.eyeColor)}`) +
       row('Mouth', `<div class="chips">${OPTIONS.mouth.map((o) => chip(o, a.mouth === o, `data-set="mouth" data-val="${o}"`)).join('')}</div>`) +
       row('Hair', `<div class="chips">${OPTIONS.hair.map((o) => chip(o, a.hair === o, `data-set="hair" data-val="${o}"`)).join('')}</div>${swatches('hairColor', HAIR_COLORS, a.hairColor)}`);
   } else if (tab === 'style') {
