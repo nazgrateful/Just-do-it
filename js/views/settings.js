@@ -54,7 +54,8 @@ export function render({ state }) {
       <div class="card">
         <h2>🎨 Look</h2>
         <label class="field inline">Theme <select class="input" data-set="theme">${['auto', 'light', 'dark'].map((t) => `<option${t === st.theme ? ' selected' : ''}>${t}</option>`).join('')}</select></label>
-        <a class="btn" href="#quiz/0">Change my aesthetic</a>
+        <a class="btn primary" href="#looks">🎨 Browse all looks</a>
+        <p class="small muted">Over 160 aesthetics: colours, lettering, boxes, buttons, shapes and patterns. Or make your own.</p>
       </div>
 
       <div class="card">

@@ -6,12 +6,14 @@ A free, private, installable web app. No account, no ads, and nothing leaves you
 
 | | |
 |---|---|
+| 🎨 **Looks gallery (Settings → Browse all looks)** | **167 aesthetics** drawn from the Aesthetics Wiki and Pinterest, in 14 families: calm & minimal, nature & cottage, academia, art movements, internet & retro tech (Frutiger Aero, Y2K, vaporwave, webcore…), cute & kawaii, dark & alternative, luxe & fashion, sci-fi, decades, coastal & seasons, spiritual, cozy, sporty. Each one sets the **colours**, **heading and text fonts** (12 bundled fonts), **shapes** (corner radius, borders, shadows of boxes and buttons) and a **background pattern**. Light looks get an automatic dark version, and text contrast is checked so every look stays readable. You can **make your own** too. |
+| 🫧 **Life map bubble chart** | Life area → part → habit as bubbles. Size shows how many habits an area has, and the fill shows today's progress. Bubble shapes follow your look: hearts, stars, flowers, clouds, hexagons, octagons, squares, pixels, glossy orbs or pebbles. |
 | ☁️ **Tranquil serenity look (default)** | Matte linen and sand, sage and misty blue, soft mist drifting over distant hills and a hint of linen grain. Headings use an elegant serif (Cormorant Garamond) over a soft humanist sans (Source Sans 3); both are bundled under the SIL Open Font License. Calm, roomy cards, quiet pill buttons and slow, gentle motion, in light and dusk (dark) modes. |
 | 🫧 **Frutiger Aero look (optional)** | Glass panels, glossy aqua buttons, a sky with clouds, bokeh, rays and bubbles, and glossy Vista-style lettering. Pick it under Meaning → Identity. |
 | 🗺 **The map of a life** | Everything is organised as **life area → part → daily habits**, in priority order: **body, mind and soul first**, then relationships, then the rest. **1 Body:** sleep, food, movement, hygiene & grooming, medical care, recovery. **2 Mind:** attention, emotions, thinking, learning, mental rest. **3 Meaning (soul):** identity & vibe, values, faith & philosophy, reflection. **4 Relationships:** family, partner, friends, community, communication & boundaries. **5 Work & purpose:** career, skills (the 100-skill challenge), productivity, creative work, contribution. **6 Money:** earning, spending, saving, growing, protecting. **7 Environment:** where you live, **home & cleaning**, belongings, digital space, life admin, surroundings. **8 Play & rest:** hobbies, entertainment, adventure, celebration. **9 Self-management:** time & routines, discipline, habit mechanics, choices, alarms. |
 | ✨ **Design-your-life questions** | One step per life area, with headings for each part. You answer every question **in your own words first**, and ready-made ideas sit in a **💡 Show suggestions** panel under each question. Every habit the app creates is filed under its area and part. Monthly and yearly things (visiting family, check-ups) go on the calendar instead of the daily list. |
 | 🧩 **Your plan, built for you** | Your answers become habits: a cleaning schedule (zone-per-day, daily reset, weekly or monthly deep clean), workouts spread over your chosen days, routines, a daily practice block, alarms and relationship cards. |
-| ✓ **Habit tracker** | Daily checklist, streaks and best streaks, and a 12-week heatmap for every habit. |
+| ✓ **Habit tracker** | Today folds habits into **one row per life area** (open it to tick them, or “Done all”). Daily checklist, streaks and best streaks, and a 12-week heatmap for every habit. |
 | 🎯 **100 skills in 365 days** | Skills are grouped by area so related skills sit together, and each group has its own progress. Each skill can link to the skills it **builds on**. A pace line shows whether you're on track, and you can log practice time. Over 140 skill ideas are included. |
 | 📅 **My schedule** | A **24-hour** day view, a **week** view and a **month** view. Habits, alarms, plans and learned skills appear in one place. Export everything to your phone's calendar (.ics) with weekly repeats. |
 | ⏱ **Timer** | Countdown, focus mode (25/5) and stopwatch. It **rings even with the screen off**: Start begins one MP3 track that is silent for the countdown and then rings, and phones keep playing audio while asleep. It shows a lock-screen card with Stop. On Android, it can also set the same timer in the Clock app. It logs minutes to a skill. |
@@ -64,7 +66,7 @@ npm test       # unit tests (Node 18+)
 ## Files
 
 ```
-index.html, css/styles.css (shared), css/serene.css + css/aero.css (each look, scoped to :root[data-style]), sw.js, manifest.webmanifest, icons/, fonts/ (Source Sans 3 + licence)
+index.html, css/styles.css (shared), css/serene.css, css/aero.css, css/looks.css (each scoped to :root[data-style]; serene/looks built from css/src by tools/build-css.sh), sw.js, manifest.webmanifest, icons/, fonts/ (Source Sans 3 + licence)
 js/app.js        router, theme, update flow
 js/data.js       questions, aesthetics, skill library, cleaning kits
 js/plan.js       answers → habits, skills, alarms, events, people
@@ -73,6 +75,8 @@ js/backup.js     backup files
 js/alarmcore.js  alarm times, Android Clock intent, iPhone Shortcut link
 js/ring.js       in-app alarm ringer
 js/ics.js        calendar export
+js/looks.js      the Looks gallery: catalog, fonts, shapes, patterns, contrast-safe theme maths
+js/bubbles.js    bubble-chart packing
 js/views/        today, habits, skills, calendar, timer, alarms, vision (life), settings, quiz
 tests/           node --test
 ```

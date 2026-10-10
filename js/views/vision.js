@@ -1,6 +1,7 @@
 // "Life": your vision board (answers), your environment (home + inventory) and your people.
 import { SECTIONS, AESTHETICS, CLEANING_KITS, DOMAINS, SECTION_DOMAIN } from '../data.js';
-import { isDue, isDone } from '../store.js';
+import { isDue, isDone, toggleHabit } from '../store.js';
+import { pack, bounds, radiusFor } from '../bubbles.js';
 import { ymd } from '../util.js';
 import { openSheet, field } from './sheet.js';
 import { esc, fmtTime, daysLabel, uid, DAY_NAMES } from '../util.js';
@@ -23,7 +24,56 @@ function answerBlock(a, s, i) {
 }
 
 /** The map of your life: domain → area → your habits, in priority order. */
+// Bubble chart state: [] = all of life, [domain] = its parts, [domain, part] = its habits.
+let mapPath = [];
+let mapMode = 'bubbles';
+
+/** The Life map as a bubble chart. Bubble shapes follow the active look (see styles.css [data-bubble]). */
 function mapTab(state) {
+  const today = ymd();
+  const [dom, part] = mapPath;
+  const d = DOMAINS.find((x) => x.name === dom);
+  let items;
+  if (!d) {
+    items = DOMAINS.map((x, k) => {
+      const hs = state.habits.filter((h) => h.area === x.name);
+      return { key: x.name, label: x.name, emoji: x.emoji, count: hs.length, done: hs.filter((h) => isDue(h, today) && isDone(state, h.id, today)).length, due: hs.filter((h) => isDue(h, today)).length, hue: k / (DOMAINS.length - 1), nav: x.name };
+    });
+  } else if (!part) {
+    const hs = state.habits.filter((h) => h.area === d.name);
+    const parts = [...d.areas, ...(hs.some((h) => !d.areas.includes(h.sub)) ? ['Other'] : [])];
+    items = parts.map((a, k) => {
+      const inPart = hs.filter((h) => (a === 'Other' ? !d.areas.includes(h.sub) : h.sub === a));
+      return { key: a, label: a, emoji: '', count: inPart.length, done: inPart.filter((h) => isDue(h, today) && isDone(state, h.id, today)).length, due: inPart.filter((h) => isDue(h, today)).length, hue: k / Math.max(1, parts.length - 1), nav: a };
+    });
+  } else {
+    const hs = state.habits.filter((h) => h.area === d.name && (part === 'Other' ? !d.areas.includes(h.sub) : h.sub === part));
+    items = hs.map((h, k) => ({ key: h.id, label: h.name, emoji: h.emoji, count: 1, due: isDue(h, today) ? 1 : 0, done: isDone(state, h.id, today) ? 1 : 0, hue: k / Math.max(1, hs.length - 1), habit: h.id }));
+  }
+  const placed = pack(items.map((it) => ({ ...it, r: it.habit ? 50 : radiusFor(it.count, 46, 14) })), 5);
+  const crumbs = [['All of life', 0], ...(d ? [[`${d.emoji} ${d.name}`, 1]] : []), ...(part ? [[part, 2]] : [])];
+  let chart = '<p class="empty">Nothing here yet. Add habits or answer the questions for this area.</p>';
+  if (placed.length) {
+    const b = bounds(placed);
+    const W = b.maxX - b.minX;
+    const H = b.maxY - b.minY;
+    chart = `<div class="bubble-chart" style="aspect-ratio:${W.toFixed(1)} / ${H.toFixed(1)}">${placed
+      .map((p) => {
+        const pct = p.due ? p.done / p.due : 0;
+        const attrs = p.habit ? `data-bubble-habit="${p.habit}"` : `data-bubble-nav="${esc(p.nav)}"`;
+        return `<button class="lm-bubble${p.habit && p.done ? ' done' : ''}" ${attrs} style="left:${(((p.x - p.r - b.minX) / W) * 100).toFixed(2)}%;top:${(((p.y - p.r - b.minY) / H) * 100).toFixed(2)}%;width:${(((2 * p.r) / W) * 100).toFixed(2)}%;--hue:${(p.hue * 100).toFixed(0)}%;--fill:${(pct * 100).toFixed(0)}%;--s:${((2 * p.r) / W).toFixed(3)};--fit:${Math.min(1, 9 / Math.max(...p.label.split(/\s+/).map((w) => w.length))).toFixed(2)}">
+          <span class="bubble-in">${p.emoji ? `<span class="b-emoji">${esc(p.emoji)}</span>` : ''}<span class="b-label">${esc(p.label)}</span>${p.habit ? `<span class="b-count">${p.done ? '✓ done' : p.due ? 'tap when done' : 'not today'}</span>` : `<span class="b-count">${p.count} habit${p.count === 1 ? '' : 's'}${p.due ? ` · ${p.done}/${p.due}` : ''}</span>`}</span>
+        </button>`;
+      })
+      .join('')}</div>`;
+  }
+  return `
+    <div class="row wrap"><nav class="crumbs">${crumbs.map(([t, n], k) => (k === crumbs.length - 1 ? `<b>${esc(t)}</b>` : `<button class="linkish" data-crumb="${n}">${esc(t)}</button> ›`)).join(' ')}</nav>
+      <span style="margin-left:auto"></span><button class="chip${mapMode === 'bubbles' ? ' on' : ''}" data-map-mode="bubbles">Bubbles</button><button class="chip${mapMode === 'list' ? ' on' : ''}" data-map-mode="list">List</button></div>
+    ${mapMode === 'list' ? mapListTab(state) : `<p class="muted small">${!d ? 'Body, mind and soul first. Bigger bubbles hold more habits; the fill shows today. Tap a bubble to open it.' : !part ? `The parts of ${esc(d.name)}. Tap one to see its habits.` : 'Tap a habit when you have done it today.'}</p>${chart}${d && !part ? `<a class="btn small" href="#quiz/${SECTIONS.findIndex((x) => SECTION_DOMAIN[x.id] === d.name)}">Answer ${esc(d.name)} questions</a>` : ''}`}`;
+}
+
+function mapListTab(state) {
   const today = ymd();
   return `
     <p class="muted small">Body, mind and soul first, then relationships, then everything else. Tap a life area to open its parts and habits.</p>
@@ -214,6 +264,19 @@ export function mount(root, app) {
   const state = app.state;
   root.addEventListener('click', (e) => {
     const t = e.target;
+    const mm = t.closest('[data-map-mode]');
+    if (mm) return (mapMode = mm.dataset.mapMode), app.render();
+    const cr = t.closest('[data-crumb]');
+    if (cr) return (mapPath = mapPath.slice(0, Number(cr.dataset.crumb))), app.render();
+    const bn = t.closest('[data-bubble-nav]');
+    if (bn) return mapPath.push(bn.dataset.bubbleNav), app.render();
+    const bh = t.closest('[data-bubble-habit]');
+    if (bh) {
+      toggleHabit(app.state, bh.dataset.bubbleHabit, ymd());
+      navigator.vibrate?.(15);
+      app.save();
+      return app.render();
+    }
     if (t.closest('[data-item]')) return editItem(app);
     const ei = t.closest('[data-edit-item]');
     if (ei) return editItem(app, state.inventory.find((x) => x.id === ei.dataset.editItem));

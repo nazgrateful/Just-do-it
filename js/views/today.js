@@ -4,6 +4,9 @@ import { AESTHETICS, DOMAINS, domainOrder } from '../data.js';
 import { hasContent } from '../store.js';
 import { ymd, esc, fmtTime, fmtMinutes, daysBetween } from '../util.js';
 
+// Life areas you've opened on Today (stay open while you tick things off).
+const openAreas = new Set();
+
 export const domainEmoji = (name) => DOMAINS.find((d) => d.name === name)?.emoji || '⭐';
 
 export function habitRow(state, h, date) {
@@ -70,12 +73,45 @@ export function render({ state }) {
       ${learning.length ? `<h2>Learning now</h2><ul class="list">${learning.map((s) => `<li class="item"><span>🎯 <b>${esc(s.name)}</b> <small class="muted">${fmtMinutes(skillMinutes(state, s.id))} practised</small></span><a class="btn small" href="#timer/skill/${s.id}">Practise</a></li>`).join('')}</ul>` : ''}
 
       <h2>Today's habits</h2>
-      ${due.length ? Object.entries(groups).map(([area, list]) => `<h4 class="cat">${domainEmoji(area)} ${esc(area)}</h4><ul class="habits">${list.map((h) => habitRow(state, h, today)).join('')}</ul>`).join('') : `<p class="empty">No habits for today. <a href="#habits">Add one</a> or <a href="#quiz">answer the questions</a> to build a plan.</p>`}
+      ${
+        due.length
+          ? Object.entries(groups)
+              .map(([area, list]) => {
+                // One folded row per life area, so the day doesn't feel like a wall of tasks.
+                const n = list.filter((h) => isDone(state, h.id, today)).length;
+                const all = n === list.length;
+                return `<details class="group day-group${all ? ' all-done' : ''}" data-area="${esc(area)}"${openAreas.has(area) ? ' open' : ''}>
+                  <summary>
+                    <span class="dg-emoji" aria-hidden="true">${domainEmoji(area)}</span>
+                    <span class="dg-main"><b>${esc(area)}</b><small>${all ? 'All done ✓' : `${n} of ${list.length} done`}</small></span>
+                    <span class="mini-bar"><i style="width:${(n / list.length) * 100}%"></i></span>
+                  </summary>
+                  <ul class="habits">${list.map((h) => habitRow(state, h, today)).join('')}</ul>
+                  ${list.length > 1 ? `<button class="btn small" data-all="${esc(area)}">${all ? 'Undo all' : `✓ Done all ${list.length}`}</button>` : ''}
+                </details>`;
+              })
+              .join('')
+          : `<p class="empty">No habits for today. <a href="#habits">Add one</a> or <a href="#quiz">answer the questions</a> to build a plan.</p>`
+      }
     </section>`;
 }
 
 export function mount(root, app) {
+  root.addEventListener('toggle', (e) => {
+    const area = e.target.dataset?.area;
+    if (area) e.target.open ? openAreas.add(area) : openAreas.delete(area);
+  }, true);
   root.addEventListener('click', (e) => {
+    const all = e.target.closest('[data-all]');
+    if (all) {
+      const today = ymd();
+      const list = groupedHabits(app.state, today).groups[all.dataset.all] || [];
+      const finish = list.some((h) => !isDone(app.state, h.id, today));
+      for (const h of list) if (isDone(app.state, h.id, today) !== finish) toggleHabit(app.state, h.id, today);
+      navigator.vibrate?.(finish ? [20, 40, 20] : 15);
+      app.save();
+      return app.render();
+    }
     const b = e.target.closest('[data-toggle]');
     if (!b) return;
     toggleHabit(app.state, b.dataset.toggle, ymd());

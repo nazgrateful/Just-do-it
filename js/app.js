@@ -4,6 +4,7 @@ import { startRinger } from './ring.js';
 import { detectPlatform } from './alarmcore.js';
 import { $, $$ } from './util.js';
 import { APP_VERSION, RELEASES } from './version.js';
+import { lookById, lookVars, bubbleShape } from './looks.js';
 import * as today from './views/today.js';
 import * as habits from './views/habits.js';
 import * as skills from './views/skills.js';
@@ -13,8 +14,9 @@ import * as alarms from './views/alarms.js';
 import * as vision from './views/vision.js';
 import * as settings from './views/settings.js';
 import * as quiz from './views/quiz.js';
+import * as gallery from './views/gallery.js';
 
-const VIEWS = { today, habits, skills, calendar, timer, alarms, vision, settings, quiz };
+const VIEWS = { today, habits, skills, calendar, timer, alarms, vision, settings, quiz, looks: gallery };
 
 let state = load();
 if (!state.settings.platform) state.settings.platform = detectPlatform();
@@ -54,19 +56,40 @@ function render() {
   document.body.dataset.view = name;
 }
 
+/** Which look is active: Settings → Looks wins, then the vibe question, then Tranquil serenity. */
+export function activeLookId(st) {
+  return st.settings.look || st.answers.aesthetic || 'serene';
+}
+
 function applyTheme() {
-  const a = AESTHETICS[state.answers.aesthetic] || AESTHETICS.serene;
+  const id = activeLookId(state);
   const pref = state.settings.theme;
   const dark = pref === 'dark' || (pref === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
-  const r = document.documentElement.style;
-  r.setProperty('--accent', dark ? a.accentDark : a.accent);
-  r.setProperty('--accent2', (dark ? a.accent2Dark : a.accent2) || (dark ? a.accentDark : a.accent));
-  r.setProperty('--bg', dark ? a.dbg : a.bg);
-  r.setProperty('--surface', dark ? a.dsurface : a.surface);
-  r.setProperty('--ink', dark ? a.dink : a.ink);
-  document.documentElement.dataset.font = a.font;
-  document.documentElement.dataset.style = a.style || 'serene';
-  document.documentElement.dataset.dark = dark ? '1' : '0';
+  const root = document.documentElement;
+  root.removeAttribute('style');
+  const special = { 'tranquil-serenity': 'serene', 'frutiger-aero': 'aero' }[id] || id;
+  const look = special === 'custom' ? state.settings.customLook : AESTHETICS[special] ? null : lookById(special);
+  if (look) {
+    // A gallery look (or your own): one stylesheet driven by variables.
+    const { vars, dark: isDarkLook } = lookVars(look, dark);
+    for (const [k, v] of Object.entries(vars)) root.style.setProperty(k, v);
+    root.dataset.style = 'look';
+    root.dataset.font = 'look';
+    root.dataset.dark = isDarkLook ? '1' : '0';
+    root.dataset.bubble = bubbleShape(look);
+    $('meta[name=theme-color]')?.setAttribute('content', vars['--bg']);
+    return;
+  }
+  const a = AESTHETICS[special] || AESTHETICS.serene;
+  root.style.setProperty('--accent', dark ? a.accentDark : a.accent);
+  root.style.setProperty('--accent2', (dark ? a.accent2Dark : a.accent2) || (dark ? a.accentDark : a.accent));
+  root.style.setProperty('--bg', dark ? a.dbg : a.bg);
+  root.style.setProperty('--surface', dark ? a.dsurface : a.surface);
+  root.style.setProperty('--ink', dark ? a.dink : a.ink);
+  root.dataset.font = a.font;
+  root.dataset.style = a.style || 'serene';
+  root.dataset.dark = dark ? '1' : '0';
+  root.dataset.bubble = a.style === 'aero' ? 'orb' : 'pebble';
   $('meta[name=theme-color]')?.setAttribute('content', dark ? a.dbg : a.bg);
 }
 

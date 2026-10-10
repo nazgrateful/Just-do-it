@@ -100,18 +100,28 @@ export function render({ state }) {
       <nav class="steps-nav" aria-label="Life areas">${SECTIONS.map((x, k) => `<a href="#quiz/${k}" class="${k === i ? 'on' : ''}" title="${esc(x.title)}">${x.emoji}</a>`).join('')}</nav>
       <h1>${s.emoji} ${esc(s.title)}</h1>
       ${s.intro ? `<p class="lead">${esc(s.intro)}</p>` : ''}
-      ${i === 0 ? '<p class="hint">✍️ Answer in your own words first. If you want ideas, open <b>💡 Show suggestions</b> under any question.</p>' : ''}
+      ${i === 0 ? `<p class="hint">✍️ <b>Every question is optional.</b> Answer only what you want, in your own words. For ideas, open <b>💡 Show suggestions</b>. You can skip any step, or <button class="linkish" data-skip-all>skip the questions for now</button>.</p>` : ''}
       ${s.questions
         .map((q, k) => {
           const head = q.area && q.area !== s.questions[k - 1]?.area ? `<h2 class="area-h">${esc(q.area)}</h2>` : '';
           return `${head}<div class="q"><h3>${esc(q.q)}</h3>${question(q, a)}</div>`;
         })
         .join('')}
+      <p class="center small"><button class="linkish" data-skip-all>Skip the rest and go to my app →</button></p>
       <div class="quiz-nav">
         ${i > 0 ? `<button class="btn" data-goto="${i - 1}">Back</button>` : '<span></span>'}
-        <button class="btn primary" data-goto="${i + 1}">${i === SECTIONS.length - 1 ? 'Finish' : 'Next'}</button>
+        <button class="btn primary" data-goto="${i + 1}">${i === SECTIONS.length - 1 ? 'Finish' : answered(s, a) ? 'Next' : 'Skip'}</button>
       </div>
     </section>`;
+}
+
+/** Has anything on this step been answered (beyond the pre-filled defaults)? */
+function answered(s, a) {
+  return s.questions.some((q) => {
+    const v = a[q.id];
+    if (v == null || v === '' || (Array.isArray(v) && !v.length)) return false;
+    return q.default === undefined || JSON.stringify(v) !== JSON.stringify(q.default);
+  });
 }
 
 function mergeById(list, add, key) {
@@ -134,7 +144,7 @@ export function mount(root, app) {
       scrollTo(0, 0);
       return;
     }
-    if (b.id === 'build') {
+    if (b.dataset.skipAll !== undefined || b.id === 'build') {
       const plan = buildPlan(a);
       const added = [
         mergeById(state.habits, plan.habits, (h) => h.name),

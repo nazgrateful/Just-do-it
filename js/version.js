@@ -1,8 +1,19 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.6.0';
+export const APP_VERSION = '1.7.0';
 
 export const RELEASES = [
+  {
+    version: '1.7.0',
+    date: '2026-10-10',
+    notes: [
+      'Looks gallery (Settings → Browse all looks): 167 aesthetics from the Aesthetics Wiki and Pinterest. Each changes colours, lettering, boxes, buttons, shapes and background pattern',
+      'Make your own look: pick colours, heading and text fonts, shapes and pattern (text stays readable automatically)',
+      'Life map is now a bubble chart: life areas → parts → habits. Bubble shapes match your look (hearts, stars, flowers, hexagons, squares…)',
+      'Today groups habits by life area into one folded row each, with “Done all”',
+      'Every question is optional: skip any step, or skip the questions for now',
+    ],
+  },
   {
     version: '1.6.0',
     date: '2026-10-10',
