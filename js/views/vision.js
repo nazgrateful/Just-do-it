@@ -28,7 +28,7 @@ function visionTab(state) {
     <div class="card mood" style="${ae ? `--a:${ae.accent};--b:${ae.bg};--i:${ae.ink}` : ''}">
       <div class="aes-swatch"><i></i><i></i><i></i></div>
       <h2>${ae ? `${ae.emoji} ${esc(ae.name)}` : 'Your vibe'}</h2>
-      ${ae ? `<p class="lead">${esc(ae.words)}</p>` : ''}
+      ${a.vibeText ? `<p class="lead">${esc(a.vibeText)}</p>` : ae ? `<p class="lead">${esc(ae.words)}</p>` : ''}
       ${a.words?.length ? `<p class="chips">${a.words.map((w) => `<span class="chip on">${esc(w)}</span>`).join('')}</p>` : ''}
       ${a.why ? `<blockquote>“${esc(a.why)}”</blockquote>` : ''}
     </div>

@@ -1,8 +1,17 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.1.0';
+export const APP_VERSION = '1.2.0';
 
 export const RELEASES = [
+  {
+    version: '1.2.0',
+    date: '2026-10-10',
+    notes: [
+      'Answer every question in your own words first; suggestions are tucked into a “💡 Show suggestions” panel you can open',
+      'Easier-to-read text: more solid glass behind words, darker text, and a soft glow on text over the sky',
+      'More Frutiger Aero sky details: soft clouds and bokeh light',
+    ],
+  },
   {
     version: '1.1.0',
     date: '2026-10-10',

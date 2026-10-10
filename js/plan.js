@@ -16,7 +16,26 @@ export function shiftTime(hhmm, minutes) {
   return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
 }
 
-const minutesOf = (s, fallback) => parseInt(s, 10) || fallback;
+/** Hours like "6am", "6:30 pm", "18:00" typed in your own words → "HH:MM". */
+export function parseTimeText(text) {
+  const m = String(text || '').toLowerCase().match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?/);
+  if (!m) return null;
+  let h = Number(m[1]);
+  const min = Number(m[2] || 0);
+  if (m[3]?.startsWith('p') && h < 12) h += 12;
+  if (m[3]?.startsWith('a') && h === 12) h = 0;
+  if (h > 23 || min > 59) return null;
+  return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+}
+const timeOf = (answer, fallback) => TIME_OF[answer] || parseTimeText(answer) || fallback;
+
+/** "45 min", "1 hour", "1.5h" → minutes. */
+export function minutesOf(text, fallback) {
+  const s = String(text || '').toLowerCase();
+  const n = parseFloat(s);
+  if (!n) return fallback;
+  return Math.round(/h(ou)?r|^\d+(\.\d+)?\s*h$/.test(s) && !/min/.test(s) ? n * 60 : n);
+}
 
 const CHORE_EMOJI = {
   'Make bed': '🛏️', Dishes: '🍽️', 'Kitchen wipe-down': '🧽', Laundry: '🧺', Bathroom: '🛁', Floors: '🧹', Dusting: '🪶',
@@ -80,7 +99,7 @@ export function buildPlan(a, today = ymd()) {
 
   // --- Cleaning -----------------------------------------------------------
   const chores = a.chores || [];
-  const cleanTime = TIME_OF[a.cleanTime] || '18:00';
+  const cleanTime = timeOf(a.cleanTime, '18:00');
   const cleanDays = a.cleanDays?.length ? a.cleanDays : [6];
   const kitNote = [a.products?.length ? `Use: ${a.products.join(', ')}` : '', a.scent ? `Scent: ${a.scent}` : '', a.tools?.length ? `Tools: ${a.tools.join(', ')}` : ''].filter(Boolean).join(' · ');
   const daily = chores.filter((c) => DAILY_CHORES.includes(c));
@@ -114,7 +133,7 @@ export function buildPlan(a, today = ymd()) {
 
   // --- Exercise -------------------------------------------------------------
   const fitDays = a.fitDays?.length ? [...a.fitDays].sort() : [];
-  const fitTime = TIME_OF[a.fitTime] || '07:30';
+  const fitTime = timeOf(a.fitTime, '07:30');
   const fitLen = minutesOf(a.fitLength, 30);
   const types = a.workouts?.length ? a.workouts : ['Workout'];
   const byType = new Map();
@@ -141,7 +160,7 @@ export function buildPlan(a, today = ymd()) {
 
   // --- Skills -----------------------------------------------------------------
   const learnMin = minutesOf(a.dailyMinutes, 30);
-  const learnTime = TIME_OF[a.learnTime] || '19:00';
+  const learnTime = timeOf(a.learnTime, '19:00');
   const learnDays = a.learnTime === 'Weekend blocks' ? [0, 6] : ALL;
   habits.push(habit(`Practise a skill · ${learnMin} min`, 'Skills', { days: learnDays, time: learnTime, emoji: '🎯' }));
 

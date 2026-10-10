@@ -6,7 +6,7 @@
  * Frutiger Aero is the core look (glass, gloss, sky, bubbles); the others tint it.
  */
 export const AESTHETICS = {
-  aero: { name: 'Frutiger Aero', emoji: '🫧', font: 'aero', accent: '#0a84d6', accent2: '#3fb618', accentDark: '#4fc3f7', accent2Dark: '#7ee05a', bg: '#dff3ff', surface: '#f5fbff', ink: '#06304f', dbg: '#03192e', dsurface: '#0a2f4d', dink: '#e3f4ff', words: 'glossy glass, blue skies, bubbles, clean water, green leaves, optimism' },
+  aero: { name: 'Frutiger Aero', emoji: '🫧', font: 'aero', accent: '#0067b8', accent2: '#4cae1a', accentDark: '#4fc3f7', accent2Dark: '#7ee05a', bg: '#dff3ff', surface: '#f5fbff', ink: '#03233d', dbg: '#03192e', dsurface: '#0a2f4d', dink: '#e3f4ff', words: 'glossy glass, blue skies, bubbles, clean water, green leaves, optimism' },
   minimal: { name: 'Clean minimalist', emoji: '◻️', font: 'sans', accent: '#2f2f2f', accentDark: '#e8e8e8', bg: '#fafafa', surface: '#ffffff', ink: '#1a1a1a', dbg: '#111111', dsurface: '#1c1c1c', dink: '#f2f2f2', words: 'white space, fewer things, better things' },
   cozy: { name: 'Cozy & warm', emoji: '🕯️', font: 'rounded', accent: '#b5643c', accentDark: '#e59a72', bg: '#fbf4ec', surface: '#fffaf4', ink: '#3b2a20', dbg: '#1d1612', dsurface: '#2a201a', dink: '#f6e8dc', words: 'soft light, blankets, warm drinks, slow mornings' },
   academia: { name: 'Dark academia', emoji: '📚', font: 'serif', accent: '#6b3a2a', accentDark: '#c99a6b', bg: '#f1ebe0', surface: '#f8f3ea', ink: '#2b211b', dbg: '#16120f', dsurface: '#221c17', dink: '#eadfcd', words: 'old books, wool, candlelit study, quiet ambition' },
@@ -123,10 +123,10 @@ export const SECTIONS = [
   },
   {
     id: 'skills', emoji: '🎯', title: '100 skills in 365 days',
-    intro: 'That is about one new skill every 3–4 days. Pick the areas that excite you, then tap skills to add them. You can change the list any time.',
+    intro: 'That is about one new skill every 3–4 days. Write your own list first; open the ideas if you get stuck. You can change it any time.',
     questions: [
       { id: 'skillAreas', q: 'Which areas do you want to learn in?', type: 'multi', options: null /* filled from SKILL_LIBRARY */ },
-      { id: 'skillPicks', q: 'Tap the skills you want. Aim for 100!', type: 'skills' },
+      { id: 'skillPicks', q: 'Which skills do you want to learn? Aim for 100!', type: 'skills' },
       { id: 'dailyMinutes', q: 'How much time a day can you give to learning?', type: 'single', options: ['15 min', '30 min', '45 min', '60 min', '90 min'] },
       { id: 'learnTime', q: 'When will you practise?', type: 'single', options: ['Morning', 'Lunch', 'Evening', 'Weekend blocks'] },
     ],
