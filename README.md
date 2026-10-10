@@ -1,2 +1,2 @@
-# Just-do-it
+# Just-Do-It
 Learn skills
