@@ -1,6 +1,7 @@
 import { nextOccurrence, androidAlarmIntent, iosShortcutUrl, shortcutLines } from '../alarmcore.js';
 import { buildIcs } from '../ics.js';
 import { testRing, unlockAudio } from '../ring.js';
+import { armTimerSound, disarmTimerSound, setLockScreenStop } from '../timeraudio.js';
 import { openSheet, daysPicker, readDays, field } from './sheet.js';
 import { downloadFile } from './files.js';
 import { dndGuide } from './guide.js';
@@ -51,7 +52,8 @@ export function render({ state }) {
         ${
           p === 'ios'
             ? `<a class="btn primary" href="${esc(iosShortcutUrl(important))}" ${important.length ? '' : 'aria-disabled="true"'}>⏰ Send all ${important.length} important alarms to iPhone Clock</a>
-               <p class="small muted">Needs the one-time “Just Do It Alarms” shortcut — see the iPhone guide below.</p>`
+               <p class="small muted">Needs the one-time “Just Do It Alarms” shortcut — see the iPhone guide below.</p>
+               <p class="small">No setup: tap <b>🌙 Night-stand mode</b> at bedtime. Your next alarm then rings through Do Not Disturb, even with the screen locked.</p>`
             : p === 'android'
               ? `<p class="small">Tap <b>Add to Clock</b> next to each important alarm above, then tap Save in the Clock app.</p>`
               : `<p class="small">On your phone, open this app and use the <b>Add to Clock</b> buttons. On a computer, use the calendar export.</p>`
@@ -61,7 +63,7 @@ export function render({ state }) {
           <button class="btn" data-ics="all">Export all alarms (.ics)</button>
           <button class="btn" data-copy>Copy alarm list</button>
           <button class="btn" data-test>🔊 Test important alarm</button>
-          <button class="btn" data-night>🌙 Alarm clock mode</button>
+          <button class="btn" data-night>🌙 Night-stand mode</button>
         </div>
         <label class="field inline">Device <select class="input" data-platform>${['ios', 'android', 'desktop'].map((x) => `<option value="${x}"${x === p ? ' selected' : ''}>${{ ios: 'iPhone / iPad', android: 'Android', desktop: 'Computer' }[x]}</option>`).join('')}</select></label>
       </div>
@@ -97,29 +99,51 @@ function edit(app, a) {
   );
 }
 
+/**
+ * Night-stand mode: keeps the screen on and also starts a silent audio track that turns into
+ * the alarm at the next alarm time. iPhone and Android don't silence audio that is already
+ * playing, so it rings through Do Not Disturb / Focus, even if the screen goes off.
+ */
 async function alarmClockMode(app) {
   unlockAudio();
   const el = $('#night');
+  const now = new Date();
+  const next = app.state.alarms.map((a) => ({ a, at: nextOccurrence(a, now) })).filter((x) => x.at).sort((x, y) => x.at - y.at)[0];
+  let armed = false;
   const draw = () => {
-    const now = new Date();
-    const next = app.state.alarms.map((a) => ({ a, at: nextOccurrence(a, now) })).filter((x) => x.at).sort((x, y) => x.at - y.at)[0];
-    el.innerHTML = `<div class="night-time">${now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
-      ${next ? `<div class="night-next">⏰ ${fmtTime(next.a.time)} · ${esc(next.a.label)}</div>` : ''}
-      <p class="small">Keep the phone on the charger with this screen open. Alarms will ring out loud.</p>
+    const n = new Date();
+    el.innerHTML = `<div class="night-time">${n.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
+      ${next ? `<div class="night-next">⏰ ${fmtTime(next.a.time)} · ${esc(next.a.label)}</div>` : '<div class="night-next">No alarms set</div>'}
+      <p class="small">${
+        armed
+          ? '🔊 <b>Armed.</b> This alarm will ring even with Do Not Disturb on and the screen off. Leave the app open (you can lock the phone), keep it charging and the volume up.'
+          : next
+            ? 'Keep the phone on the charger with this screen open. The alarm rings out loud.'
+            : 'Add an alarm first.'
+      }</p>
       <button class="btn" data-exit>Exit</button>`;
   };
+  // Started inside the tap, so the browser allows the sound. Up to 12 hours ahead.
+  const nightLabel = next ? `⏰ ${next.a.label}` : '';
+  if (next) {
+    armed = await armTimerSound((next.at - Date.now()) / 1000, { owner: 'night', label: nightLabel, endsAt: next.at, volume: app.state.settings.volume, maxSeconds: 12 * 3600 });
+  }
   draw();
   el.hidden = false;
   const iv = setInterval(draw, 15000);
   try {
     nightLock = await navigator.wakeLock?.request('screen');
   } catch {}
-  el.onclick = (e) => {
-    if (!e.target.closest('[data-exit]')) return;
+  const exit = () => {
     clearInterval(iv);
     el.hidden = true;
+    disarmTimerSound('night');
     nightLock?.release().catch(() => {});
     nightLock = null;
+  };
+  setLockScreenStop(exit, 'night');
+  el.onclick = (e) => {
+    if (e.target.closest('[data-exit]')) exit();
   };
 }
 

@@ -3,6 +3,7 @@
 // Important alarms ring louder, longer, vibrate, and keep their notification on screen.
 import { dueAlarms } from './alarmcore.js';
 import { fmtTime, esc, $ } from './util.js';
+import { disarmTimerSound } from './timeraudio.js';
 
 let ctx = null;
 let loop = null;
@@ -118,6 +119,7 @@ function ring(alarm, getState) {
 
 function dismiss() {
   stopSound();
+  disarmTimerSound('night'); // night-stand mode's ringing track
   active = null;
   const el = $('#alarm-overlay');
   el.hidden = true;

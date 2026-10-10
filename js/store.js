@@ -2,7 +2,21 @@
 import { ymd, addDays, daysBetween, weekday } from './util.js';
 
 export const KEY = 'just-do-it-v1';
-export const SCHEMA = 1;
+export const SCHEMA = 2;
+
+/** v1 habit areas → v2 life map (domain + area). */
+export const V1_AREAS = {
+  Home: ['Environment', 'Home & cleaning'],
+  Fitness: ['Body', 'Movement'],
+  Morning: ['Self-management', 'Time'],
+  Evening: ['Self-management', 'Time'],
+  Food: ['Body', 'Food'],
+  'Self-care': ['Body', 'Hygiene & grooming'],
+  Mind: ['Mind', 'Mental rest'],
+  Money: ['Money', 'Spending'],
+  People: ['Relationships', 'Friends'],
+  Skills: ['Work & purpose', 'Skills'],
+};
 
 export function defaultState(today = ymd()) {
   return {
@@ -31,6 +45,13 @@ export function migrate(raw, today = ymd()) {
   s.settings = { ...base.settings, ...(raw.settings || {}) };
   for (const k of ['habits', 'skills', 'sessions', 'events', 'alarms', 'inventory', 'people']) if (!Array.isArray(s[k])) s[k] = [];
   if (!s.log || typeof s.log !== 'object') s.log = {};
+  // v1 → v2: file habits and plans under the life map. The old area is kept as `areaV1`.
+  if ((raw.schema || 0) < 2) {
+    for (const x of [...s.habits, ...s.events]) {
+      const m = V1_AREAS[x.area];
+      if (m && !x.sub) Object.assign(x, { areaV1: x.area, area: m[0], sub: m[1] });
+    }
+  }
   s.schema = SCHEMA;
   return s;
 }

@@ -48,3 +48,40 @@ test('empty answers still give a valid plan', () => {
   const p = buildPlan({}, '2026-10-10');
   assert.ok(Array.isArray(p.habits) && Array.isArray(p.skills));
 });
+
+test('answers typed in your own words still build a plan', async () => {
+  const { parseTimeText, minutesOf } = await import('../js/plan.js');
+  assert.equal(parseTimeText('6am'), '06:00');
+  assert.equal(parseTimeText('around 6:30 pm'), '18:30');
+  assert.equal(parseTimeText('18:15'), '18:15');
+  assert.equal(parseTimeText('whenever'), null);
+  assert.equal(minutesOf('40 min', 30), 40);
+  assert.equal(minutesOf('1 hour', 30), 60);
+  assert.equal(minutesOf('1.5h', 30), 90);
+  assert.equal(minutesOf('not sure', 30), 30);
+  const p = buildPlan({ fitDays: [2], fitTime: 'before work, 6am', fitLength: '40 min', workouts: ['Aerial silks'], cleanStyle: 'whenever it looks messy', chores: ['Dishes', 'Balcony'] }, '2026-10-10');
+  const w = p.habits.find((h) => h.name.startsWith('Aerial silks'));
+  assert.equal(w.name, 'Aerial silks · 40 min');
+  assert.equal(w.time, '06:00');
+  assert.ok(p.habits.some((h) => h.name.includes('Balcony')));
+});
+
+test('habits are filed under the life map: domain → area', async () => {
+  const { DOMAIN_NAMES } = await import('../js/data.js');
+  const p = buildPlan({
+    windDown: ['Herbal tea'], attention: ['Deep-work block'], faith: ['Prayer', 'Weekly worship or service'], family: ['Visit parents monthly'],
+    medical: ['Yearly check-up'], chores: ['Dishes'], digital: ['Inbox zero weekly'], rhythm: ['Sunday planning'],
+  }, '2026-10-10');
+  const by = Object.fromEntries(p.habits.map((h) => [h.name, [h.area, h.sub, h.days.join('')]]));
+  assert.deepEqual(by['Herbal tea'].slice(0, 2), ['Body', 'Sleep']);
+  assert.deepEqual(by['Deep-work block'].slice(0, 2), ['Mind', 'Attention']);
+  assert.deepEqual(by['Prayer'].slice(0, 2), ['Meaning', 'Faith & philosophy']);
+  assert.equal(by['Weekly worship or service'][2], '0');
+  assert.deepEqual(by['Dishes'].slice(0, 2), ['Environment', 'Home & cleaning']);
+  assert.deepEqual(by['Inbox zero weekly'], ['Environment', 'Digital space', '5']);
+  assert.deepEqual(by['Sunday planning'], ['Self-management', 'Time', '0']);
+  // monthly and yearly things go on the calendar instead of the daily list
+  assert.ok(!by['Visit parents monthly'] && p.events.some((e) => e.title === 'Visit parents monthly' && e.area === 'Relationships'));
+  assert.ok(p.events.some((e) => e.title === 'Book: Yearly check-up' && e.sub === 'Medical care'));
+  for (const h of p.habits) assert.ok(DOMAIN_NAMES.includes(h.area), h.area);
+});

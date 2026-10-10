@@ -1,15 +1,17 @@
 // "Life": your vision board (answers), your environment (home + inventory) and your people.
-import { SECTIONS, AESTHETICS, CLEANING_KITS } from '../data.js';
+import { SECTIONS, AESTHETICS, CLEANING_KITS, DOMAINS, SECTION_DOMAIN } from '../data.js';
+import { isDue, isDone } from '../store.js';
+import { ymd } from '../util.js';
 import { openSheet, field } from './sheet.js';
 import { esc, fmtTime, daysLabel, uid, DAY_NAMES } from '../util.js';
 
-const TABS = { vision: '✨ Vision', env: '🏡 Environment', people: '💞 People', routine: '🕒 My routine' };
+const TABS = { map: '🗺 Life map', vision: '✨ Vision', env: '🏡 Environment', people: '💞 People', routine: '🕒 My routine' };
 const STATUSES = ['Love it', 'Use it', 'Maybe', 'Let go', 'Want to buy'];
 const ROOMS = ['Bedroom', 'Living room', 'Kitchen', 'Bathroom', 'Office', 'Closet / wardrobe', 'Hallway', 'Garage', 'Outdoor', 'Car', 'Storage', 'Digital'];
 const CONTACT = ['', 'Every day', 'A few times a week', 'Weekly', 'Every two weeks', 'Monthly', 'When it feels right', 'Minimal contact'];
 let q = '';
 
-const tab = () => location.hash.split('/')[1] || 'vision';
+const tab = () => location.hash.split('/')[1] || 'map';
 const list = (v) => (Array.isArray(v) ? v.join(' · ') : v);
 
 function answerBlock(a, s, i) {
@@ -20,6 +22,28 @@ function answerBlock(a, s, i) {
   return `<details class="group"><summary><span>${s.emoji} <b>${esc(s.title)}</b></span><a class="small" href="#quiz/${i}">Edit</a></summary>${rows || '<p class="muted small">Not answered yet.</p>'}</details>`;
 }
 
+/** The map of your life: domain → area → your habits, in priority order. */
+function mapTab(state) {
+  const today = ymd();
+  return `
+    <p class="muted small">Body, mind and soul first, then relationships, then everything else. Tap a life area to open its parts and habits.</p>
+    ${DOMAINS.map((d) => {
+      const hs = state.habits.filter((h) => h.area === d.name);
+      const dueToday = hs.filter((h) => isDue(h, today));
+      const done = dueToday.filter((h) => isDone(state, h.id, today)).length;
+      const secIdx = SECTIONS.findIndex((x) => SECTION_DOMAIN[x.id] === d.name);
+      const loose = hs.filter((h) => !d.areas.includes(h.sub));
+      const areaBlock = (name, list) => `<div class="map-area"><b>${esc(name)}</b>${list.length ? `<ul>${list.map((h) => `<li>${esc(h.emoji)} ${esc(h.name)} <small class="muted">${daysLabel(h.days)}</small></li>`).join('')}</ul>` : '<small class="muted">No habits yet</small>'}</div>`;
+      return `<details class="group map-domain">
+        <summary><span>${d.emoji} <b>${esc(d.name)}</b></span><span class="muted small">${hs.length} habits${dueToday.length ? ` · ${done}/${dueToday.length} today` : ''}</span></summary>
+        ${d.areas.map((ar) => areaBlock(ar, hs.filter((h) => h.sub === ar))).join('')}
+        ${loose.length ? areaBlock('Other', loose) : ''}
+        <div class="row wrap"><a class="btn small" href="#quiz/${secIdx}">Answer ${esc(d.name)} questions</a></div>
+      </details>`;
+    }).join('')}
+    ${state.habits.some((h) => !DOMAINS.some((d) => d.name === h.area)) ? `<details class="group"><summary><b>⭐ Other</b></summary><ul>${state.habits.filter((h) => !DOMAINS.some((d) => d.name === h.area)).map((h) => `<li>${esc(h.emoji)} ${esc(h.name)}</li>`).join('')}</ul></details>` : ''}`;
+}
+
 function visionTab(state) {
   const a = state.answers;
   const ae = AESTHETICS[a.aesthetic];
@@ -28,7 +52,7 @@ function visionTab(state) {
     <div class="card mood" style="${ae ? `--a:${ae.accent};--b:${ae.bg};--i:${ae.ink}` : ''}">
       <div class="aes-swatch"><i></i><i></i><i></i></div>
       <h2>${ae ? `${ae.emoji} ${esc(ae.name)}` : 'Your vibe'}</h2>
-      ${ae ? `<p class="lead">${esc(ae.words)}</p>` : ''}
+      ${a.vibeText ? `<p class="lead">${esc(a.vibeText)}</p>` : ae ? `<p class="lead">${esc(ae.words)}</p>` : ''}
       ${a.words?.length ? `<p class="chips">${a.words.map((w) => `<span class="chip on">${esc(w)}</span>`).join('')}</p>` : ''}
       ${a.why ? `<blockquote>“${esc(a.why)}”</blockquote>` : ''}
     </div>
@@ -128,12 +152,12 @@ function routineTab(state) {
 }
 
 export function render({ state }) {
-  const t = TABS[tab()] ? tab() : 'vision';
+  const t = TABS[tab()] ? tab() : 'map';
   return `
     <section>
       <h1>Life</h1>
       <div class="chips seg">${Object.entries(TABS).map(([id, n]) => `<a class="chip${t === id ? ' on' : ''}" href="#vision/${id}">${n}</a>`).join('')}</div>
-      ${{ vision: visionTab, env: envTab, people: peopleTab, routine: routineTab }[t](state)}
+      ${{ map: mapTab, vision: visionTab, env: envTab, people: peopleTab, routine: routineTab }[t](state)}
     </section>`;
 }
 
@@ -201,7 +225,7 @@ export function mount(root, app) {
       const p = state.people.find((x) => x.id === hp.dataset.habitPerson);
       const name = `Connect with ${p.name}`;
       if (state.habits.some((h) => h.name === name)) return app.toast('Already a habit');
-      state.habits.push({ id: uid(), name, area: 'People', emoji: '💞', days: CONTACT_DAYS[p.contact] || [0], time: '', notes: p.contact, createdAt: new Date().toISOString().slice(0, 10) });
+      state.habits.push({ id: uid(), name, area: 'Relationships', sub: /mom|dad|mum|parent|sibling|brother|sister|child|son|daughter|grand|family/i.test(p.relation) ? 'Family' : /partner|wife|husband|girlfriend|boyfriend/i.test(p.relation) ? 'Partner' : 'Friends', emoji: '💞', days: CONTACT_DAYS[p.contact] || [0], time: '', notes: p.contact, createdAt: new Date().toISOString().slice(0, 10) });
       app.save();
       app.toast(`Added habit: ${name}`);
     }
