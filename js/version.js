@@ -1,8 +1,16 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.7.0';
+export const APP_VERSION = '1.8.0';
 
 export const RELEASES = [
+  {
+    version: '1.8.0',
+    date: '2026-10-10',
+    notes: [
+      'My world (🪞 at the top): a little avatar you can dress up (skin, eyes, hair, clothes, shoes, extras) in front of a home you design. Pick a place, sky, walls, floor and things, then save it as a picture',
+      '“Enjoy the process of creating yourself and your world.”',
+    ],
+  },
   {
     version: '1.7.0',
     date: '2026-10-10',

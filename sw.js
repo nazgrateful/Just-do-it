@@ -1,6 +1,6 @@
 // Service worker: works offline, and installs updates only when you tap "Update".
 // It never touches your saved data (that lives in localStorage, not in this cache).
-const CACHE = 'just-do-it-v8';
+const CACHE = 'just-do-it-v9';
 const ASSETS = [
   './',
   './index.html',
@@ -18,6 +18,7 @@ const ASSETS = [
   './icons/icon-512.png',
   './js/app.js',
   './js/alarmcore.js',
+  './js/avatar.js',
   './js/bubbles.js',
   './js/looks.js',
   './js/backup.js',
@@ -35,6 +36,7 @@ const ASSETS = [
   './js/views/files.js',
   './js/views/guide.js',
   './js/views/habits.js',
+  './js/views/me.js',
   './js/views/quiz.js',
   './js/views/settings.js',
   './js/views/sheet.js',

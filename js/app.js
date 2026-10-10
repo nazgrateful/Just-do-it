@@ -15,8 +15,9 @@ import * as vision from './views/vision.js';
 import * as settings from './views/settings.js';
 import * as quiz from './views/quiz.js';
 import * as gallery from './views/gallery.js';
+import * as me from './views/me.js';
 
-const VIEWS = { today, habits, skills, calendar, timer, alarms, vision, settings, quiz, looks: gallery };
+const VIEWS = { today, habits, skills, calendar, timer, alarms, vision, settings, quiz, looks: gallery, me };
 
 let state = load();
 if (!state.settings.platform) state.settings.platform = detectPlatform();

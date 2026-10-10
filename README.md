@@ -18,6 +18,7 @@ A free, private, installable web app. No account, no ads, and nothing leaves you
 | 📅 **My schedule** | A **24-hour** day view, a **week** view and a **month** view. Habits, alarms, plans and learned skills appear in one place. Export everything to your phone's calendar (.ics) with weekly repeats. |
 | ⏱ **Timer** | Countdown, focus mode (25/5) and stopwatch. It **rings even with the screen off**: Start begins one MP3 track that is silent for the countdown and then rings, and phones keep playing audio while asleep. It shows a lock-screen card with Stop. On Android, it can also set the same timer in the Clock app. It logs minutes to a skill. |
 | ⏰ **Custom alarms** | Pick the time, days and label. **Important** alarms ring louder, flash, vibrate and keep ringing until you dismiss them. They can be sent to the phone's **own Clock app** so they break through Do Not Disturb (see below). Also includes snooze and an alarm-clock (night-stand) mode. |
+| 🪞 **My world** | *“Enjoy the process of creating yourself and your world.”* A little avatar you dress up, standing in a home you design:<br>• **You:** skin, eyes, mouth, 11 hairstyles in any colour.<br>• **Clothes:** tops, dresses, bottoms and shoes in any colour.<br>• **Extras:** glasses, hats, crowns, flower crowns, headphones, jewellery, scarf, bag, blush, freckles.<br>• **Places:** living room, bedroom, kitchen, study, cozy cabin, cottage garden, beach house or city night. You choose the sky, walls, floor and 25 things like plants, pets, fairy lights and a fireplace.<br>• **Extras for the page:** Surprise outfit, Match my look's colours, Save picture (PNG). The avatar also appears on Today. |
 | 🏡 **Environment** | How and where you want to live, plus a room-by-room list of **everything you own**. Mark each thing love it, use it, maybe, let go, or want to buy. |
 | 💞 **People** | Every relationship in your life: how you want to show up, how you want to be treated, and your **boundaries**. You can also turn "how often I want to connect" into a habit. |
 | 💾 **Your data is safe** | See below. |
@@ -77,6 +78,7 @@ js/ring.js       in-app alarm ringer
 js/ics.js        calendar export
 js/looks.js      the Looks gallery: catalog, fonts, shapes, patterns, contrast-safe theme maths
 js/bubbles.js    bubble-chart packing
+js/avatar.js     the avatar and its world, drawn as SVG
 js/views/        today, habits, skills, calendar, timer, alarms, vision (life), settings, quiz
 tests/           node --test
 ```

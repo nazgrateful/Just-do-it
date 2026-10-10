@@ -2,6 +2,7 @@ import { isDue, isDone, toggleHabit, streak, challengeStats, skillMinutes } from
 import { nextOccurrence } from '../alarmcore.js';
 import { AESTHETICS, DOMAINS, domainOrder } from '../data.js';
 import { hasContent } from '../store.js';
+import { normalizeAvatar, sceneSvg } from '../avatar.js';
 import { ymd, esc, fmtTime, fmtMinutes, daysBetween } from '../util.js';
 
 // Life areas you've opened on Today (stay open while you tick things off).
@@ -51,6 +52,7 @@ export function render({ state }) {
   return `
     <section>
       ${needBackup ? `<a class="card warn-card" href="#settings">💾 ${lb ? `It's been ${daysBetween(lb, today)} days since your last backup.` : 'Save your first backup so your progress is safe.'} <b>Back up now →</b></a>` : ''}
+      <a class="me-mini" href="#me" aria-label="My avatar and world">${sceneSvg(normalizeAvatar(state.avatar), { label: false })}</a>
       <p class="muted small">${now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</p>
       <h1>${hello}.</h1>
       ${state.answers.why ? `<p class="lead quote">“${esc(state.answers.why)}”</p>` : vibe ? `<p class="lead">${esc(vibe.words)}</p>` : ''}
