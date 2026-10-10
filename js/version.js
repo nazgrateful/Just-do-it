@@ -1,8 +1,17 @@
 // Bump APP_VERSION (and package.json, and CACHE in sw.js) when publishing an update,
 // and add a line to RELEASES so people see what changed.
-export const APP_VERSION = '1.5.0';
+export const APP_VERSION = '1.6.0';
 
 export const RELEASES = [
+  {
+    version: '1.6.0',
+    date: '2026-10-10',
+    notes: [
+      'New Tranquil serenity look (now the default): matte linen and sand, sage and misty blue, soft mist drifting over distant hills',
+      'Elegant serif headings (Cormorant Garamond) over a soft humanist sans, more space, quieter controls and slow, gentle motion',
+      'Frutiger Aero is still there: pick it under Meaning → Identity → Show aesthetic ideas',
+    ],
+  },
   {
     version: '1.5.0',
     date: '2026-10-10',

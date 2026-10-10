@@ -39,7 +39,7 @@ function question(q, a) {
             <b>${x.emoji} ${esc(x.name)}</b><small>${esc(x.words)}</small>
           </button>`)
         .join('')}</div>
-        <p class="small muted">Picking one also sets the app's colours. Tap it again to go back to the default Frutiger Aero look.</p>`;
+        <p class="small muted">Picking one also sets the app's colours. Tap it again to go back to the default Tranquil serenity look.</p>`;
       return `
         <textarea class="input" rows="2" data-q="vibeText" data-input placeholder="Describe it in your own words — colours, places, textures, feelings…">${esc(a.vibeText || '')}</textarea>
         ${v && AESTHETICS[v] ? `<p class="small">Theme: <b>${AESTHETICS[v].emoji} ${esc(AESTHETICS[v].name)}</b></p>` : ''}

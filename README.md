@@ -6,7 +6,8 @@ A free, private, installable web app. No account, no ads, and nothing leaves you
 
 | | |
 |---|---|
-| 🫧 **Frutiger Aero look** | Glass panels, glossy aqua buttons, a sky background with clouds, bokeh, light rays, a green horizon and floating bubbles, in both light and dark mode. Text sits on near-solid glass with a soft glow, and was checked against WCAG AA contrast. **Lettering:** a Frutiger-style humanist sans (Source Sans 3, bundled under the SIL Open Font License, or real Frutiger / Segoe UI when installed). Titles, the wordmark and big numbers use glossy, Vista-style glass-gradient lettering. It is the default vibe. Any other aesthetic you pick (cozy, dark academia, coastal…) tints the glass. |
+| ☁️ **Tranquil serenity look (default)** | Matte linen and sand, sage and misty blue, soft mist drifting over distant hills and a hint of linen grain. Headings use an elegant serif (Cormorant Garamond) over a soft humanist sans (Source Sans 3); both are bundled under the SIL Open Font License. Calm, roomy cards, quiet pill buttons and slow, gentle motion, in light and dusk (dark) modes. |
+| 🫧 **Frutiger Aero look (optional)** | Glass panels, glossy aqua buttons, a sky with clouds, bokeh, rays and bubbles, and glossy Vista-style lettering. Pick it under Meaning → Identity. |
 | 🗺 **The map of a life** | Everything is organised as **life area → part → daily habits**, in priority order: **body, mind and soul first**, then relationships, then the rest. **1 Body:** sleep, food, movement, hygiene & grooming, medical care, recovery. **2 Mind:** attention, emotions, thinking, learning, mental rest. **3 Meaning (soul):** identity & vibe, values, faith & philosophy, reflection. **4 Relationships:** family, partner, friends, community, communication & boundaries. **5 Work & purpose:** career, skills (the 100-skill challenge), productivity, creative work, contribution. **6 Money:** earning, spending, saving, growing, protecting. **7 Environment:** where you live, **home & cleaning**, belongings, digital space, life admin, surroundings. **8 Play & rest:** hobbies, entertainment, adventure, celebration. **9 Self-management:** time & routines, discipline, habit mechanics, choices, alarms. |
 | ✨ **Design-your-life questions** | One step per life area, with headings for each part. You answer every question **in your own words first**, and ready-made ideas sit in a **💡 Show suggestions** panel under each question. Every habit the app creates is filed under its area and part. Monthly and yearly things (visiting family, check-ups) go on the calendar instead of the daily list. |
 | 🧩 **Your plan, built for you** | Your answers become habits: a cleaning schedule (zone-per-day, daily reset, weekly or monthly deep clean), workouts spread over your chosen days, routines, a daily practice block, alarms and relationship cards. |
@@ -63,7 +64,7 @@ npm test       # unit tests (Node 18+)
 ## Files
 
 ```
-index.html, css/styles.css, sw.js, manifest.webmanifest, icons/, fonts/ (Source Sans 3 + licence)
+index.html, css/styles.css (shared), css/serene.css + css/aero.css (each look, scoped to :root[data-style]), sw.js, manifest.webmanifest, icons/, fonts/ (Source Sans 3 + licence)
 js/app.js        router, theme, update flow
 js/data.js       questions, aesthetics, skill library, cleaning kits
 js/plan.js       answers → habits, skills, alarms, events, people

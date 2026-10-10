@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-style="serene" data-font="serene">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Just Do It</title>
   <meta name="description" content="Design your life, track habits and learn 100 skills in 365 days — with a schedule, timer and alarms.">
-  <meta name="theme-color" content="#dff3ff">
+  <meta name="theme-color" content="#f4f1ea">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
@@ -14,10 +14,14 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Just Do It">
   <link rel="preload" href="fonts/SourceSans3-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/CormorantGaramond-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
+  <!-- Looks: each is scoped to :root[data-style=…] and chosen by your aesthetic. -->
+  <link rel="stylesheet" href="css/serene.css">
+  <link rel="stylesheet" href="css/aero.css">
 </head>
 <body>
-  <!-- Frutiger Aero backdrop: sky, light rays, a grassy horizon and floating bubbles. Decorative only. -->
+  <!-- Backdrop layers (decorative). Serenity: linen grain, mist and distant hills. Aero: sky, rays, bubbles. -->
   <div class="aero-bg" aria-hidden="true">
     <div class="aero-rays"></div>
     <div class="cloud" style="--x:-8%;--y:7%;--w:55vw"></div>

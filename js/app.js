@@ -55,7 +55,7 @@ function render() {
 }
 
 function applyTheme() {
-  const a = AESTHETICS[state.answers.aesthetic] || AESTHETICS.aero;
+  const a = AESTHETICS[state.answers.aesthetic] || AESTHETICS.serene;
   const pref = state.settings.theme;
   const dark = pref === 'dark' || (pref === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
   const r = document.documentElement.style;
@@ -65,6 +65,7 @@ function applyTheme() {
   r.setProperty('--surface', dark ? a.dsurface : a.surface);
   r.setProperty('--ink', dark ? a.dink : a.ink);
   document.documentElement.dataset.font = a.font;
+  document.documentElement.dataset.style = a.style || 'serene';
   document.documentElement.dataset.dark = dark ? '1' : '0';
   $('meta[name=theme-color]')?.setAttribute('content', dark ? a.dbg : a.bg);
 }
